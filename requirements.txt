@@ -1,15 +1,15 @@
-Flask==2.3.3
+flask==2.3.3
 flask-cors==4.0.0
+gunicorn==21.2.0
 python-dotenv==1.0.0
-PyJWT==2.8.0
-bcrypt==4.0.1
+pandas==2.3.3
 transformers==4.35.2
+git+https://github.com/openai/whisper.git
+tiktoken
+requests
 yt-dlp==2023.11.16
 sentencepiece==0.1.99
-google-api-python-client==2.108.0
-gunicorn==21.2.0
-# pandas was installed earlier in Dockerfile; keeping it here is optional
-pandas==2.3.3
+
 
 
 
