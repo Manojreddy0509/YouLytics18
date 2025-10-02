@@ -1,43 +1,32 @@
-# Dockerfile — stable for Whisper + Torch + Flask on Python 3.11
+# Use official Python 3.11 slim image
 FROM python:3.11-slim
 
-ENV PYTHONDONTWRITEBYTECODE=1 \
-    PYTHONUNBUFFERED=1 \
-    PIP_DISABLE_PIP_VERSION_CHECK=1
-
+# Set working directory
 WORKDIR /app
 
-# system dependencies (ffmpeg needed by whisper), minimal tools for building wheels
-RUN apt-get update && \
-    apt-get install -y --no-install-recommends \
-      git \
-      ffmpeg \
-      libsndfile1 \
-      build-essential \
-      ca-certificates && \
-    rm -rf /var/lib/apt/lists/*
+# Install system dependencies
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    git \
+    ffmpeg \
+    && rm -rf /var/lib/apt/lists/*
 
-# copy requirements for caching
+# Upgrade pip
+RUN python -m pip install --upgrade pip setuptools wheel
+
+# Copy requirements.txt first (for caching)
 COPY requirements.txt /app/requirements.txt
 
-# upgrade pip + install numpy<2 (avoid numpy v2 issues)
-RUN python -m pip install --upgrade pip setuptools wheel && \
-    python -m pip install --no-cache-dir "numpy<2.0"
+# Install Python dependencies
+RUN python -m pip install --no-cache-dir -r /app/requirements.txt
 
-# Install Whisper first (it will pull a compatible torch) and pandas (if you need it)
-# --prefer-binary helps pip pick prebuilt wheels where available
-RUN python -m pip install --no-cache-dir --prefer-binary git+https://github.com/openai/whisper.git pandas
-
-# Now install the rest of your requirements (requirements.txt MUST NOT contain torch/torchaudio/torchvision)
-RUN python -m pip install --no-cache-dir --prefer-binary -r /app/requirements.txt
-
-# copy app code
+# Copy the rest of your app
 COPY . /app
 
-# health / port
-EXPOSE 5000
+# Expose default local port
+EXPOSE 8000
 
-# Use Gunicorn; Render/other hosts set $PORT
-CMD ["gunicorn", "app:app", "--bind", "0.0.0.0:$PORT", "--workers", "1"]
+# Use Render's $PORT with fallback for local dev
+CMD ["sh", "-c", "exec gunicorn app:app --bind 0.0.0.0:${PORT:-8000} --workers 1"]
+
 
 
