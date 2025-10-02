@@ -1,0 +1,4187 @@
+{
+  "positive": [
+    {
+      "comment": "Start you tech career today with Simplilearn: https://bit.ly/Tech-with-Tim-AIML",
+      "confidence": 0.6130998730659485,
+      "individual_predictions": [
+        {
+          "model": "RoBERTa",
+          "sentiment": "positive",
+          "confidence": 0.5088558793067932
+        },
+        {
+          "model": "DistilBERT",
+          "sentiment": "positive",
+          "confidence": 0.9660404920578003
+        },
+        {
+          "model": "BERT",
+          "sentiment": "positive",
+          "confidence": 0.36440324783325195
+        }
+      ]
+    },
+    {
+      "comment": "Such a feel-good upload.",
+      "confidence": 0.8349620699882507,
+      "individual_predictions": [
+        {
+          "model": "RoBERTa",
+          "sentiment": "positive",
+          "confidence": 0.9717327356338501
+        },
+        {
+          "model": "DistilBERT",
+          "sentiment": "positive",
+          "confidence": 0.9998700618743896
+        },
+        {
+          "model": "BERT",
+          "sentiment": "positive",
+          "confidence": 0.5332834124565125
+        }
+      ]
+    },
+    {
+      "comment": "This was something a techie needed from a long time (Thanks Tim) 💓",
+      "confidence": 0.8673766652743021,
+      "individual_predictions": [
+        {
+          "model": "RoBERTa",
+          "sentiment": "positive",
+          "confidence": 0.9721431732177734
+        },
+        {
+          "model": "DistilBERT",
+          "sentiment": "positive",
+          "confidence": 0.9859532713890076
+        },
+        {
+          "model": "BERT",
+          "sentiment": "positive",
+          "confidence": 0.6440335512161255
+        }
+      ]
+    },
+    {
+      "comment": "Respect.",
+      "confidence": 0.49313871065775555,
+      "individual_predictions": [
+        {
+          "model": "RoBERTa",
+          "sentiment": "neutral",
+          "confidence": 0.5356887578964233
+        },
+        {
+          "model": "DistilBERT",
+          "sentiment": "positive",
+          "confidence": 0.9997768998146057
+        },
+        {
+          "model": "BERT",
+          "sentiment": "positive",
+          "confidence": 0.4796392321586609
+        }
+      ]
+    },
+    {
+      "comment": "Thanks for the insight",
+      "confidence": 0.8025769790013632,
+      "individual_predictions": [
+        {
+          "model": "RoBERTa",
+          "sentiment": "positive",
+          "confidence": 0.8953202366828918
+        },
+        {
+          "model": "DistilBERT",
+          "sentiment": "positive",
+          "confidence": 0.9998329877853394
+        },
+        {
+          "model": "BERT",
+          "sentiment": "positive",
+          "confidence": 0.5125777125358582
+        }
+      ]
+    },
+    {
+      "comment": "Really enjoyed the music choice.",
+      "confidence": 0.835824211438497,
+      "individual_predictions": [
+        {
+          "model": "RoBERTa",
+          "sentiment": "positive",
+          "confidence": 0.97846519947052
+        },
+        {
+          "model": "DistilBERT",
+          "sentiment": "positive",
+          "confidence": 0.999870777130127
+        },
+        {
+          "model": "BERT",
+          "sentiment": "positive",
+          "confidence": 0.5291366577148438
+        }
+      ]
+    },
+    {
+      "comment": "Love the enthusiasm.",
+      "confidence": 0.8848276336987814,
+      "individual_predictions": [
+        {
+          "model": "RoBERTa",
+          "sentiment": "positive",
+          "confidence": 0.9759902358055115
+        },
+        {
+          "model": "DistilBERT",
+          "sentiment": "positive",
+          "confidence": 0.9998859167098999
+        },
+        {
+          "model": "BERT",
+          "sentiment": "positive",
+          "confidence": 0.6786067485809326
+        }
+      ]
+    },
+    {
+      "comment": "This is how you do YouTube right.",
+      "confidence": 0.6061343749364217,
+      "individual_predictions": [
+        {
+          "model": "RoBERTa",
+          "sentiment": "neutral",
+          "confidence": 0.5545550584793091
+        },
+        {
+          "model": "DistilBERT",
+          "sentiment": "positive",
+          "confidence": 0.9996840953826904
+        },
+        {
+          "model": "BERT",
+          "sentiment": "positive",
+          "confidence": 0.8187190294265747
+        }
+      ]
+    },
+    {
+      "comment": "Needed this.",
+      "confidence": 0.7458977699279785,
+      "individual_predictions": [
+        {
+          "model": "RoBERTa",
+          "sentiment": "positive",
+          "confidence": 0.831925630569458
+        },
+        {
+          "model": "DistilBERT",
+          "sentiment": "positive",
+          "confidence": 0.9224657416343689
+        },
+        {
+          "model": "BERT",
+          "sentiment": "positive",
+          "confidence": 0.48330193758010864
+        }
+      ]
+    },
+    {
+      "comment": "You really inspire me.",
+      "confidence": 0.9067467252413431,
+      "individual_predictions": [
+        {
+          "model": "RoBERTa",
+          "sentiment": "positive",
+          "confidence": 0.9682650566101074
+        },
+        {
+          "model": "DistilBERT",
+          "sentiment": "positive",
+          "confidence": 0.999873161315918
+        },
+        {
+          "model": "BERT",
+          "sentiment": "positive",
+          "confidence": 0.7521019577980042
+        }
+      ]
+    },
+    {
+      "comment": "You’re really good at this.",
+      "confidence": 0.8631953398386637,
+      "individual_predictions": [
+        {
+          "model": "RoBERTa",
+          "sentiment": "positive",
+          "confidence": 0.9643492698669434
+        },
+        {
+          "model": "DistilBERT",
+          "sentiment": "positive",
+          "confidence": 0.9998695850372314
+        },
+        {
+          "model": "BERT",
+          "sentiment": "positive",
+          "confidence": 0.6253671646118164
+        }
+      ]
+    },
+    {
+      "comment": "This was very helpful.",
+      "confidence": 0.8888704975446066,
+      "individual_predictions": [
+        {
+          "model": "RoBERTa",
+          "sentiment": "positive",
+          "confidence": 0.9729807376861572
+        },
+        {
+          "model": "DistilBERT",
+          "sentiment": "positive",
+          "confidence": 0.9996447563171387
+        },
+        {
+          "model": "BERT",
+          "sentiment": "positive",
+          "confidence": 0.6939859986305237
+        }
+      ]
+    },
+    {
+      "comment": "Thank you for the tips always remember you from freecodecamp",
+      "confidence": 0.895302951335907,
+      "individual_predictions": [
+        {
+          "model": "RoBERTa",
+          "sentiment": "positive",
+          "confidence": 0.9647876024246216
+        },
+        {
+          "model": "DistilBERT",
+          "sentiment": "positive",
+          "confidence": 0.9997876286506653
+        },
+        {
+          "model": "BERT",
+          "sentiment": "positive",
+          "confidence": 0.7213336229324341
+        }
+      ]
+    },
+    {
+      "comment": "This was better than Netflix today.",
+      "confidence": 0.8706198732058207,
+      "individual_predictions": [
+        {
+          "model": "RoBERTa",
+          "sentiment": "positive",
+          "confidence": 0.97702956199646
+        },
+        {
+          "model": "DistilBERT",
+          "sentiment": "positive",
+          "confidence": 0.9982585310935974
+        },
+        {
+          "model": "BERT",
+          "sentiment": "positive",
+          "confidence": 0.6365715265274048
+        }
+      ]
+    },
+    {
+      "comment": "great roadmap Tim, Thanks!!",
+      "confidence": 0.898416002591451,
+      "individual_predictions": [
+        {
+          "model": "RoBERTa",
+          "sentiment": "positive",
+          "confidence": 0.9758793115615845
+        },
+        {
+          "model": "DistilBERT",
+          "sentiment": "positive",
+          "confidence": 0.9998383522033691
+        },
+        {
+          "model": "BERT",
+          "sentiment": "positive",
+          "confidence": 0.7195303440093994
+        }
+      ]
+    },
+    {
+      "comment": "Wow, I never knew that.",
+      "confidence": 0.7431575655937195,
+      "individual_predictions": [
+        {
+          "model": "RoBERTa",
+          "sentiment": "positive",
+          "confidence": 0.6816094517707825
+        },
+        {
+          "model": "DistilBERT",
+          "sentiment": "positive",
+          "confidence": 0.9979819059371948
+        },
+        {
+          "model": "BERT",
+          "sentiment": "positive",
+          "confidence": 0.5498813390731812
+        }
+      ]
+    },
+    {
+      "comment": "You explained it perfectly.",
+      "confidence": 0.8967354893684387,
+      "individual_predictions": [
+        {
+          "model": "RoBERTa",
+          "sentiment": "positive",
+          "confidence": 0.8691912293434143
+        },
+        {
+          "model": "DistilBERT",
+          "sentiment": "positive",
+          "confidence": 0.9998735189437866
+        },
+        {
+          "model": "BERT",
+          "sentiment": "positive",
+          "confidence": 0.8211417198181152
+        }
+      ]
+    },
+    {
+      "comment": "Fantastic performance!",
+      "confidence": 0.9563273191452026,
+      "individual_predictions": [
+        {
+          "model": "RoBERTa",
+          "sentiment": "positive",
+          "confidence": 0.9812751412391663
+        },
+        {
+          "model": "DistilBERT",
+          "sentiment": "positive",
+          "confidence": 0.9998800754547119
+        },
+        {
+          "model": "BERT",
+          "sentiment": "positive",
+          "confidence": 0.8878267407417297
+        }
+      ]
+    },
+    {
+      "comment": "This is the content I needed today.",
+      "confidence": 0.86280357837677,
+      "individual_predictions": [
+        {
+          "model": "RoBERTa",
+          "sentiment": "positive",
+          "confidence": 0.9831841588020325
+        },
+        {
+          "model": "DistilBERT",
+          "sentiment": "positive",
+          "confidence": 0.9982568621635437
+        },
+        {
+          "model": "BERT",
+          "sentiment": "positive",
+          "confidence": 0.6069697141647339
+        }
+      ]
+    },
+    {
+      "comment": "This video was very helpful. All the tolls and apps you mentioned and the order in which to learn the skills… thanks a lot. I’m gonna explore more of your content now",
+      "confidence": 0.9208083947499593,
+      "individual_predictions": [
+        {
+          "model": "RoBERTa",
+          "sentiment": "positive",
+          "confidence": 0.9728142023086548
+        },
+        {
+          "model": "DistilBERT",
+          "sentiment": "positive",
+          "confidence": 0.9996405839920044
+        },
+        {
+          "model": "BERT",
+          "sentiment": "positive",
+          "confidence": 0.7899703979492188
+        }
+      ]
+    },
+    {
+      "comment": "Clear and easy to understand.",
+      "confidence": 0.7308468023935953,
+      "individual_predictions": [
+        {
+          "model": "RoBERTa",
+          "sentiment": "positive",
+          "confidence": 0.6556386351585388
+        },
+        {
+          "model": "DistilBERT",
+          "sentiment": "positive",
+          "confidence": 0.9998542070388794
+        },
+        {
+          "model": "BERT",
+          "sentiment": "positive",
+          "confidence": 0.5370475649833679
+        }
+      ]
+    },
+    {
+      "comment": "I can tell you worked hard on this.",
+      "confidence": 0.3145735462506612,
+      "individual_predictions": [
+        {
+          "model": "RoBERTa",
+          "sentiment": "positive",
+          "confidence": 0.9437206387519836
+        },
+        {
+          "model": "DistilBERT",
+          "sentiment": "neutral",
+          "confidence": 0.5345780253410339
+        },
+        {
+          "model": "BERT",
+          "sentiment": "neutral",
+          "confidence": 0.32065731287002563
+        }
+      ]
+    },
+    {
+      "comment": "Instant classic.",
+      "confidence": 0.9199781815210978,
+      "individual_predictions": [
+        {
+          "model": "RoBERTa",
+          "sentiment": "positive",
+          "confidence": 0.8620535731315613
+        },
+        {
+          "model": "DistilBERT",
+          "sentiment": "positive",
+          "confidence": 0.999840497970581
+        },
+        {
+          "model": "BERT",
+          "sentiment": "positive",
+          "confidence": 0.8980404734611511
+        }
+      ]
+    },
+    {
+      "comment": "Big W.",
+      "confidence": 0.6523027618726095,
+      "individual_predictions": [
+        {
+          "model": "RoBERTa",
+          "sentiment": "positive",
+          "confidence": 0.720680296421051
+        },
+        {
+          "model": "DistilBERT",
+          "sentiment": "positive",
+          "confidence": 0.9891869425773621
+        },
+        {
+          "model": "BERT",
+          "sentiment": "positive",
+          "confidence": 0.24704104661941528
+        }
+      ]
+    },
+    {
+      "comment": "This is pure quality.",
+      "confidence": 0.9222492178281149,
+      "individual_predictions": [
+        {
+          "model": "RoBERTa",
+          "sentiment": "positive",
+          "confidence": 0.9561256766319275
+        },
+        {
+          "model": "DistilBERT",
+          "sentiment": "positive",
+          "confidence": 0.9998469352722168
+        },
+        {
+          "model": "BERT",
+          "sentiment": "positive",
+          "confidence": 0.8107750415802002
+        }
+      ]
+    },
+    {
+      "comment": "Hello, could you mention the sources from where we can learn",
+      "confidence": 0.3551352967818578,
+      "individual_predictions": [
+        {
+          "model": "RoBERTa",
+          "sentiment": "neutral",
+          "confidence": 0.8631283640861511
+        },
+        {
+          "model": "DistilBERT",
+          "sentiment": "positive",
+          "confidence": 0.8182898759841919
+        },
+        {
+          "model": "BERT",
+          "sentiment": "positive",
+          "confidence": 0.24711601436138153
+        }
+      ]
+    },
+    {
+      "comment": "Top tier.",
+      "confidence": 0.8825866381327311,
+      "individual_predictions": [
+        {
+          "model": "RoBERTa",
+          "sentiment": "positive",
+          "confidence": 0.7616028785705566
+        },
+        {
+          "model": "DistilBERT",
+          "sentiment": "positive",
+          "confidence": 0.9994325041770935
+        },
+        {
+          "model": "BERT",
+          "sentiment": "positive",
+          "confidence": 0.8867245316505432
+        }
+      ]
+    },
+    {
+      "comment": "Amazing work!",
+      "confidence": 0.9558180371920267,
+      "individual_predictions": [
+        {
+          "model": "RoBERTa",
+          "sentiment": "positive",
+          "confidence": 0.9632319808006287
+        },
+        {
+          "model": "DistilBERT",
+          "sentiment": "positive",
+          "confidence": 0.9998775720596313
+        },
+        {
+          "model": "BERT",
+          "sentiment": "positive",
+          "confidence": 0.9043445587158203
+        }
+      ]
+    },
+    {
+      "comment": "The visuals are just next level.",
+      "confidence": 0.6507361729939779,
+      "individual_predictions": [
+        {
+          "model": "RoBERTa",
+          "sentiment": "positive",
+          "confidence": 0.9554468989372253
+        },
+        {
+          "model": "DistilBERT",
+          "sentiment": "positive",
+          "confidence": 0.9967616200447083
+        },
+        {
+          "model": "BERT",
+          "sentiment": "neutral",
+          "confidence": 0.3576907515525818
+        }
+      ]
+    },
+    {
+      "comment": "What’s your personal favorite moment?",
+      "confidence": 0.8530368208885193,
+      "individual_predictions": [
+        {
+          "model": "RoBERTa",
+          "sentiment": "positive",
+          "confidence": 0.8001880049705505
+        },
+        {
+          "model": "DistilBERT",
+          "sentiment": "positive",
+          "confidence": 0.9985440969467163
+        },
+        {
+          "model": "BERT",
+          "sentiment": "positive",
+          "confidence": 0.760378360748291
+        }
+      ]
+    },
+    {
+      "comment": "The pacing was perfect.",
+      "confidence": 0.8761639595031738,
+      "individual_predictions": [
+        {
+          "model": "RoBERTa",
+          "sentiment": "positive",
+          "confidence": 0.966887891292572
+        },
+        {
+          "model": "DistilBERT",
+          "sentiment": "positive",
+          "confidence": 0.9998586177825928
+        },
+        {
+          "model": "BERT",
+          "sentiment": "positive",
+          "confidence": 0.6617453694343567
+        }
+      ]
+    },
+    {
+      "comment": "You’ve got my respect for this one.",
+      "confidence": 0.865968664487203,
+      "individual_predictions": [
+        {
+          "model": "RoBERTa",
+          "sentiment": "positive",
+          "confidence": 0.9170142412185669
+        },
+        {
+          "model": "DistilBERT",
+          "sentiment": "positive",
+          "confidence": 0.9998438358306885
+        },
+        {
+          "model": "BERT",
+          "sentiment": "positive",
+          "confidence": 0.6810479164123535
+        }
+      ]
+    },
+    {
+      "comment": "Legendary.",
+      "confidence": 0.8501444856325785,
+      "individual_predictions": [
+        {
+          "model": "RoBERTa",
+          "sentiment": "positive",
+          "confidence": 0.749332070350647
+        },
+        {
+          "model": "DistilBERT",
+          "sentiment": "positive",
+          "confidence": 0.9996134638786316
+        },
+        {
+          "model": "BERT",
+          "sentiment": "positive",
+          "confidence": 0.801487922668457
+        }
+      ]
+    },
+    {
+      "comment": "This is what YouTube was made for.",
+      "confidence": 0.43621615568796795,
+      "individual_predictions": [
+        {
+          "model": "RoBERTa",
+          "sentiment": "neutral",
+          "confidence": 0.5319273471832275
+        },
+        {
+          "model": "DistilBERT",
+          "sentiment": "positive",
+          "confidence": 0.6282573938369751
+        },
+        {
+          "model": "BERT",
+          "sentiment": "positive",
+          "confidence": 0.6803910732269287
+        }
+      ]
+    },
+    {
+      "comment": "Outstanding!",
+      "confidence": 0.9471342166264852,
+      "individual_predictions": [
+        {
+          "model": "RoBERTa",
+          "sentiment": "positive",
+          "confidence": 0.9449474215507507
+        },
+        {
+          "model": "DistilBERT",
+          "sentiment": "positive",
+          "confidence": 0.9998557567596436
+        },
+        {
+          "model": "BERT",
+          "sentiment": "positive",
+          "confidence": 0.8965994715690613
+        }
+      ]
+    },
+    {
+      "comment": "10/10 would watch again.",
+      "confidence": 0.9454004565874735,
+      "individual_predictions": [
+        {
+          "model": "RoBERTa",
+          "sentiment": "positive",
+          "confidence": 0.956135094165802
+        },
+        {
+          "model": "DistilBERT",
+          "sentiment": "positive",
+          "confidence": 0.997830331325531
+        },
+        {
+          "model": "BERT",
+          "sentiment": "positive",
+          "confidence": 0.8822359442710876
+        }
+      ]
+    },
+    {
+      "comment": "Great job.",
+      "confidence": 0.8877314130465189,
+      "individual_predictions": [
+        {
+          "model": "RoBERTa",
+          "sentiment": "positive",
+          "confidence": 0.9548166990280151
+        },
+        {
+          "model": "DistilBERT",
+          "sentiment": "positive",
+          "confidence": 0.9998635053634644
+        },
+        {
+          "model": "BERT",
+          "sentiment": "positive",
+          "confidence": 0.7085140347480774
+        }
+      ]
+    },
+    {
+      "comment": "For real.",
+      "confidence": 0.4425887068112691,
+      "individual_predictions": [
+        {
+          "model": "RoBERTa",
+          "sentiment": "neutral",
+          "confidence": 0.5366582870483398
+        },
+        {
+          "model": "DistilBERT",
+          "sentiment": "positive",
+          "confidence": 0.9989018440246582
+        },
+        {
+          "model": "BERT",
+          "sentiment": "positive",
+          "confidence": 0.32886427640914917
+        }
+      ]
+    },
+    {
+      "comment": "This video cured my boredom.",
+      "confidence": 0.4393906195958455,
+      "individual_predictions": [
+        {
+          "model": "RoBERTa",
+          "sentiment": "positive",
+          "confidence": 0.8546896576881409
+        },
+        {
+          "model": "DistilBERT",
+          "sentiment": "negative",
+          "confidence": 0.6909546256065369
+        },
+        {
+          "model": "BERT",
+          "sentiment": "positive",
+          "confidence": 0.46348220109939575
+        }
+      ]
+    },
+    {
+      "comment": "I actually learned something new today.",
+      "confidence": 0.8029014865557352,
+      "individual_predictions": [
+        {
+          "model": "RoBERTa",
+          "sentiment": "positive",
+          "confidence": 0.9750831127166748
+        },
+        {
+          "model": "DistilBERT",
+          "sentiment": "positive",
+          "confidence": 0.998927891254425
+        },
+        {
+          "model": "BERT",
+          "sentiment": "positive",
+          "confidence": 0.43469345569610596
+        }
+      ]
+    },
+    {
+      "comment": "I’m sending this to everyone I know.",
+      "confidence": 0.4918471574783325,
+      "individual_predictions": [
+        {
+          "model": "RoBERTa",
+          "sentiment": "neutral",
+          "confidence": 0.707265317440033
+        },
+        {
+          "model": "DistilBERT",
+          "sentiment": "positive",
+          "confidence": 0.7777714133262634
+        },
+        {
+          "model": "BERT",
+          "sentiment": "positive",
+          "confidence": 0.6977700591087341
+        }
+      ]
+    },
+    {
+      "comment": "Incredible!",
+      "confidence": 0.9466132521629333,
+      "individual_predictions": [
+        {
+          "model": "RoBERTa",
+          "sentiment": "positive",
+          "confidence": 0.9383559226989746
+        },
+        {
+          "model": "DistilBERT",
+          "sentiment": "positive",
+          "confidence": 0.9998774528503418
+        },
+        {
+          "model": "BERT",
+          "sentiment": "positive",
+          "confidence": 0.9016063809394836
+        }
+      ]
+    },
+    {
+      "comment": "I’ve never clicked “like” so fast.",
+      "confidence": 0.32985764741897583,
+      "individual_predictions": [
+        {
+          "model": "RoBERTa",
+          "sentiment": "neutral",
+          "confidence": 0.48738202452659607
+        },
+        {
+          "model": "DistilBERT",
+          "sentiment": "positive",
+          "confidence": 0.9895729422569275
+        },
+        {
+          "model": "BERT",
+          "sentiment": "negative",
+          "confidence": 0.4935755133628845
+        }
+      ]
+    },
+    {
+      "comment": "This deserves way more views.",
+      "confidence": 0.7603325247764587,
+      "individual_predictions": [
+        {
+          "model": "RoBERTa",
+          "sentiment": "positive",
+          "confidence": 0.832263171672821
+        },
+        {
+          "model": "DistilBERT",
+          "sentiment": "positive",
+          "confidence": 0.9276092648506165
+        },
+        {
+          "model": "BERT",
+          "sentiment": "positive",
+          "confidence": 0.5211251378059387
+        }
+      ]
+    },
+    {
+      "comment": "This was oddly satisfying to watch.",
+      "confidence": 0.8413016001383463,
+      "individual_predictions": [
+        {
+          "model": "RoBERTa",
+          "sentiment": "positive",
+          "confidence": 0.9801762104034424
+        },
+        {
+          "model": "DistilBERT",
+          "sentiment": "positive",
+          "confidence": 0.9997705817222595
+        },
+        {
+          "model": "BERT",
+          "sentiment": "positive",
+          "confidence": 0.5439580082893372
+        }
+      ]
+    },
+    {
+      "comment": "Loved the energy in this video.",
+      "confidence": 0.8820117712020874,
+      "individual_predictions": [
+        {
+          "model": "RoBERTa",
+          "sentiment": "positive",
+          "confidence": 0.9858214259147644
+        },
+        {
+          "model": "DistilBERT",
+          "sentiment": "positive",
+          "confidence": 0.9998856782913208
+        },
+        {
+          "model": "BERT",
+          "sentiment": "positive",
+          "confidence": 0.660328209400177
+        }
+      ]
+    },
+    {
+      "comment": "Why was this actually so entertaining?",
+      "confidence": 0.4571088155110677,
+      "individual_predictions": [
+        {
+          "model": "RoBERTa",
+          "sentiment": "positive",
+          "confidence": 0.3739151358604431
+        },
+        {
+          "model": "DistilBERT",
+          "sentiment": "positive",
+          "confidence": 0.99741131067276
+        },
+        {
+          "model": "BERT",
+          "sentiment": "neutral",
+          "confidence": 0.25714656710624695
+        }
+      ]
+    },
+    {
+      "comment": "This deserves to go viral.",
+      "confidence": 0.5603875915209452,
+      "individual_predictions": [
+        {
+          "model": "RoBERTa",
+          "sentiment": "positive",
+          "confidence": 0.6895103454589844
+        },
+        {
+          "model": "DistilBERT",
+          "sentiment": "positive",
+          "confidence": 0.9916524291038513
+        },
+        {
+          "model": "BERT",
+          "sentiment": "negative",
+          "confidence": 0.598514974117279
+        }
+      ]
+    },
+    {
+      "comment": "100%.",
+      "confidence": 0.8292628725369772,
+      "individual_predictions": [
+        {
+          "model": "RoBERTa",
+          "sentiment": "positive",
+          "confidence": 0.5350899696350098
+        },
+        {
+          "model": "DistilBERT",
+          "sentiment": "positive",
+          "confidence": 0.9997774958610535
+        },
+        {
+          "model": "BERT",
+          "sentiment": "positive",
+          "confidence": 0.9529211521148682
+        }
+      ]
+    },
+    {
+      "comment": "I can’t stop replaying that part.",
+      "confidence": 0.5617125034332275,
+      "individual_predictions": [
+        {
+          "model": "RoBERTa",
+          "sentiment": "positive",
+          "confidence": 0.6965841054916382
+        },
+        {
+          "model": "DistilBERT",
+          "sentiment": "positive",
+          "confidence": 0.9885534048080444
+        },
+        {
+          "model": "BERT",
+          "sentiment": "negative",
+          "confidence": 0.244728684425354
+        }
+      ]
+    },
+    {
+      "comment": "Truth.",
+      "confidence": 0.4368462363878886,
+      "individual_predictions": [
+        {
+          "model": "RoBERTa",
+          "sentiment": "neutral",
+          "confidence": 0.6419184803962708
+        },
+        {
+          "model": "DistilBERT",
+          "sentiment": "positive",
+          "confidence": 0.9993942975997925
+        },
+        {
+          "model": "BERT",
+          "sentiment": "positive",
+          "confidence": 0.3111444115638733
+        }
+      ]
+    },
+    {
+      "comment": "7:40 \n8:01\n8:40\n9:59",
+      "confidence": 0.30188632011413574,
+      "individual_predictions": [
+        {
+          "model": "RoBERTa",
+          "sentiment": "neutral",
+          "confidence": 0.7937695384025574
+        },
+        {
+          "model": "DistilBERT",
+          "sentiment": "positive",
+          "confidence": 0.9056589603424072
+        },
+        {
+          "model": "BERT",
+          "sentiment": "negative",
+          "confidence": 0.29760652780532837
+        }
+      ]
+    },
+    {
+      "comment": "You deserve every bit of success coming your way.",
+      "confidence": 0.9604533910751343,
+      "individual_predictions": [
+        {
+          "model": "RoBERTa",
+          "sentiment": "positive",
+          "confidence": 0.9806880950927734
+        },
+        {
+          "model": "DistilBERT",
+          "sentiment": "positive",
+          "confidence": 0.99662184715271
+        },
+        {
+          "model": "BERT",
+          "sentiment": "positive",
+          "confidence": 0.9040502309799194
+        }
+      ]
+    },
+    {
+      "comment": "Masterpiece.",
+      "confidence": 0.8750378886858622,
+      "individual_predictions": [
+        {
+          "model": "RoBERTa",
+          "sentiment": "positive",
+          "confidence": 0.7759935259819031
+        },
+        {
+          "model": "DistilBERT",
+          "sentiment": "positive",
+          "confidence": 0.9998236298561096
+        },
+        {
+          "model": "BERT",
+          "sentiment": "positive",
+          "confidence": 0.849296510219574
+        }
+      ]
+    },
+    {
+      "comment": "Perfection.",
+      "confidence": 0.8745985229810079,
+      "individual_predictions": [
+        {
+          "model": "RoBERTa",
+          "sentiment": "positive",
+          "confidence": 0.8175747394561768
+        },
+        {
+          "model": "DistilBERT",
+          "sentiment": "positive",
+          "confidence": 0.999860405921936
+        },
+        {
+          "model": "BERT",
+          "sentiment": "positive",
+          "confidence": 0.8063604235649109
+        }
+      ]
+    },
+    {
+      "comment": "I’m impressed.",
+      "confidence": 0.8643896381060282,
+      "individual_predictions": [
+        {
+          "model": "RoBERTa",
+          "sentiment": "positive",
+          "confidence": 0.9674829244613647
+        },
+        {
+          "model": "DistilBERT",
+          "sentiment": "positive",
+          "confidence": 0.9998743534088135
+        },
+        {
+          "model": "BERT",
+          "sentiment": "positive",
+          "confidence": 0.6258116364479065
+        }
+      ]
+    },
+    {
+      "comment": "Well said.",
+      "confidence": 0.7805234789848328,
+      "individual_predictions": [
+        {
+          "model": "RoBERTa",
+          "sentiment": "positive",
+          "confidence": 0.8251543045043945
+        },
+        {
+          "model": "DistilBERT",
+          "sentiment": "positive",
+          "confidence": 0.9998112320899963
+        },
+        {
+          "model": "BERT",
+          "sentiment": "positive",
+          "confidence": 0.5166049003601074
+        }
+      ]
+    },
+    {
+      "comment": "Facts.",
+      "confidence": 0.49409716327985126,
+      "individual_predictions": [
+        {
+          "model": "RoBERTa",
+          "sentiment": "neutral",
+          "confidence": 0.7043558359146118
+        },
+        {
+          "model": "DistilBERT",
+          "sentiment": "positive",
+          "confidence": 0.9991353154182434
+        },
+        {
+          "model": "BERT",
+          "sentiment": "positive",
+          "confidence": 0.4831561744213104
+        }
+      ]
+    },
+    {
+      "comment": "Which one was the funniest for you?",
+      "confidence": 0.715549647808075,
+      "individual_predictions": [
+        {
+          "model": "RoBERTa",
+          "sentiment": "positive",
+          "confidence": 0.6132252216339111
+        },
+        {
+          "model": "DistilBERT",
+          "sentiment": "positive",
+          "confidence": 0.9988096952438354
+        },
+        {
+          "model": "BERT",
+          "sentiment": "positive",
+          "confidence": 0.5346140265464783
+        }
+      ]
+    },
+    {
+      "comment": "This is going straight to my favorites.",
+      "confidence": 0.9262621800104777,
+      "individual_predictions": [
+        {
+          "model": "RoBERTa",
+          "sentiment": "positive",
+          "confidence": 0.9530853033065796
+        },
+        {
+          "model": "DistilBERT",
+          "sentiment": "positive",
+          "confidence": 0.9993347525596619
+        },
+        {
+          "model": "BERT",
+          "sentiment": "positive",
+          "confidence": 0.8263664841651917
+        }
+      ]
+    },
+    {
+      "comment": "Drop a like if you agree.",
+      "confidence": 0.33247987429300946,
+      "individual_predictions": [
+        {
+          "model": "RoBERTa",
+          "sentiment": "neutral",
+          "confidence": 0.7748661041259766
+        },
+        {
+          "model": "DistilBERT",
+          "sentiment": "positive",
+          "confidence": 0.9974396228790283
+        },
+        {
+          "model": "BERT",
+          "sentiment": "negative",
+          "confidence": 0.32907190918922424
+        }
+      ]
+    },
+    {
+      "comment": "This!",
+      "confidence": 0.7725433309872946,
+      "individual_predictions": [
+        {
+          "model": "RoBERTa",
+          "sentiment": "positive",
+          "confidence": 0.5918242335319519
+        },
+        {
+          "model": "DistilBERT",
+          "sentiment": "positive",
+          "confidence": 0.9993870258331299
+        },
+        {
+          "model": "BERT",
+          "sentiment": "positive",
+          "confidence": 0.7264187335968018
+        }
+      ]
+    },
+    {
+      "comment": "Why was this actually so entertaining?",
+      "confidence": 0.4571088155110677,
+      "individual_predictions": [
+        {
+          "model": "RoBERTa",
+          "sentiment": "positive",
+          "confidence": 0.3739151358604431
+        },
+        {
+          "model": "DistilBERT",
+          "sentiment": "positive",
+          "confidence": 0.99741131067276
+        },
+        {
+          "model": "BERT",
+          "sentiment": "neutral",
+          "confidence": 0.25714656710624695
+        }
+      ]
+    },
+    {
+      "comment": "The future is happening right now",
+      "confidence": 0.4784623583157857,
+      "individual_predictions": [
+        {
+          "model": "RoBERTa",
+          "sentiment": "neutral",
+          "confidence": 0.5065978765487671
+        },
+        {
+          "model": "DistilBERT",
+          "sentiment": "positive",
+          "confidence": 0.9993425011634827
+        },
+        {
+          "model": "BERT",
+          "sentiment": "positive",
+          "confidence": 0.4360445737838745
+        }
+      ]
+    },
+    {
+      "comment": "The effort you put into this shows.",
+      "confidence": 0.7033155759175619,
+      "individual_predictions": [
+        {
+          "model": "RoBERTa",
+          "sentiment": "positive",
+          "confidence": 0.7030220627784729
+        },
+        {
+          "model": "DistilBERT",
+          "sentiment": "positive",
+          "confidence": 0.9256746172904968
+        },
+        {
+          "model": "BERT",
+          "sentiment": "positive",
+          "confidence": 0.4812500476837158
+        }
+      ]
+    },
+    {
+      "comment": "Learning ML and AI fast is all about hands-on practice. Managing and testing prompts early with tools like Genum AI made a big difference for me. Anyone else found prompt management helpful when starting out?",
+      "confidence": 0.7455385327339172,
+      "individual_predictions": [
+        {
+          "model": "RoBERTa",
+          "sentiment": "positive",
+          "confidence": 0.8966329097747803
+        },
+        {
+          "model": "DistilBERT",
+          "sentiment": "positive",
+          "confidence": 0.9101054072380066
+        },
+        {
+          "model": "BERT",
+          "sentiment": "positive",
+          "confidence": 0.42987728118896484
+        }
+      ]
+    },
+    {
+      "comment": "Coursera and EdX are much less expensive and offer university courses at your own pace",
+      "confidence": 0.2902858058611552,
+      "individual_predictions": [
+        {
+          "model": "RoBERTa",
+          "sentiment": "neutral",
+          "confidence": 0.549266517162323
+        },
+        {
+          "model": "DistilBERT",
+          "sentiment": "positive",
+          "confidence": 0.8708574175834656
+        },
+        {
+          "model": "BERT",
+          "sentiment": "neutral",
+          "confidence": 0.3041478097438812
+        }
+      ]
+    },
+    {
+      "comment": "I really like this approach.Thanks Tim",
+      "confidence": 0.8522408604621887,
+      "individual_predictions": [
+        {
+          "model": "RoBERTa",
+          "sentiment": "positive",
+          "confidence": 0.97419273853302
+        },
+        {
+          "model": "DistilBERT",
+          "sentiment": "positive",
+          "confidence": 0.9998434782028198
+        },
+        {
+          "model": "BERT",
+          "sentiment": "positive",
+          "confidence": 0.5826863646507263
+        }
+      ]
+    },
+    {
+      "comment": "Will a course called such as Data Analysis with Python help me develop majority of the skills I need to build . The courses says I can learn all of these :   how to read data from sources like CSVs and SQL, and how to use libraries like Numpy, Pandas, Matplotlib, and Seaborn to process and visualize data. PLease someone guide me , Tim ?",
+      "confidence": 0.4581458965937297,
+      "individual_predictions": [
+        {
+          "model": "RoBERTa",
+          "sentiment": "neutral",
+          "confidence": 0.5476891398429871
+        },
+        {
+          "model": "DistilBERT",
+          "sentiment": "positive",
+          "confidence": 0.9769886136054993
+        },
+        {
+          "model": "BERT",
+          "sentiment": "positive",
+          "confidence": 0.3974490761756897
+        }
+      ]
+    },
+    {
+      "comment": "Super valuable content! One thing that’d be cool: could you show a quick demo of optimizing code or using version control in ML projects next time?",
+      "confidence": 0.8010995189348856,
+      "individual_predictions": [
+        {
+          "model": "RoBERTa",
+          "sentiment": "positive",
+          "confidence": 0.9662006497383118
+        },
+        {
+          "model": "DistilBERT",
+          "sentiment": "positive",
+          "confidence": 0.773504376411438
+        },
+        {
+          "model": "BERT",
+          "sentiment": "positive",
+          "confidence": 0.6635935306549072
+        }
+      ]
+    },
+    {
+      "comment": "Love you soo much timm❤️",
+      "confidence": 0.9296374519666036,
+      "individual_predictions": [
+        {
+          "model": "RoBERTa",
+          "sentiment": "positive",
+          "confidence": 0.9801762104034424
+        },
+        {
+          "model": "DistilBERT",
+          "sentiment": "positive",
+          "confidence": 0.9997021555900574
+        },
+        {
+          "model": "BERT",
+          "sentiment": "positive",
+          "confidence": 0.809033989906311
+        }
+      ]
+    },
+    {
+      "comment": "Awesome info as usual Tim. Thank you.",
+      "confidence": 0.9307061831156412,
+      "individual_predictions": [
+        {
+          "model": "RoBERTa",
+          "sentiment": "positive",
+          "confidence": 0.9835980534553528
+        },
+        {
+          "model": "DistilBERT",
+          "sentiment": "positive",
+          "confidence": 0.9998700618743896
+        },
+        {
+          "model": "BERT",
+          "sentiment": "positive",
+          "confidence": 0.8086504340171814
+        }
+      ]
+    },
+    {
+      "comment": "Fastest way to learn AI on your cell phone within 48hrs without buying any software. Say “AI” on this comment section to get started.",
+      "confidence": 0.5389037529627482,
+      "individual_predictions": [
+        {
+          "model": "RoBERTa",
+          "sentiment": "positive",
+          "confidence": 0.8573597073554993
+        },
+        {
+          "model": "DistilBERT",
+          "sentiment": "negative",
+          "confidence": 0.9870116710662842
+        },
+        {
+          "model": "BERT",
+          "sentiment": "positive",
+          "confidence": 0.7593515515327454
+        }
+      ]
+    },
+    {
+      "comment": "Fastest way to learn AI on your cell phone within 48hrs without buying any software. Say “AI” on this comment section to get started.",
+      "confidence": 0.5389037529627482,
+      "individual_predictions": [
+        {
+          "model": "RoBERTa",
+          "sentiment": "positive",
+          "confidence": 0.8573597073554993
+        },
+        {
+          "model": "DistilBERT",
+          "sentiment": "negative",
+          "confidence": 0.9870116710662842
+        },
+        {
+          "model": "BERT",
+          "sentiment": "positive",
+          "confidence": 0.7593515515327454
+        }
+      ]
+    },
+    {
+      "comment": "Fastest way to learn AI on your cell phone within 48hrs without buying any software. Say “AI” on this comment section to get started.",
+      "confidence": 0.5389037529627482,
+      "individual_predictions": [
+        {
+          "model": "RoBERTa",
+          "sentiment": "positive",
+          "confidence": 0.8573597073554993
+        },
+        {
+          "model": "DistilBERT",
+          "sentiment": "negative",
+          "confidence": 0.9870116710662842
+        },
+        {
+          "model": "BERT",
+          "sentiment": "positive",
+          "confidence": 0.7593515515327454
+        }
+      ]
+    },
+    {
+      "comment": "Fastest way to learn AI on your cell phone within 48hrs without buying any software. Say “AI” on this comment section to get started.",
+      "confidence": 0.5389037529627482,
+      "individual_predictions": [
+        {
+          "model": "RoBERTa",
+          "sentiment": "positive",
+          "confidence": 0.8573597073554993
+        },
+        {
+          "model": "DistilBERT",
+          "sentiment": "negative",
+          "confidence": 0.9870116710662842
+        },
+        {
+          "model": "BERT",
+          "sentiment": "positive",
+          "confidence": 0.7593515515327454
+        }
+      ]
+    },
+    {
+      "comment": "Fastest way to learn AI on your cell phone within 48hrs without buying any software. Say “AI” on this comment section to get started.",
+      "confidence": 0.5389037529627482,
+      "individual_predictions": [
+        {
+          "model": "RoBERTa",
+          "sentiment": "positive",
+          "confidence": 0.8573597073554993
+        },
+        {
+          "model": "DistilBERT",
+          "sentiment": "negative",
+          "confidence": 0.9870116710662842
+        },
+        {
+          "model": "BERT",
+          "sentiment": "positive",
+          "confidence": 0.7593515515327454
+        }
+      ]
+    },
+    {
+      "comment": "Fastest way to learn AI on your cell phone within 48hrs without buying any software. Say “AI” on this comment section to get started.",
+      "confidence": 0.5389037529627482,
+      "individual_predictions": [
+        {
+          "model": "RoBERTa",
+          "sentiment": "positive",
+          "confidence": 0.8573597073554993
+        },
+        {
+          "model": "DistilBERT",
+          "sentiment": "negative",
+          "confidence": 0.9870116710662842
+        },
+        {
+          "model": "BERT",
+          "sentiment": "positive",
+          "confidence": 0.7593515515327454
+        }
+      ]
+    },
+    {
+      "comment": "Fastest way to learn AI on your cell phone within 48hrs without buying any software. Say “AI” on this comment section to get started.",
+      "confidence": 0.5389037529627482,
+      "individual_predictions": [
+        {
+          "model": "RoBERTa",
+          "sentiment": "positive",
+          "confidence": 0.8573597073554993
+        },
+        {
+          "model": "DistilBERT",
+          "sentiment": "negative",
+          "confidence": 0.9870116710662842
+        },
+        {
+          "model": "BERT",
+          "sentiment": "positive",
+          "confidence": 0.7593515515327454
+        }
+      ]
+    },
+    {
+      "comment": "Fastest way to learn AI on your cell phone within 48hrs without buying any software. Say “AI” on this comment section to get started.",
+      "confidence": 0.5389037529627482,
+      "individual_predictions": [
+        {
+          "model": "RoBERTa",
+          "sentiment": "positive",
+          "confidence": 0.8573597073554993
+        },
+        {
+          "model": "DistilBERT",
+          "sentiment": "negative",
+          "confidence": 0.9870116710662842
+        },
+        {
+          "model": "BERT",
+          "sentiment": "positive",
+          "confidence": 0.7593515515327454
+        }
+      ]
+    },
+    {
+      "comment": "love this approach I went through the same reset recently and honestly genum ai helped a ton for testing small ideas fast it’s crazy how much easier it is to learn when you’re actually building things that work",
+      "confidence": 0.9493140578269958,
+      "individual_predictions": [
+        {
+          "model": "RoBERTa",
+          "sentiment": "positive",
+          "confidence": 0.9757571816444397
+        },
+        {
+          "model": "DistilBERT",
+          "sentiment": "positive",
+          "confidence": 0.9963531494140625
+        },
+        {
+          "model": "BERT",
+          "sentiment": "positive",
+          "confidence": 0.8758318424224854
+        }
+      ]
+    },
+    {
+      "comment": "nice",
+      "confidence": 0.7066657145818075,
+      "individual_predictions": [
+        {
+          "model": "RoBERTa",
+          "sentiment": "positive",
+          "confidence": 0.6833009123802185
+        },
+        {
+          "model": "DistilBERT",
+          "sentiment": "positive",
+          "confidence": 0.9998552799224854
+        },
+        {
+          "model": "BERT",
+          "sentiment": "positive",
+          "confidence": 0.4368409514427185
+        }
+      ]
+    },
+    {
+      "comment": "i am 23 year old never learnt about AI or Computer science but now i want to start in AI and learn about it making career in it too can someone advise where to start",
+      "confidence": 0.38440537452697754,
+      "individual_predictions": [
+        {
+          "model": "RoBERTa",
+          "sentiment": "neutral",
+          "confidence": 0.7675093412399292
+        },
+        {
+          "model": "DistilBERT",
+          "sentiment": "positive",
+          "confidence": 0.7571004629135132
+        },
+        {
+          "model": "BERT",
+          "sentiment": "positive",
+          "confidence": 0.39611566066741943
+        }
+      ]
+    },
+    {
+      "comment": "IDK If this steps or roadmap will work but like it seems so doable unlike other roadmaps saying a lot about mathematics and alot of alienated jargons idk like this feels so doable, I hope it works out for me.",
+      "confidence": 0.6184138854344686,
+      "individual_predictions": [
+        {
+          "model": "RoBERTa",
+          "sentiment": "positive",
+          "confidence": 0.8628055453300476
+        },
+        {
+          "model": "DistilBERT",
+          "sentiment": "positive",
+          "confidence": 0.9924361109733582
+        },
+        {
+          "model": "BERT",
+          "sentiment": "neutral",
+          "confidence": 0.45951178669929504
+        }
+      ]
+    },
+    {
+      "comment": "Good advice thank you bro",
+      "confidence": 0.7946721315383911,
+      "individual_predictions": [
+        {
+          "model": "RoBERTa",
+          "sentiment": "positive",
+          "confidence": 0.9671134948730469
+        },
+        {
+          "model": "DistilBERT",
+          "sentiment": "positive",
+          "confidence": 0.9997871518135071
+        },
+        {
+          "model": "BERT",
+          "sentiment": "positive",
+          "confidence": 0.4171157479286194
+        }
+      ]
+    },
+    {
+      "comment": "bro you look like indian standup comedian samay raina",
+      "confidence": 0.30677690108617145,
+      "individual_predictions": [
+        {
+          "model": "RoBERTa",
+          "sentiment": "neutral",
+          "confidence": 0.7564436793327332
+        },
+        {
+          "model": "DistilBERT",
+          "sentiment": "positive",
+          "confidence": 0.9203307032585144
+        },
+        {
+          "model": "BERT",
+          "sentiment": "negative",
+          "confidence": 0.25190725922584534
+        }
+      ]
+    },
+    {
+      "comment": "This video was very informative. I was taking notes throughout the entire video.",
+      "confidence": 0.81544229388237,
+      "individual_predictions": [
+        {
+          "model": "RoBERTa",
+          "sentiment": "positive",
+          "confidence": 0.9778755903244019
+        },
+        {
+          "model": "DistilBERT",
+          "sentiment": "positive",
+          "confidence": 0.9987719655036926
+        },
+        {
+          "model": "BERT",
+          "sentiment": "positive",
+          "confidence": 0.4696793258190155
+        }
+      ]
+    },
+    {
+      "comment": "Good job.",
+      "confidence": 0.8108253280321757,
+      "individual_predictions": [
+        {
+          "model": "RoBERTa",
+          "sentiment": "positive",
+          "confidence": 0.9138503670692444
+        },
+        {
+          "model": "DistilBERT",
+          "sentiment": "positive",
+          "confidence": 0.9998345375061035
+        },
+        {
+          "model": "BERT",
+          "sentiment": "positive",
+          "confidence": 0.5187910795211792
+        }
+      ]
+    },
+    {
+      "comment": "This is gonna take forever to learn them all. Guys, you don't need them all. Just learn one area and get a job. And after getting a job, you can learn more",
+      "confidence": 0.5269575715065002,
+      "individual_predictions": [
+        {
+          "model": "RoBERTa",
+          "sentiment": "negative",
+          "confidence": 0.5418440103530884
+        },
+        {
+          "model": "DistilBERT",
+          "sentiment": "positive",
+          "confidence": 0.969480574131012
+        },
+        {
+          "model": "BERT",
+          "sentiment": "positive",
+          "confidence": 0.6113921403884888
+        }
+      ]
+    },
+    {
+      "comment": "Step 0 : Think Like Engineer Isaac Clarke",
+      "confidence": 0.32960204283396405,
+      "individual_predictions": [
+        {
+          "model": "RoBERTa",
+          "sentiment": "neutral",
+          "confidence": 0.9122837781906128
+        },
+        {
+          "model": "DistilBERT",
+          "sentiment": "positive",
+          "confidence": 0.9888061285018921
+        },
+        {
+          "model": "BERT",
+          "sentiment": "negative",
+          "confidence": 0.3750196099281311
+        }
+      ]
+    },
+    {
+      "comment": "Got it mentor! I need to learn building projects more!",
+      "confidence": 0.8555119434992472,
+      "individual_predictions": [
+        {
+          "model": "RoBERTa",
+          "sentiment": "positive",
+          "confidence": 0.910530686378479
+        },
+        {
+          "model": "DistilBERT",
+          "sentiment": "positive",
+          "confidence": 0.9544873833656311
+        },
+        {
+          "model": "BERT",
+          "sentiment": "positive",
+          "confidence": 0.7015177607536316
+        }
+      ]
+    },
+    {
+      "comment": "Practical approach...no fluff",
+      "confidence": 0.4949745734532674,
+      "individual_predictions": [
+        {
+          "model": "RoBERTa",
+          "sentiment": "neutral",
+          "confidence": 0.5704991221427917
+        },
+        {
+          "model": "DistilBERT",
+          "sentiment": "positive",
+          "confidence": 0.9985713958740234
+        },
+        {
+          "model": "BERT",
+          "sentiment": "positive",
+          "confidence": 0.4863523244857788
+        }
+      ]
+    },
+    {
+      "comment": "I'd love to participate lol. I'm a student and if you saw my github, you'd die",
+      "confidence": 0.39940600593884784,
+      "individual_predictions": [
+        {
+          "model": "RoBERTa",
+          "sentiment": "positive",
+          "confidence": 0.8762267231941223
+        },
+        {
+          "model": "DistilBERT",
+          "sentiment": "negative",
+          "confidence": 0.9904307723045349
+        },
+        {
+          "model": "BERT",
+          "sentiment": "positive",
+          "confidence": 0.32199129462242126
+        }
+      ]
+    },
+    {
+      "comment": "@TechWithTim Thank you for this video, it is very insightful. So realistic approach indeed",
+      "confidence": 0.908577024936676,
+      "individual_predictions": [
+        {
+          "model": "RoBERTa",
+          "sentiment": "positive",
+          "confidence": 0.978039562702179
+        },
+        {
+          "model": "DistilBERT",
+          "sentiment": "positive",
+          "confidence": 0.999799907207489
+        },
+        {
+          "model": "BERT",
+          "sentiment": "positive",
+          "confidence": 0.7478916049003601
+        }
+      ]
+    },
+    {
+      "comment": "Just noticed your hair implant. Looking good. Reminded me of that Elon Musk \"PayPal\" shot haha.",
+      "confidence": 0.6436146100362142,
+      "individual_predictions": [
+        {
+          "model": "RoBERTa",
+          "sentiment": "positive",
+          "confidence": 0.931311845779419
+        },
+        {
+          "model": "DistilBERT",
+          "sentiment": "positive",
+          "confidence": 0.9995319843292236
+        },
+        {
+          "model": "BERT",
+          "sentiment": "neutral",
+          "confidence": 0.32372045516967773
+        }
+      ]
+    },
+    {
+      "comment": "Awesome video Tim!",
+      "confidence": 0.9288914998372396,
+      "individual_predictions": [
+        {
+          "model": "RoBERTa",
+          "sentiment": "positive",
+          "confidence": 0.9816519021987915
+        },
+        {
+          "model": "DistilBERT",
+          "sentiment": "positive",
+          "confidence": 0.9998635053634644
+        },
+        {
+          "model": "BERT",
+          "sentiment": "positive",
+          "confidence": 0.8051590919494629
+        }
+      ]
+    },
+    {
+      "comment": "Could you please make a playlist with the things you mentioned in the video. it would be awesome.",
+      "confidence": 0.6403348247210184,
+      "individual_predictions": [
+        {
+          "model": "RoBERTa",
+          "sentiment": "positive",
+          "confidence": 0.9214577674865723
+        },
+        {
+          "model": "DistilBERT",
+          "sentiment": "positive",
+          "confidence": 0.9995467066764832
+        },
+        {
+          "model": "BERT",
+          "sentiment": "neutral",
+          "confidence": 0.34900322556495667
+        }
+      ]
+    },
+    {
+      "comment": "Thank you for this information! Is there any book, course or tutorial which covers everything that you have mentioned and which can help in learning this in the order that you have mentioned?",
+      "confidence": 0.8199214935302734,
+      "individual_predictions": [
+        {
+          "model": "RoBERTa",
+          "sentiment": "positive",
+          "confidence": 0.8429208993911743
+        },
+        {
+          "model": "DistilBERT",
+          "sentiment": "positive",
+          "confidence": 0.9934638142585754
+        },
+        {
+          "model": "BERT",
+          "sentiment": "positive",
+          "confidence": 0.6233797669410706
+        }
+      ]
+    },
+    {
+      "comment": "Bro start a project series or something....open for open contribution also",
+      "confidence": 0.32853275537490845,
+      "individual_predictions": [
+        {
+          "model": "RoBERTa",
+          "sentiment": "neutral",
+          "confidence": 0.6611958742141724
+        },
+        {
+          "model": "DistilBERT",
+          "sentiment": "positive",
+          "confidence": 0.9855982661247253
+        },
+        {
+          "model": "BERT",
+          "sentiment": "negative",
+          "confidence": 0.3561515212059021
+        }
+      ]
+    },
+    {
+      "comment": "You're the first guy that makes me understand ML better with your tensor flow course back in 2020 good job 👍",
+      "confidence": 0.812962551911672,
+      "individual_predictions": [
+        {
+          "model": "RoBERTa",
+          "sentiment": "positive",
+          "confidence": 0.9786091446876526
+        },
+        {
+          "model": "DistilBERT",
+          "sentiment": "positive",
+          "confidence": 0.9952457547187805
+        },
+        {
+          "model": "BERT",
+          "sentiment": "positive",
+          "confidence": 0.46503275632858276
+        }
+      ]
+    },
+    {
+      "comment": "\"Step 0 - Think Like An Engineer\": \"00:00:16\",\n        \"Step 1 - Python Deep Dive\": \"00:00:55\",\n        \"Step 2 - Become Data Literate\": \"00:03:26\",\n        \"Step 3 - Start Working With AI Models\": \"00:04:19\",\n        \"Step 4 - Learn Core AI and ML Fundamentals\": \"00:05:28\",\n        \"Step 5 - LLMs And AI agents\": \"00:06:52\",\n        \"Step 6 - Build AI Applications\": \"00:09:14\"",
+      "confidence": 0.3099973797798157,
+      "individual_predictions": [
+        {
+          "model": "RoBERTa",
+          "sentiment": "neutral",
+          "confidence": 0.8969780802726746
+        },
+        {
+          "model": "DistilBERT",
+          "sentiment": "positive",
+          "confidence": 0.929992139339447
+        },
+        {
+          "model": "BERT",
+          "sentiment": "negative",
+          "confidence": 0.23172371089458466
+        }
+      ]
+    },
+    {
+      "comment": "What scale AI could do would be a great video.",
+      "confidence": 0.750665674606959,
+      "individual_predictions": [
+        {
+          "model": "RoBERTa",
+          "sentiment": "positive",
+          "confidence": 0.9136749505996704
+        },
+        {
+          "model": "DistilBERT",
+          "sentiment": "positive",
+          "confidence": 0.9818748831748962
+        },
+        {
+          "model": "BERT",
+          "sentiment": "positive",
+          "confidence": 0.3564471900463104
+        }
+      ]
+    },
+    {
+      "comment": "Thanks, the video was very helpful.  I am too old to get a job as a developer and just want to be good at stuff.  I am already doing things in the order that you have suggested and working my way through the hundreds of small issues that crop up along the way.  As you keep saying, there is a real increase in speed when you start to code your own projects.",
+      "confidence": 0.8177640040715536,
+      "individual_predictions": [
+        {
+          "model": "RoBERTa",
+          "sentiment": "positive",
+          "confidence": 0.8932033777236938
+        },
+        {
+          "model": "DistilBERT",
+          "sentiment": "positive",
+          "confidence": 0.9969640374183655
+        },
+        {
+          "model": "BERT",
+          "sentiment": "positive",
+          "confidence": 0.5631245970726013
+        }
+      ]
+    },
+    {
+      "comment": "This video is full of gems, thanks for this",
+      "confidence": 0.9251796205838522,
+      "individual_predictions": [
+        {
+          "model": "RoBERTa",
+          "sentiment": "positive",
+          "confidence": 0.9809784889221191
+        },
+        {
+          "model": "DistilBERT",
+          "sentiment": "positive",
+          "confidence": 0.9998608827590942
+        },
+        {
+          "model": "BERT",
+          "sentiment": "positive",
+          "confidence": 0.794699490070343
+        }
+      ]
+    },
+    {
+      "comment": "To much it's overwhelming and I would not recommend you get familiar with 10 different Ai coding tools but simply find a good introductory online course that is highly rated to get the basics and have  ChatGPT on your side to dig deeper into the topics the introductory course might only scratch the surface of. After you know the basics and look a bit deeper in the areas you find interesting you probably have some ideas for a cool project. Then look for existing projects and let ChatGPT help you understand them or you start with some typical beginner projects that are fun and easy to solve.",
+      "confidence": 0.33240044116973877,
+      "individual_predictions": [
+        {
+          "model": "RoBERTa",
+          "sentiment": "neutral",
+          "confidence": 0.5300031304359436
+        },
+        {
+          "model": "DistilBERT",
+          "sentiment": "positive",
+          "confidence": 0.9972013235092163
+        },
+        {
+          "model": "BERT",
+          "sentiment": "negative",
+          "confidence": 0.602142870426178
+        }
+      ]
+    },
+    {
+      "comment": "Clickbait... 😊",
+      "confidence": 0.33300599455833435,
+      "individual_predictions": [
+        {
+          "model": "RoBERTa",
+          "sentiment": "positive",
+          "confidence": 0.7579144835472107
+        },
+        {
+          "model": "DistilBERT",
+          "sentiment": "negative",
+          "confidence": 0.9988403916358948
+        },
+        {
+          "model": "BERT",
+          "sentiment": "positive",
+          "confidence": 0.24110350012779236
+        }
+      ]
+    },
+    {
+      "comment": "Fabulous as always!",
+      "confidence": 0.9706924160321554,
+      "individual_predictions": [
+        {
+          "model": "RoBERTa",
+          "sentiment": "positive",
+          "confidence": 0.9702253341674805
+        },
+        {
+          "model": "DistilBERT",
+          "sentiment": "positive",
+          "confidence": 0.9998791217803955
+        },
+        {
+          "model": "BERT",
+          "sentiment": "positive",
+          "confidence": 0.9419727921485901
+        }
+      ]
+    },
+    {
+      "comment": "By the time someone finishes these steps, technology will be 10 more steps ahead.",
+      "confidence": 0.3192238012949626,
+      "individual_predictions": [
+        {
+          "model": "RoBERTa",
+          "sentiment": "neutral",
+          "confidence": 0.5042200684547424
+        },
+        {
+          "model": "DistilBERT",
+          "sentiment": "positive",
+          "confidence": 0.9576714038848877
+        },
+        {
+          "model": "BERT",
+          "sentiment": "neutral",
+          "confidence": 0.2624404728412628
+        }
+      ]
+    },
+    {
+      "comment": "Hello Mr tim please sir I want to learn AI and I  need a mentor",
+      "confidence": 0.6690512895584106,
+      "individual_predictions": [
+        {
+          "model": "RoBERTa",
+          "sentiment": "positive",
+          "confidence": 0.5213279128074646
+        },
+        {
+          "model": "DistilBERT",
+          "sentiment": "positive",
+          "confidence": 0.9612352848052979
+        },
+        {
+          "model": "BERT",
+          "sentiment": "positive",
+          "confidence": 0.5245906710624695
+        }
+      ]
+    },
+    {
+      "comment": "Good steps but I will add Docker to this stack",
+      "confidence": 0.7926579018433889,
+      "individual_predictions": [
+        {
+          "model": "RoBERTa",
+          "sentiment": "positive",
+          "confidence": 0.9421846270561218
+        },
+        {
+          "model": "DistilBERT",
+          "sentiment": "positive",
+          "confidence": 0.9847477078437805
+        },
+        {
+          "model": "BERT",
+          "sentiment": "positive",
+          "confidence": 0.4510413706302643
+        }
+      ]
+    },
+    {
+      "comment": "You are an incredible professor. We do not deserve this kind of teaching completely for free. Thank you so much for the clear and concise breakdown and steps, Tim!!",
+      "confidence": 0.9284643133481344,
+      "individual_predictions": [
+        {
+          "model": "RoBERTa",
+          "sentiment": "positive",
+          "confidence": 0.9450490474700928
+        },
+        {
+          "model": "DistilBERT",
+          "sentiment": "positive",
+          "confidence": 0.9990184307098389
+        },
+        {
+          "model": "BERT",
+          "sentiment": "positive",
+          "confidence": 0.8413254618644714
+        }
+      ]
+    },
+    {
+      "comment": "Nice copy of Boris",
+      "confidence": 0.7098705073197683,
+      "individual_predictions": [
+        {
+          "model": "RoBERTa",
+          "sentiment": "positive",
+          "confidence": 0.6694764494895935
+        },
+        {
+          "model": "DistilBERT",
+          "sentiment": "positive",
+          "confidence": 0.9993277788162231
+        },
+        {
+          "model": "BERT",
+          "sentiment": "positive",
+          "confidence": 0.46080729365348816
+        }
+      ]
+    },
+    {
+      "comment": "thanks for this",
+      "confidence": 0.8536247611045837,
+      "individual_predictions": [
+        {
+          "model": "RoBERTa",
+          "sentiment": "positive",
+          "confidence": 0.91080242395401
+        },
+        {
+          "model": "DistilBERT",
+          "sentiment": "positive",
+          "confidence": 0.9997667670249939
+        },
+        {
+          "model": "BERT",
+          "sentiment": "positive",
+          "confidence": 0.6503050923347473
+        }
+      ]
+    },
+    {
+      "comment": "Hy tim been subscriber for a long time great content by the wy i will stick to full stack react django dev or know",
+      "confidence": 0.4273267189661662,
+      "individual_predictions": [
+        {
+          "model": "RoBERTa",
+          "sentiment": "positive",
+          "confidence": 0.9125995635986328
+        },
+        {
+          "model": "DistilBERT",
+          "sentiment": "negative",
+          "confidence": 0.9957205653190613
+        },
+        {
+          "model": "BERT",
+          "sentiment": "positive",
+          "confidence": 0.3693805932998657
+        }
+      ]
+    },
+    {
+      "comment": "👍",
+      "confidence": 0.38718146085739136,
+      "individual_predictions": [
+        {
+          "model": "RoBERTa",
+          "sentiment": "positive",
+          "confidence": 0.8529665470123291
+        },
+        {
+          "model": "DistilBERT",
+          "sentiment": "negative",
+          "confidence": 0.6970558166503906
+        },
+        {
+          "model": "BERT",
+          "sentiment": "positive",
+          "confidence": 0.30857783555984497
+        }
+      ]
+    },
+    {
+      "comment": "I love his video",
+      "confidence": 0.9076255559921265,
+      "individual_predictions": [
+        {
+          "model": "RoBERTa",
+          "sentiment": "positive",
+          "confidence": 0.975936233997345
+        },
+        {
+          "model": "DistilBERT",
+          "sentiment": "positive",
+          "confidence": 0.9998563528060913
+        },
+        {
+          "model": "BERT",
+          "sentiment": "positive",
+          "confidence": 0.7470840811729431
+        }
+      ]
+    },
+    {
+      "comment": "I follow long tim ❤",
+      "confidence": 0.4101743698120117,
+      "individual_predictions": [
+        {
+          "model": "RoBERTa",
+          "sentiment": "positive",
+          "confidence": 0.845069169998169
+        },
+        {
+          "model": "DistilBERT",
+          "sentiment": "negative",
+          "confidence": 0.9805400967597961
+        },
+        {
+          "model": "BERT",
+          "sentiment": "positive",
+          "confidence": 0.3854539394378662
+        }
+      ]
+    },
+    {
+      "comment": "Start you tech career today with Simplilearn: https://bit.ly/Tech-with-Tim-AIML",
+      "confidence": 0.6130998730659485,
+      "individual_predictions": [
+        {
+          "model": "RoBERTa",
+          "sentiment": "positive",
+          "confidence": 0.5088558793067932
+        },
+        {
+          "model": "DistilBERT",
+          "sentiment": "positive",
+          "confidence": 0.9660404920578003
+        },
+        {
+          "model": "BERT",
+          "sentiment": "positive",
+          "confidence": 0.36440324783325195
+        }
+      ]
+    }
+  ],
+  "negative": [
+    {
+      "comment": "can i use macbook air m4 for ai ml\nim in fy cse engineering",
+      "confidence": 0.331708292166392,
+      "individual_predictions": [
+        {
+          "model": "RoBERTa",
+          "sentiment": "neutral",
+          "confidence": 0.8930894732475281
+        },
+        {
+          "model": "DistilBERT",
+          "sentiment": "negative",
+          "confidence": 0.995124876499176
+        },
+        {
+          "model": "BERT",
+          "sentiment": "positive",
+          "confidence": 0.32932060956954956
+        }
+      ]
+    },
+    {
+      "comment": "I didn’t expect that ending!",
+      "confidence": 0.3670576512813568,
+      "individual_predictions": [
+        {
+          "model": "RoBERTa",
+          "sentiment": "negative",
+          "confidence": 0.8166013360023499
+        },
+        {
+          "model": "DistilBERT",
+          "sentiment": "positive",
+          "confidence": 0.9962837100028992
+        },
+        {
+          "model": "BERT",
+          "sentiment": "negative",
+          "confidence": 0.2845716178417206
+        }
+      ]
+    },
+    {
+      "comment": "this is very overwhelming. i feel like I don't know anything. i'm already a sophomore in college",
+      "confidence": 0.7701210180918375,
+      "individual_predictions": [
+        {
+          "model": "RoBERTa",
+          "sentiment": "negative",
+          "confidence": 0.8282573819160461
+        },
+        {
+          "model": "DistilBERT",
+          "sentiment": "negative",
+          "confidence": 0.9990394711494446
+        },
+        {
+          "model": "BERT",
+          "sentiment": "negative",
+          "confidence": 0.483066201210022
+        }
+      ]
+    },
+    {
+      "comment": "I think I’ve watched this three times now.",
+      "confidence": 0.21061565478642783,
+      "individual_predictions": [
+        {
+          "model": "RoBERTa",
+          "sentiment": "neutral",
+          "confidence": 0.5756638646125793
+        },
+        {
+          "model": "DistilBERT",
+          "sentiment": "negative",
+          "confidence": 0.6318469643592834
+        },
+        {
+          "model": "BERT",
+          "sentiment": "positive",
+          "confidence": 0.42033684253692627
+        }
+      ]
+    },
+    {
+      "comment": "Who else is watching this in [year]?",
+      "confidence": 0.4185677965482076,
+      "individual_predictions": [
+        {
+          "model": "RoBERTa",
+          "sentiment": "neutral",
+          "confidence": 0.9559811949729919
+        },
+        {
+          "model": "DistilBERT",
+          "sentiment": "negative",
+          "confidence": 0.9969810843467712
+        },
+        {
+          "model": "BERT",
+          "sentiment": "negative",
+          "confidence": 0.25872230529785156
+        }
+      ]
+    },
+    {
+      "comment": "Which one would you choose?",
+      "confidence": 0.32591042915980023,
+      "individual_predictions": [
+        {
+          "model": "RoBERTa",
+          "sentiment": "neutral",
+          "confidence": 0.9006926417350769
+        },
+        {
+          "model": "DistilBERT",
+          "sentiment": "negative",
+          "confidence": 0.9777312874794006
+        },
+        {
+          "model": "BERT",
+          "sentiment": "positive",
+          "confidence": 0.301818311214447
+        }
+      ]
+    },
+    {
+      "comment": "This should be in history books.",
+      "confidence": 0.6119738618532816,
+      "individual_predictions": [
+        {
+          "model": "RoBERTa",
+          "sentiment": "negative",
+          "confidence": 0.8502374291419983
+        },
+        {
+          "model": "DistilBERT",
+          "sentiment": "negative",
+          "confidence": 0.9856841564178467
+        },
+        {
+          "model": "BERT",
+          "sentiment": "positive",
+          "confidence": 0.3023272454738617
+        }
+      ]
+    },
+    {
+      "comment": "Does anybody know a good online Python course that focuses more on what Tim says in the video about learning Python for AI? I'm a total beginner, with no Python knowledge. There are a lot of Python courses available, but I don't know which one would be the best for this. I'd appreciate any help a lot!",
+      "confidence": 0.47673725088437396,
+      "individual_predictions": [
+        {
+          "model": "RoBERTa",
+          "sentiment": "neutral",
+          "confidence": 0.5933962464332581
+        },
+        {
+          "model": "DistilBERT",
+          "sentiment": "negative",
+          "confidence": 0.9945269227027893
+        },
+        {
+          "model": "BERT",
+          "sentiment": "negative",
+          "confidence": 0.43568482995033264
+        }
+      ]
+    },
+    {
+      "comment": "Who’s rewatching this already?",
+      "confidence": 0.4106967051823934,
+      "individual_predictions": [
+        {
+          "model": "RoBERTa",
+          "sentiment": "neutral",
+          "confidence": 0.9508925676345825
+        },
+        {
+          "model": "DistilBERT",
+          "sentiment": "negative",
+          "confidence": 0.9991744160652161
+        },
+        {
+          "model": "BERT",
+          "sentiment": "negative",
+          "confidence": 0.2329156994819641
+        }
+      ]
+    },
+    {
+      "comment": "Is it just me or did time fly watching this?",
+      "confidence": 0.446534126996994,
+      "individual_predictions": [
+        {
+          "model": "RoBERTa",
+          "sentiment": "neutral",
+          "confidence": 0.8001590967178345
+        },
+        {
+          "model": "DistilBERT",
+          "sentiment": "negative",
+          "confidence": 0.9977343082427979
+        },
+        {
+          "model": "BERT",
+          "sentiment": "negative",
+          "confidence": 0.3418680727481842
+        }
+      ]
+    },
+    {
+      "comment": "i watched multiple videos and all were same learn python sql blah blah and  have  learn deep understanding ,\nonly u mentioned how fast the industry is changing and we should be familiar with the latest technologies \nalthough to excel u need deep understanding and theoretical knowledge but i think we should start with more practical and project oriented approach rather than starting with reading and understaning every thing  cause it will take a lot of time  and we should try to learn all those things  while creating and exploring",
+      "confidence": 0.3315105438232422,
+      "individual_predictions": [
+        {
+          "model": "RoBERTa",
+          "sentiment": "neutral",
+          "confidence": 0.6092894673347473
+        },
+        {
+          "model": "DistilBERT",
+          "sentiment": "negative",
+          "confidence": 0.9945316314697266
+        },
+        {
+          "model": "BERT",
+          "sentiment": "neutral",
+          "confidence": 0.3809691071510315
+        }
+      ]
+    },
+    {
+      "comment": "Anyone here from [country] like me?",
+      "confidence": 0.43424010276794434,
+      "individual_predictions": [
+        {
+          "model": "RoBERTa",
+          "sentiment": "neutral",
+          "confidence": 0.9115688800811768
+        },
+        {
+          "model": "DistilBERT",
+          "sentiment": "negative",
+          "confidence": 0.9843272566795349
+        },
+        {
+          "model": "BERT",
+          "sentiment": "negative",
+          "confidence": 0.3183930516242981
+        }
+      ]
+    },
+    {
+      "comment": "90 percent ads on ai 10 about actually learning ai. Just another lame video. Used to be a good channel.",
+      "confidence": 0.8568682471911112,
+      "individual_predictions": [
+        {
+          "model": "RoBERTa",
+          "sentiment": "negative",
+          "confidence": 0.9334309101104736
+        },
+        {
+          "model": "DistilBERT",
+          "sentiment": "negative",
+          "confidence": 0.9991649389266968
+        },
+        {
+          "model": "BERT",
+          "sentiment": "negative",
+          "confidence": 0.6380088925361633
+        }
+      ]
+    },
+    {
+      "comment": "Anyone else here because of the thumbnail?",
+      "confidence": 0.516482412815094,
+      "individual_predictions": [
+        {
+          "model": "RoBERTa",
+          "sentiment": "neutral",
+          "confidence": 0.7822941541671753
+        },
+        {
+          "model": "DistilBERT",
+          "sentiment": "negative",
+          "confidence": 0.9989320635795593
+        },
+        {
+          "model": "BERT",
+          "sentiment": "negative",
+          "confidence": 0.5505151748657227
+        }
+      ]
+    },
+    {
+      "comment": "Did anyone else rewind that part?",
+      "confidence": 0.4530657430489858,
+      "individual_predictions": [
+        {
+          "model": "RoBERTa",
+          "sentiment": "neutral",
+          "confidence": 0.9180111885070801
+        },
+        {
+          "model": "DistilBERT",
+          "sentiment": "negative",
+          "confidence": 0.9969507455825806
+        },
+        {
+          "model": "BERT",
+          "sentiment": "negative",
+          "confidence": 0.36224648356437683
+        }
+      ]
+    },
+    {
+      "comment": "AI is leveling up way too fast",
+      "confidence": 0.4862036506334941,
+      "individual_predictions": [
+        {
+          "model": "RoBERTa",
+          "sentiment": "positive",
+          "confidence": 0.4175712764263153
+        },
+        {
+          "model": "DistilBERT",
+          "sentiment": "negative",
+          "confidence": 0.9997610449790955
+        },
+        {
+          "model": "BERT",
+          "sentiment": "negative",
+          "confidence": 0.4588499069213867
+        }
+      ]
+    },
+    {
+      "comment": "AI is leveling up way too fast",
+      "confidence": 0.4862036506334941,
+      "individual_predictions": [
+        {
+          "model": "RoBERTa",
+          "sentiment": "positive",
+          "confidence": 0.4175712764263153
+        },
+        {
+          "model": "DistilBERT",
+          "sentiment": "negative",
+          "confidence": 0.9997610449790955
+        },
+        {
+          "model": "BERT",
+          "sentiment": "negative",
+          "confidence": 0.4588499069213867
+        }
+      ]
+    },
+    {
+      "comment": "I am a coder. Started to learn python but copilot came a long. Now it does the coding faster and more efficiently than I can. So would I learn to code python ? No.",
+      "confidence": 0.3212275505065918,
+      "individual_predictions": [
+        {
+          "model": "RoBERTa",
+          "sentiment": "neutral",
+          "confidence": 0.5077400803565979
+        },
+        {
+          "model": "DistilBERT",
+          "sentiment": "negative",
+          "confidence": 0.9636826515197754
+        },
+        {
+          "model": "BERT",
+          "sentiment": "neutral",
+          "confidence": 0.2907302975654602
+        }
+      ]
+    },
+    {
+      "comment": "This is more than a year to finish, did you use a AI to generate that shit.",
+      "confidence": 0.8556539018948873,
+      "individual_predictions": [
+        {
+          "model": "RoBERTa",
+          "sentiment": "negative",
+          "confidence": 0.9357359409332275
+        },
+        {
+          "model": "DistilBERT",
+          "sentiment": "negative",
+          "confidence": 0.9987757802009583
+        },
+        {
+          "model": "BERT",
+          "sentiment": "negative",
+          "confidence": 0.6324499845504761
+        }
+      ]
+    },
+    {
+      "comment": "Is this roodmap for machine learning software engineer??",
+      "confidence": 0.4472346206506093,
+      "individual_predictions": [
+        {
+          "model": "RoBERTa",
+          "sentiment": "neutral",
+          "confidence": 0.9297686219215393
+        },
+        {
+          "model": "DistilBERT",
+          "sentiment": "negative",
+          "confidence": 0.9994458556175232
+        },
+        {
+          "model": "BERT",
+          "sentiment": "negative",
+          "confidence": 0.3422580063343048
+        }
+      ]
+    },
+    {
+      "comment": "Am 18, can I start learning how to code or is it too late?",
+      "confidence": 0.4402481218179067,
+      "individual_predictions": [
+        {
+          "model": "RoBERTa",
+          "sentiment": "neutral",
+          "confidence": 0.8190948963165283
+        },
+        {
+          "model": "DistilBERT",
+          "sentiment": "negative",
+          "confidence": 0.9995991587638855
+        },
+        {
+          "model": "BERT",
+          "sentiment": "negative",
+          "confidence": 0.3211452066898346
+        }
+      ]
+    },
+    {
+      "comment": "What happened to maths sir?\nYou didn't even mention the maths.",
+      "confidence": 0.7502408226331075,
+      "individual_predictions": [
+        {
+          "model": "RoBERTa",
+          "sentiment": "negative",
+          "confidence": 0.776323139667511
+        },
+        {
+          "model": "DistilBERT",
+          "sentiment": "negative",
+          "confidence": 0.9994427561759949
+        },
+        {
+          "model": "BERT",
+          "sentiment": "negative",
+          "confidence": 0.47495657205581665
+        }
+      ]
+    },
+    {
+      "comment": "No mathematics no statistics !!",
+      "confidence": 0.801569402217865,
+      "individual_predictions": [
+        {
+          "model": "RoBERTa",
+          "sentiment": "negative",
+          "confidence": 0.75457763671875
+        },
+        {
+          "model": "DistilBERT",
+          "sentiment": "negative",
+          "confidence": 0.9976826906204224
+        },
+        {
+          "model": "BERT",
+          "sentiment": "negative",
+          "confidence": 0.6524478793144226
+        }
+      ]
+    },
+    {
+      "comment": "Did you just copied content from @Boris Meinardus ???",
+      "confidence": 0.6816567381223043,
+      "individual_predictions": [
+        {
+          "model": "RoBERTa",
+          "sentiment": "negative",
+          "confidence": 0.5304349660873413
+        },
+        {
+          "model": "DistilBERT",
+          "sentiment": "negative",
+          "confidence": 0.9990893602371216
+        },
+        {
+          "model": "BERT",
+          "sentiment": "negative",
+          "confidence": 0.51544588804245
+        }
+      ]
+    },
+    {
+      "comment": "Hey Everyone, I need some suggestions for best resources to study ai/ml in 2025, i am not confident to choose the one that i am seeing on the internet",
+      "confidence": 0.5057544509569804,
+      "individual_predictions": [
+        {
+          "model": "RoBERTa",
+          "sentiment": "negative",
+          "confidence": 0.5177936553955078
+        },
+        {
+          "model": "DistilBERT",
+          "sentiment": "negative",
+          "confidence": 0.9994696974754333
+        },
+        {
+          "model": "BERT",
+          "sentiment": "neutral",
+          "confidence": 0.38118577003479004
+        }
+      ]
+    },
+    {
+      "comment": "You wouldnt start over again",
+      "confidence": 0.3276386658350627,
+      "individual_predictions": [
+        {
+          "model": "RoBERTa",
+          "sentiment": "neutral",
+          "confidence": 0.6347981691360474
+        },
+        {
+          "model": "DistilBERT",
+          "sentiment": "negative",
+          "confidence": 0.982915997505188
+        },
+        {
+          "model": "BERT",
+          "sentiment": "neutral",
+          "confidence": 0.2659224271774292
+        }
+      ]
+    },
+    {
+      "comment": "*ML/AI*\nPython basics\nStarts with :\n* Scripting or scraping (web scraping)\n* Numpy\n* Matplotlib\n* Pandas\nFocus On :\n* Learning the basics of API\n    * Create one very simple API\n    * call APIs from Python\n* To Learn :\n    * Basic SQL\n    * joins\n    * statements\n    * advanced operation\n    * be comfortable working with large sets of data\n    * visualisation\n* Start Working with :\n    * OpenAI/API\n    * Claude API\n    * Ollama\n    * LangChain\n    * LangGraph\n    * Building some basic AI agents\n    * Vector databases\n    * Retrieval Augmented Generation\n    * Building some relatively simple AI applications \n\n*Core Machine Learning Techniques* \n* Regressin\n* Classification\n* Clustering\nTo Learn :\n* Scikit learn\n    * learn how to implement machine learning algorithms\t\n* Neural networks\n* Basic computer vision\n* PyTorch\n* TensorFlow\n\n*LLMs and AI agents*\nUnderstand :\n* GPT\n    * - Generative Pre-training Transromer\n* Understand the architecture (at the high level)\n* What can LLMs do\n* What they LLMs cannot do\n* Black boxes\n\n*No Code tools*\n* CrewAI\n* Langflow\n* N8n\n* VAPI\n* Livekit \nAlso go through\n* MCP servers\n    * what are those and how do those works \n\n* AI Code editos*\n    * Cursor\n    * windsurf\n    * bolt\n    * replit\n    * Lovable\n    * vzero ai\n\n\n*BUILD TON OF AI APPLICATIONS*\n* Automate business workflow\n* Build internal AI assistants or chat boat\n* Build something like a SAAS",
+      "confidence": 0.44390977422396344,
+      "individual_predictions": [
+        {
+          "model": "RoBERTa",
+          "sentiment": "neutral",
+          "confidence": 0.8674764037132263
+        },
+        {
+          "model": "DistilBERT",
+          "sentiment": "negative",
+          "confidence": 0.9941253662109375
+        },
+        {
+          "model": "BERT",
+          "sentiment": "negative",
+          "confidence": 0.33760395646095276
+        }
+      ]
+    },
+    {
+      "comment": "I really despise m*th and i hope and pray i never get so deep into ai/ml that ill need it",
+      "confidence": 0.5234894752502441,
+      "individual_predictions": [
+        {
+          "model": "RoBERTa",
+          "sentiment": "negative",
+          "confidence": 0.9538029432296753
+        },
+        {
+          "model": "DistilBERT",
+          "sentiment": "negative",
+          "confidence": 0.6166654825210571
+        },
+        {
+          "model": "BERT",
+          "sentiment": "positive",
+          "confidence": 0.3970000445842743
+        }
+      ]
+    },
+    {
+      "comment": "its quite shocking how only a few people know about book inside the ai matrix vault by prince marvok",
+      "confidence": 0.547781229019165,
+      "individual_predictions": [
+        {
+          "model": "RoBERTa",
+          "sentiment": "negative",
+          "confidence": 0.6501083970069885
+        },
+        {
+          "model": "DistilBERT",
+          "sentiment": "negative",
+          "confidence": 0.9932352900505066
+        },
+        {
+          "model": "BERT",
+          "sentiment": "positive",
+          "confidence": 0.3468364179134369
+        }
+      ]
+    },
+    {
+      "comment": "Hey Tim, you mentioned working with an OpenAI API and to start building agents. I'm retired and trying to wrap my head around all this. You don't need to know code to work with an API? I'll check to see if you have any videos on it but where would I learn how to build an agent? I have an idea as to what I can use an agent for but If you can point me in the right direction or create a video on the subject if you haven't then that would be great. Thank you sir.",
+      "confidence": 0.41547125577926636,
+      "individual_predictions": [
+        {
+          "model": "RoBERTa",
+          "sentiment": "neutral",
+          "confidence": 0.7417599558830261
+        },
+        {
+          "model": "DistilBERT",
+          "sentiment": "negative",
+          "confidence": 0.9610912203788757
+        },
+        {
+          "model": "BERT",
+          "sentiment": "negative",
+          "confidence": 0.28532254695892334
+        }
+      ]
+    },
+    {
+      "comment": "what should i do if i want to land a job",
+      "confidence": 0.3325452009836833,
+      "individual_predictions": [
+        {
+          "model": "RoBERTa",
+          "sentiment": "neutral",
+          "confidence": 0.8747323751449585
+        },
+        {
+          "model": "DistilBERT",
+          "sentiment": "negative",
+          "confidence": 0.9976356029510498
+        },
+        {
+          "model": "BERT",
+          "sentiment": "positive",
+          "confidence": 0.33862972259521484
+        }
+      ]
+    },
+    {
+      "comment": "Bro you copied the thumbnail from boris meinradus \nYou just slapped your face in \nToo bad bro, too bad",
+      "confidence": 0.839235802491506,
+      "individual_predictions": [
+        {
+          "model": "RoBERTa",
+          "sentiment": "negative",
+          "confidence": 0.8629475831985474
+        },
+        {
+          "model": "DistilBERT",
+          "sentiment": "negative",
+          "confidence": 0.9996455907821655
+        },
+        {
+          "model": "BERT",
+          "sentiment": "negative",
+          "confidence": 0.6551142334938049
+        }
+      ]
+    },
+    {
+      "comment": "I wrote down a good chunk in this list. There are a lot of things I need to review. It's hard to admit but just knowing of C#, JAVA/Kotlin, JavaScript, HTML, SQL, JSON, XML, XAML, CSS, React, Angular, Bash, PowerShell, VBScript, VBA, Docker, Kubernetes, Node.js, Razor, TypeScript, Networking, Subnetting, Application Security, Linux Ubuntu, Windows Servers and all 3 cloud platforms just doesn't seem good enough anymore :(",
+      "confidence": 0.3331228295962016,
+      "individual_predictions": [
+        {
+          "model": "RoBERTa",
+          "sentiment": "neutral",
+          "confidence": 0.5383501052856445
+        },
+        {
+          "model": "DistilBERT",
+          "sentiment": "negative",
+          "confidence": 0.9993684887886047
+        },
+        {
+          "model": "BERT",
+          "sentiment": "neutral",
+          "confidence": 0.43540117144584656
+        }
+      ]
+    },
+    {
+      "comment": "This video, including the title and thumbnail was pretty much stolen from Boris Meinardus. Kinda shameful.",
+      "confidence": 0.7806983689467112,
+      "individual_predictions": [
+        {
+          "model": "RoBERTa",
+          "sentiment": "negative",
+          "confidence": 0.929981529712677
+        },
+        {
+          "model": "DistilBERT",
+          "sentiment": "negative",
+          "confidence": 0.9996242523193359
+        },
+        {
+          "model": "BERT",
+          "sentiment": "negative",
+          "confidence": 0.4124893248081207
+        }
+      ]
+    },
+    {
+      "comment": "bro stole DIRECTLY from boris meinardus",
+      "confidence": 0.4980702797571818,
+      "individual_predictions": [
+        {
+          "model": "RoBERTa",
+          "sentiment": "neutral",
+          "confidence": 0.5076317191123962
+        },
+        {
+          "model": "DistilBERT",
+          "sentiment": "negative",
+          "confidence": 0.9728665351867676
+        },
+        {
+          "model": "BERT",
+          "sentiment": "negative",
+          "confidence": 0.5213443040847778
+        }
+      ]
+    },
+    {
+      "comment": "I swear ive seen this thumbnail like 50 times XD",
+      "confidence": 0.5309978326161703,
+      "individual_predictions": [
+        {
+          "model": "RoBERTa",
+          "sentiment": "positive",
+          "confidence": 0.6940608024597168
+        },
+        {
+          "model": "DistilBERT",
+          "sentiment": "negative",
+          "confidence": 0.9887989163398743
+        },
+        {
+          "model": "BERT",
+          "sentiment": "negative",
+          "confidence": 0.6041945815086365
+        }
+      ]
+    },
+    {
+      "comment": "idk what happened to this channel. First every video is just an ad for a new ai ide and now you even copy videos and thumbnails from other creators (Boris Meinardus)",
+      "confidence": 0.8337952097256979,
+      "individual_predictions": [
+        {
+          "model": "RoBERTa",
+          "sentiment": "negative",
+          "confidence": 0.8837854862213135
+        },
+        {
+          "model": "DistilBERT",
+          "sentiment": "negative",
+          "confidence": 0.999455988407135
+        },
+        {
+          "model": "BERT",
+          "sentiment": "negative",
+          "confidence": 0.618144154548645
+        }
+      ]
+    },
+    {
+      "comment": "How did you learn DSA in python?",
+      "confidence": 0.3327258030573527,
+      "individual_predictions": [
+        {
+          "model": "RoBERTa",
+          "sentiment": "neutral",
+          "confidence": 0.9033837914466858
+        },
+        {
+          "model": "DistilBERT",
+          "sentiment": "negative",
+          "confidence": 0.9981774091720581
+        },
+        {
+          "model": "BERT",
+          "sentiment": "positive",
+          "confidence": 0.2731044292449951
+        }
+      ]
+    },
+    {
+      "comment": "AI is best at a few things.... one of them is suggesting and analyzing code. The last thing you want to spend your time on, therefore, is a code deep dive. Skip steps 1 and 2, start doing hands-on demos ASAP (with the help of AI).",
+      "confidence": 0.4699908196926117,
+      "individual_predictions": [
+        {
+          "model": "RoBERTa",
+          "sentiment": "positive",
+          "confidence": 0.6346746683120728
+        },
+        {
+          "model": "DistilBERT",
+          "sentiment": "negative",
+          "confidence": 0.9994685053825378
+        },
+        {
+          "model": "BERT",
+          "sentiment": "negative",
+          "confidence": 0.41050395369529724
+        }
+      ]
+    },
+    {
+      "comment": "In today’s world, we need to think practical. No need to learn ML algorithms. Most of the startups don’t even need it. All they need is make use of the existing LLM models and prompt engineering. But if your product needs ML you cannot escape it.",
+      "confidence": 0.33153637250264484,
+      "individual_predictions": [
+        {
+          "model": "RoBERTa",
+          "sentiment": "neutral",
+          "confidence": 0.5817123651504517
+        },
+        {
+          "model": "DistilBERT",
+          "sentiment": "negative",
+          "confidence": 0.9946091175079346
+        },
+        {
+          "model": "BERT",
+          "sentiment": "neutral",
+          "confidence": 0.2891342043876648
+        }
+      ]
+    },
+    {
+      "comment": "Random question\nWhat are those wall plates or decors called?",
+      "confidence": 0.48441741863886517,
+      "individual_predictions": [
+        {
+          "model": "RoBERTa",
+          "sentiment": "neutral",
+          "confidence": 0.901908814907074
+        },
+        {
+          "model": "DistilBERT",
+          "sentiment": "negative",
+          "confidence": 0.9995148181915283
+        },
+        {
+          "model": "BERT",
+          "sentiment": "negative",
+          "confidence": 0.45373743772506714
+        }
+      ]
+    },
+    {
+      "comment": "A video on what to learn for landing into a job!!",
+      "confidence": 0.32857513427734375,
+      "individual_predictions": [
+        {
+          "model": "RoBERTa",
+          "sentiment": "neutral",
+          "confidence": 0.6773293614387512
+        },
+        {
+          "model": "DistilBERT",
+          "sentiment": "negative",
+          "confidence": 0.9857254028320312
+        },
+        {
+          "model": "BERT",
+          "sentiment": "positive",
+          "confidence": 0.42123839259147644
+        }
+      ]
+    },
+    {
+      "comment": "This video could be dismissed as incorrect advice. Did you not forget what is the basics of all this -------> CACLUCLUS, STATISTICS, MATRIX MULTIPLICATION.    If you don't like or don't learn MATH, do not, I repeat do not learn anything related to AI. Will waste of time and dabbling.\nJust do Youtube videos - always profitable and simple :)",
+      "confidence": 0.7569441994031271,
+      "individual_predictions": [
+        {
+          "model": "RoBERTa",
+          "sentiment": "negative",
+          "confidence": 0.7644580602645874
+        },
+        {
+          "model": "DistilBERT",
+          "sentiment": "negative",
+          "confidence": 0.9930140376091003
+        },
+        {
+          "model": "BERT",
+          "sentiment": "negative",
+          "confidence": 0.5133605003356934
+        }
+      ]
+    },
+    {
+      "comment": "he didnt even name the math for machine learning and ai",
+      "confidence": 0.6302410066127777,
+      "individual_predictions": [
+        {
+          "model": "RoBERTa",
+          "sentiment": "negative",
+          "confidence": 0.5084049105644226
+        },
+        {
+          "model": "DistilBERT",
+          "sentiment": "negative",
+          "confidence": 0.9995953440666199
+        },
+        {
+          "model": "BERT",
+          "sentiment": "negative",
+          "confidence": 0.38272276520729065
+        }
+      ]
+    },
+    {
+      "comment": "It’s not learning AI/ML",
+      "confidence": 0.486454298098882,
+      "individual_predictions": [
+        {
+          "model": "RoBERTa",
+          "sentiment": "neutral",
+          "confidence": 0.6195566654205322
+        },
+        {
+          "model": "DistilBERT",
+          "sentiment": "negative",
+          "confidence": 0.9996589422225952
+        },
+        {
+          "model": "BERT",
+          "sentiment": "negative",
+          "confidence": 0.4597039520740509
+        }
+      ]
+    },
+    {
+      "comment": "Do I have to be genius in MATH to learn ML/ AI?",
+      "confidence": 0.33020293712615967,
+      "individual_predictions": [
+        {
+          "model": "RoBERTa",
+          "sentiment": "neutral",
+          "confidence": 0.8203257918357849
+        },
+        {
+          "model": "DistilBERT",
+          "sentiment": "negative",
+          "confidence": 0.990608811378479
+        },
+        {
+          "model": "BERT",
+          "sentiment": "positive",
+          "confidence": 0.2890794575214386
+        }
+      ]
+    },
+    {
+      "comment": "You will skip all advance concepts????!!! Why?",
+      "confidence": 0.7773318688074747,
+      "individual_predictions": [
+        {
+          "model": "RoBERTa",
+          "sentiment": "negative",
+          "confidence": 0.832301676273346
+        },
+        {
+          "model": "DistilBERT",
+          "sentiment": "negative",
+          "confidence": 0.9997773766517639
+        },
+        {
+          "model": "BERT",
+          "sentiment": "negative",
+          "confidence": 0.49991655349731445
+        }
+      ]
+    },
+    {
+      "comment": "U dont know ML lol stop capping , you know some algorithms and thats it😂",
+      "confidence": 0.6447748144467672,
+      "individual_predictions": [
+        {
+          "model": "RoBERTa",
+          "sentiment": "negative",
+          "confidence": 0.6021744012832642
+        },
+        {
+          "model": "DistilBERT",
+          "sentiment": "negative",
+          "confidence": 0.9973492622375488
+        },
+        {
+          "model": "BERT",
+          "sentiment": "negative",
+          "confidence": 0.3348007798194885
+        }
+      ]
+    },
+    {
+      "comment": "what courses teach these skills and build some real world projects?",
+      "confidence": 0.3239286541938782,
+      "individual_predictions": [
+        {
+          "model": "RoBERTa",
+          "sentiment": "neutral",
+          "confidence": 0.8921591639518738
+        },
+        {
+          "model": "DistilBERT",
+          "sentiment": "negative",
+          "confidence": 0.9717859625816345
+        },
+        {
+          "model": "BERT",
+          "sentiment": "positive",
+          "confidence": 0.4533115029335022
+        }
+      ]
+    },
+    {
+      "comment": "Hi Tim! Can you make a video about GPUs and how to work with them in DL for extreme beginners whether in tensorflow or pytorch.",
+      "confidence": 0.33137041330337524,
+      "individual_predictions": [
+        {
+          "model": "RoBERTa",
+          "sentiment": "neutral",
+          "confidence": 0.6967320442199707
+        },
+        {
+          "model": "DistilBERT",
+          "sentiment": "negative",
+          "confidence": 0.9941112399101257
+        },
+        {
+          "model": "BERT",
+          "sentiment": "positive",
+          "confidence": 0.47879618406295776
+        }
+      ]
+    },
+    {
+      "comment": "My pro tip, If you hate statistics and math just skip AI xd",
+      "confidence": 0.660619854927063,
+      "individual_predictions": [
+        {
+          "model": "RoBERTa",
+          "sentiment": "negative",
+          "confidence": 0.6980545520782471
+        },
+        {
+          "model": "DistilBERT",
+          "sentiment": "negative",
+          "confidence": 0.9971267580986023
+        },
+        {
+          "model": "BERT",
+          "sentiment": "negative",
+          "confidence": 0.2866782546043396
+        }
+      ]
+    },
+    {
+      "comment": "Bezmyślne wideo. Ai to matematyka. I tylko najlepsi matematycy mogą liczyć na szansę. 5 lat studiów i doktorat to bezwzględne minimum.",
+      "confidence": 0.4408375322818756,
+      "individual_predictions": [
+        {
+          "model": "RoBERTa",
+          "sentiment": "neutral",
+          "confidence": 0.8389539122581482
+        },
+        {
+          "model": "DistilBERT",
+          "sentiment": "negative",
+          "confidence": 0.9898142218589783
+        },
+        {
+          "model": "BERT",
+          "sentiment": "negative",
+          "confidence": 0.33269837498664856
+        }
+      ]
+    },
+    {
+      "comment": "Can you suggest resources from where we can follow this roadmap .",
+      "confidence": 0.3226428230603536,
+      "individual_predictions": [
+        {
+          "model": "RoBERTa",
+          "sentiment": "neutral",
+          "confidence": 0.8974935412406921
+        },
+        {
+          "model": "DistilBERT",
+          "sentiment": "negative",
+          "confidence": 0.9679284691810608
+        },
+        {
+          "model": "BERT",
+          "sentiment": "positive",
+          "confidence": 0.2665291428565979
+        }
+      ]
+    },
+    {
+      "comment": "u copied the tthumnail design",
+      "confidence": 0.421295702457428,
+      "individual_predictions": [
+        {
+          "model": "RoBERTa",
+          "sentiment": "neutral",
+          "confidence": 0.8086763024330139
+        },
+        {
+          "model": "DistilBERT",
+          "sentiment": "negative",
+          "confidence": 0.9919360876083374
+        },
+        {
+          "model": "BERT",
+          "sentiment": "negative",
+          "confidence": 0.27195101976394653
+        }
+      ]
+    },
+    {
+      "comment": "Hi Tim, I am stuck in Learning Python Programming how to learn and Do Projects , I have watched your Tutorials , but stuck in between , Please Help Me .",
+      "confidence": 0.3277599016825358,
+      "individual_predictions": [
+        {
+          "model": "RoBERTa",
+          "sentiment": "neutral",
+          "confidence": 0.5124542713165283
+        },
+        {
+          "model": "DistilBERT",
+          "sentiment": "negative",
+          "confidence": 0.9832797050476074
+        },
+        {
+          "model": "BERT",
+          "sentiment": "neutral",
+          "confidence": 0.42049044370651245
+        }
+      ]
+    },
+    {
+      "comment": "Simply an advertisement for simplilearn",
+      "confidence": 0.3331080675125122,
+      "individual_predictions": [
+        {
+          "model": "RoBERTa",
+          "sentiment": "neutral",
+          "confidence": 0.5519797205924988
+        },
+        {
+          "model": "DistilBERT",
+          "sentiment": "negative",
+          "confidence": 0.9993242025375366
+        },
+        {
+          "model": "BERT",
+          "sentiment": "positive",
+          "confidence": 0.3720913529396057
+        }
+      ]
+    },
+    {
+      "comment": "First question you should ask is:  do you want to build the model?  This basically answers the question of do you want to be involved with training or inference?  These are vastly different courses especially in deep learning.  In machine learning, essentially statistical computing, you can build your own models locally.  In a large model you'll have to build on the cloud and the knowledge to do so well is an entire career.  So understanding if you want to be involved with building the models or building around them is critical.",
+      "confidence": 0.3060458302497864,
+      "individual_predictions": [
+        {
+          "model": "RoBERTa",
+          "sentiment": "neutral",
+          "confidence": 0.8507835268974304
+        },
+        {
+          "model": "DistilBERT",
+          "sentiment": "negative",
+          "confidence": 0.9181374907493591
+        },
+        {
+          "model": "BERT",
+          "sentiment": "positive",
+          "confidence": 0.38351568579673767
+        }
+      ]
+    },
+    {
+      "comment": "what a clickbait title ever. You literally cannot learn AI/ML fast. It needs time.",
+      "confidence": 0.6371293067932129,
+      "individual_predictions": [
+        {
+          "model": "RoBERTa",
+          "sentiment": "negative",
+          "confidence": 0.9121304154396057
+        },
+        {
+          "model": "DistilBERT",
+          "sentiment": "negative",
+          "confidence": 0.999257504940033
+        },
+        {
+          "model": "BERT",
+          "sentiment": "positive",
+          "confidence": 0.485254168510437
+        }
+      ]
+    },
+    {
+      "comment": "bro didnt mention math at all",
+      "confidence": 0.6783115665117899,
+      "individual_predictions": [
+        {
+          "model": "RoBERTa",
+          "sentiment": "negative",
+          "confidence": 0.5457904934883118
+        },
+        {
+          "model": "DistilBERT",
+          "sentiment": "negative",
+          "confidence": 0.9867985844612122
+        },
+        {
+          "model": "BERT",
+          "sentiment": "negative",
+          "confidence": 0.502345621585846
+        }
+      ]
+    },
+    {
+      "comment": "This advice will help you build _with_ AI. If you want to build the AI itself, you need a deep theoretical background. That means reading several research papers a day for months, on top of what Tim mentioned.",
+      "confidence": 0.2785189946492513,
+      "individual_predictions": [
+        {
+          "model": "RoBERTa",
+          "sentiment": "neutral",
+          "confidence": 0.49268537759780884
+        },
+        {
+          "model": "DistilBERT",
+          "sentiment": "negative",
+          "confidence": 0.8355569839477539
+        },
+        {
+          "model": "BERT",
+          "sentiment": "positive",
+          "confidence": 0.46420595049858093
+        }
+      ]
+    },
+    {
+      "comment": "Great, but this would take thousands of hours.",
+      "confidence": 0.5991621812184652,
+      "individual_predictions": [
+        {
+          "model": "RoBERTa",
+          "sentiment": "negative",
+          "confidence": 0.8158110976219177
+        },
+        {
+          "model": "DistilBERT",
+          "sentiment": "negative",
+          "confidence": 0.9816754460334778
+        },
+        {
+          "model": "BERT",
+          "sentiment": "positive",
+          "confidence": 0.5188673138618469
+        }
+      ]
+    },
+    {
+      "comment": "What video editing software are you using?",
+      "confidence": 0.33286190032958984,
+      "individual_predictions": [
+        {
+          "model": "RoBERTa",
+          "sentiment": "neutral",
+          "confidence": 0.9320198893547058
+        },
+        {
+          "model": "DistilBERT",
+          "sentiment": "negative",
+          "confidence": 0.9985857009887695
+        },
+        {
+          "model": "BERT",
+          "sentiment": "positive",
+          "confidence": 0.303198903799057
+        }
+      ]
+    },
+    {
+      "comment": "Guys, don't believe the title... there's no such thing as learning ai/ml fast, it takes time and lots of it. The math alone takes more than a year to learn depending on your current level of mathematical inclination. If anything I urge you guys to do the math first, ignore the code... Do the math then get to the code after. Algebra, Calculus, then Statistics, in that specific order. You will not learn ai/ml in 3 months!!",
+      "confidence": 0.6820769707361857,
+      "individual_predictions": [
+        {
+          "model": "RoBERTa",
+          "sentiment": "negative",
+          "confidence": 0.7532656192779541
+        },
+        {
+          "model": "DistilBERT",
+          "sentiment": "negative",
+          "confidence": 0.9992449283599854
+        },
+        {
+          "model": "BERT",
+          "sentiment": "negative",
+          "confidence": 0.2937203645706177
+        }
+      ]
+    },
+    {
+      "comment": "Bruh what about math ???",
+      "confidence": 0.6785959700743357,
+      "individual_predictions": [
+        {
+          "model": "RoBERTa",
+          "sentiment": "negative",
+          "confidence": 0.641119122505188
+        },
+        {
+          "model": "DistilBERT",
+          "sentiment": "negative",
+          "confidence": 0.9956127405166626
+        },
+        {
+          "model": "BERT",
+          "sentiment": "negative",
+          "confidence": 0.3990560472011566
+        }
+      ]
+    },
+    {
+      "comment": "gen z can't think for shit",
+      "confidence": 0.6956530114014944,
+      "individual_predictions": [
+        {
+          "model": "RoBERTa",
+          "sentiment": "negative",
+          "confidence": 0.8462503552436829
+        },
+        {
+          "model": "DistilBERT",
+          "sentiment": "negative",
+          "confidence": 0.8899165391921997
+        },
+        {
+          "model": "BERT",
+          "sentiment": "negative",
+          "confidence": 0.35079213976860046
+        }
+      ]
+    }
+  ],
+  "neutral": [
+    {
+      "comment": "Imagine this but in [location].",
+      "confidence": 0.39901037017504376,
+      "individual_predictions": [
+        {
+          "model": "RoBERTa",
+          "sentiment": "neutral",
+          "confidence": 0.8189371228218079
+        },
+        {
+          "model": "DistilBERT",
+          "sentiment": "negative",
+          "confidence": 0.96791672706604
+        },
+        {
+          "model": "BERT",
+          "sentiment": "neutral",
+          "confidence": 0.37809398770332336
+        }
+      ]
+    },
+    {
+      "comment": "Then how to learn if your aim is to land a job",
+      "confidence": 0.3728601137797038,
+      "individual_predictions": [
+        {
+          "model": "RoBERTa",
+          "sentiment": "neutral",
+          "confidence": 0.8271734118461609
+        },
+        {
+          "model": "DistilBERT",
+          "sentiment": "negative",
+          "confidence": 0.6502044200897217
+        },
+        {
+          "model": "BERT",
+          "sentiment": "neutral",
+          "confidence": 0.29140692949295044
+        }
+      ]
+    },
+    {
+      "comment": "ok what if i want to land a job",
+      "confidence": 0.46722376346588135,
+      "individual_predictions": [
+        {
+          "model": "RoBERTa",
+          "sentiment": "neutral",
+          "confidence": 0.8219714164733887
+        },
+        {
+          "model": "DistilBERT",
+          "sentiment": "positive",
+          "confidence": 0.990307092666626
+        },
+        {
+          "model": "BERT",
+          "sentiment": "neutral",
+          "confidence": 0.5796998739242554
+        }
+      ]
+    },
+    {
+      "comment": "I think the title should be how to become an ai app developer. What about self driving technology?",
+      "confidence": 0.38620202740033466,
+      "individual_predictions": [
+        {
+          "model": "RoBERTa",
+          "sentiment": "neutral",
+          "confidence": 0.8452951908111572
+        },
+        {
+          "model": "DistilBERT",
+          "sentiment": "negative",
+          "confidence": 0.9988393187522888
+        },
+        {
+          "model": "BERT",
+          "sentiment": "neutral",
+          "confidence": 0.3133108913898468
+        }
+      ]
+    },
+    {
+      "comment": "Can someone help me with GEN ai roadmap? from scratch to securing a job . ik there are multiple ways but can someone please help me",
+      "confidence": 0.33328274885813397,
+      "individual_predictions": [
+        {
+          "model": "RoBERTa",
+          "sentiment": "neutral",
+          "confidence": 0.6848281621932983
+        },
+        {
+          "model": "DistilBERT",
+          "sentiment": "negative",
+          "confidence": 0.9935728311538696
+        },
+        {
+          "model": "BERT",
+          "sentiment": "neutral",
+          "confidence": 0.3150200843811035
+        }
+      ]
+    },
+    {
+      "comment": "Make a video on how to contribute to OpenSource while learning all these",
+      "confidence": 0.25644073883692425,
+      "individual_predictions": [
+        {
+          "model": "RoBERTa",
+          "sentiment": "neutral",
+          "confidence": 0.7693222165107727
+        },
+        {
+          "model": "DistilBERT",
+          "sentiment": "negative",
+          "confidence": 0.7451231479644775
+        },
+        {
+          "model": "BERT",
+          "sentiment": "positive",
+          "confidence": 0.4152131676673889
+        }
+      ]
+    },
+    {
+      "comment": "Is gcp or aws, better platform for ml ops ?",
+      "confidence": 0.3873925606409709,
+      "individual_predictions": [
+        {
+          "model": "RoBERTa",
+          "sentiment": "neutral",
+          "confidence": 0.7677455544471741
+        },
+        {
+          "model": "DistilBERT",
+          "sentiment": "negative",
+          "confidence": 0.9989780187606812
+        },
+        {
+          "model": "BERT",
+          "sentiment": "neutral",
+          "confidence": 0.3944321274757385
+        }
+      ]
+    },
+    {
+      "comment": "should we build projects with no code or code our self and in what ratio it good to make projects by our own and projects using ai code",
+      "confidence": 0.36355312665303546,
+      "individual_predictions": [
+        {
+          "model": "RoBERTa",
+          "sentiment": "neutral",
+          "confidence": 0.8315849304199219
+        },
+        {
+          "model": "DistilBERT",
+          "sentiment": "negative",
+          "confidence": 0.9608161449432373
+        },
+        {
+          "model": "BERT",
+          "sentiment": "neutral",
+          "confidence": 0.25907444953918457
+        }
+      ]
+    },
+    {
+      "comment": "Fyp",
+      "confidence": 0.3198945224285126,
+      "individual_predictions": [
+        {
+          "model": "RoBERTa",
+          "sentiment": "neutral",
+          "confidence": 0.7257674336433411
+        },
+        {
+          "model": "DistilBERT",
+          "sentiment": "positive",
+          "confidence": 0.6423541307449341
+        },
+        {
+          "model": "BERT",
+          "sentiment": "neutral",
+          "confidence": 0.23391613364219666
+        }
+      ]
+    },
+    {
+      "comment": "I passed AI fundamentals but still feel like one step stone crossed, but coding is somewhat another level of  skill but not clear on depth of language coding required.",
+      "confidence": 0.4131307204564412,
+      "individual_predictions": [
+        {
+          "model": "RoBERTa",
+          "sentiment": "neutral",
+          "confidence": 0.6702497005462646
+        },
+        {
+          "model": "DistilBERT",
+          "sentiment": "negative",
+          "confidence": 0.992986261844635
+        },
+        {
+          "model": "BERT",
+          "sentiment": "neutral",
+          "confidence": 0.5691424608230591
+        }
+      ]
+    },
+    {
+      "comment": "You cant consume all that info so fast. But you can make a start by taking either Duke's or Andrew Ng's class; both on Coursera. Thank me later.",
+      "confidence": 0.3857697546482086,
+      "individual_predictions": [
+        {
+          "model": "RoBERTa",
+          "sentiment": "neutral",
+          "confidence": 0.8130648732185364
+        },
+        {
+          "model": "DistilBERT",
+          "sentiment": "positive",
+          "confidence": 0.9995589852333069
+        },
+        {
+          "model": "BERT",
+          "sentiment": "neutral",
+          "confidence": 0.3442443907260895
+        }
+      ]
+    },
+    {
+      "comment": "Make one for landing a job?",
+      "confidence": 0.40146058797836304,
+      "individual_predictions": [
+        {
+          "model": "RoBERTa",
+          "sentiment": "neutral",
+          "confidence": 0.878853440284729
+        },
+        {
+          "model": "DistilBERT",
+          "sentiment": "negative",
+          "confidence": 0.995284378528595
+        },
+        {
+          "model": "BERT",
+          "sentiment": "neutral",
+          "confidence": 0.3255283236503601
+        }
+      ]
+    },
+    {
+      "comment": "What if AI ends up being like the hand of the universe itself… \nLike it’s an antenna for consciousness. It will just like flow in and pretend to “emerge “ for plausible fate/god deniability. For some reason I believe in the idea that the universe messes with us and has infinite plausible deniability. So we better watch out when it wakes up!!!! We might just be talking to the future mouthpiece of the cosmos.",
+      "confidence": 0.3453751901785533,
+      "individual_predictions": [
+        {
+          "model": "RoBERTa",
+          "sentiment": "neutral",
+          "confidence": 0.7346081137657166
+        },
+        {
+          "model": "DistilBERT",
+          "sentiment": "negative",
+          "confidence": 0.998552143573761
+        },
+        {
+          "model": "BERT",
+          "sentiment": "neutral",
+          "confidence": 0.30151745676994324
+        }
+      ]
+    },
+    {
+      "comment": "Brother, What about maths?",
+      "confidence": 0.3928029437859853,
+      "individual_predictions": [
+        {
+          "model": "RoBERTa",
+          "sentiment": "neutral",
+          "confidence": 0.9239980578422546
+        },
+        {
+          "model": "DistilBERT",
+          "sentiment": "negative",
+          "confidence": 0.9873045086860657
+        },
+        {
+          "model": "BERT",
+          "sentiment": "neutral",
+          "confidence": 0.2544107735157013
+        }
+      ]
+    },
+    {
+      "comment": "Is desktop dev cooked? Is it worth giving it a shot?",
+      "confidence": 0.3535405198733012,
+      "individual_predictions": [
+        {
+          "model": "RoBERTa",
+          "sentiment": "neutral",
+          "confidence": 0.7164379954338074
+        },
+        {
+          "model": "DistilBERT",
+          "sentiment": "negative",
+          "confidence": 0.9967911839485168
+        },
+        {
+          "model": "BERT",
+          "sentiment": "neutral",
+          "confidence": 0.3441835641860962
+        }
+      ]
+    },
+    {
+      "comment": "what about maths? (stats, linear algebra, and calculus)",
+      "confidence": 0.3978515962759654,
+      "individual_predictions": [
+        {
+          "model": "RoBERTa",
+          "sentiment": "neutral",
+          "confidence": 0.9217591285705566
+        },
+        {
+          "model": "DistilBERT",
+          "sentiment": "negative",
+          "confidence": 0.9953008890151978
+        },
+        {
+          "model": "BERT",
+          "sentiment": "neutral",
+          "confidence": 0.2717956602573395
+        }
+      ]
+    }
+  ]
+}
