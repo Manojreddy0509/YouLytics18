@@ -3,6 +3,7 @@ flask-cors==4.0.0
 python-dotenv==1.0.0
 PyJWT==2.8.0
 bcrypt==4.0.1
+torch==2.1.1+cpu --extra-index-url https://download.pytorch.org/whl/cpu
 openai-whisper==20231117
 transformers==4.35.2
 yt-dlp==2023.11.16
