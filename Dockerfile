@@ -1,31 +1,31 @@
-# Dockerfile (place in repo root)
+# Use official Python image (slim version for smaller size)
 FROM python:3.11-slim
 
-ENV PYTHONDONTWRITEBYTECODE=1
-ENV PYTHONUNBUFFERED=1
+# Set working directory
 WORKDIR /app
 
-# System deps (ffmpeg + libs whisper may need)
-RUN apt-get update && \
-    apt-get install -y --no-install-recommends \
-      ffmpeg libsndfile1 build-essential git && \
-    rm -rf /var/lib/apt/lists/*
+# Copy only dependency files first for better caching
+COPY requirements.txt .
 
-# Copy requirements (we'll install torch separately)
-COPY requirements.txt /app/requirements.txt
-
-# Upgrade pip and install CPU-only torch from PyTorch CPU index
+# Upgrade pip and install dependencies
 RUN python -m pip install --upgrade pip setuptools wheel
+
+# Install PyTorch CPU version (latest working build) + other requirements
 RUN python -m pip install --no-cache-dir --index-url https://download.pytorch.org/whl/cpu \
-    torch==2.1.1+cpu
+    torch==2.1.2+cpu \
+    torchvision==0.16.2+cpu \
+    torchaudio==2.1.2+cpu
 
-# Install remaining Python packages (requirements.txt should NOT include torch)
-RUN python -m pip install --no-cache-dir -r /app/requirements.txt
+# Install other Python dependencies from requirements.txt
+RUN pip install --no-cache-dir -r requirements.txt
 
-# Copy app code
-COPY . /app
+# Copy the rest of your application
+COPY . .
 
+# Expose port if your app runs a server
 EXPOSE 5000
 
-# Start with gunicorn
-CMD ["gunicorn", "app:app", "--bind", "0.0.0.0:5000", "--workers", "1"]
+# Default command to run your app
+# Replace app.py with your entry point script
+CMD ["python", "app.py"]
+
