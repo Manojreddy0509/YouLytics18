@@ -9,6 +9,10 @@ tiktoken
 requests
 yt-dlp==2023.11.16
 sentencepiece==0.1.99
+torch==2.3.0
+transformers
+numpy
+
 
 
 
