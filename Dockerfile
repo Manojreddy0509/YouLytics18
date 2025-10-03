@@ -1,48 +1,43 @@
-# Dockerfile — Render-ready, ensures torch is installed (CPU)
+# Use an official lightweight Python image
 FROM python:3.11-slim
 
-ENV PYTHONDONTWRITEBYTECODE=1 \
-    PYTHONUNBUFFERED=1 \
-    PIP_NO_CACHE_DIR=1 \
-    POETRY_VIRTUALENVS_CREATE=false
-
+# Set working directory
 WORKDIR /app
 
-# System deps
-RUN apt-get update && \
-    apt-get install -y --no-install-recommends \
-      git ffmpeg libsndfile1 build-essential ca-certificates curl && \
-    rm -rf /var/lib/apt/lists/*
+# Install system dependencies (optional, but useful for torch, etc.)
+RUN apt-get update && apt-get install -y \
+    build-essential \
+    git \
+    curl \
+    && rm -rf /var/lib/apt/lists/*
 
-# Copy requirements for caching
-COPY requirements.txt /app/requirements.txt
+# Copy dependency file first (to leverage Docker cache)
+COPY requirements.txt .
 
-# Upgrade pip
-RUN python -m pip install --upgrade pip setuptools wheel
+# Install Python dependencies
+RUN pip install --no-cache-dir -r requirements.txt
 
-# Lock numpy to <2.0 to avoid torch/NumPy 2.0 incompatibilities
-RUN python -m pip install --no-cache-dir "numpy<2.0"
+# (Optional) explicitly install torch if not in requirements.txt
+# RUN pip install torch==2.3.0 torchvision torchaudio --index-url https://download.pytorch.org/whl/cpu
 
-# Install PyTorch CPU wheels explicitly first (so it's available at runtime)
-# Use the PyTorch CPU index. Using --prefer-binary helps pick prebuilt wheels.
-RUN python -m pip install --no-cache-dir --prefer-binary \
-    --index-url https://download.pytorch.org/whl/cpu \
-    "torch" "torchvision" "torchaudio"
+# Copy the rest of your code
+COPY . .
 
-# Now install the rest of your Python deps (whisper/transformers, etc.)
-# Whisper from GitHub will use the torch already installed.
-RUN python -m pip install --no-cache-dir --prefer-binary -r /app/requirements.txt
+# Debug check: ensure torch is installed
+RUN python - <<EOF
+import sys, importlib
+print("python", sys.version.split()[0])
+torch_ok = importlib.util.find_spec("torch") is not None
+print("torch_installed=", torch_ok)
+print("torch_version=", __import__("torch").__version__ if torch_ok else "none")
+EOF
 
-# Copy app code
-COPY . /app
+# Expose port (Render usually expects 10000 or $PORT)
+EXPOSE 10000
 
-# Sanity checks that will show in build logs (optional but useful)
-RUN python -c "import sys, importlib; \
-    print('python', sys.version.split()[0]); \
-    torch_ok = importlib.util.find_spec('torch') is not None; \
-    print('torch_installed=', torch_ok); \
-    import pkgutil; \
-    print('torch_version=', __import__('torch').__version__ if torch_ok else 'none')"
+# Start app (Render reads from Procfile, so keep it simple)
+CMD ["sh", "-c", "echo 'Use Procfile for startup'"]
+
 
 # Expose a safe local port and use $PORT at runtime (fallback 8000 for local dev)
 EXPOSE 8000
