@@ -198,6 +198,7 @@ def analyze_comments():
         
         total = len(comments)
         response = {
+            'type': 'comments', 
             'video_id': video_id,
             'total_comments': total,
             'positive': {
@@ -259,6 +260,7 @@ def summarize_video():
                 os.remove(file)
         
         return jsonify({
+            'type': 'summary',
             'success': True,
             'transcription_length': len(transcription),
             'transcription_preview': transcription[:500] + "..." if len(transcription) > 500 else transcription,
@@ -353,6 +355,7 @@ def full_analysis():
             summary_data = {'error': 'Video summarization not available'}
         
         return jsonify({
+            'type': 'full', 
             'comments_analysis': comments_data,
             'video_summary': summary_data
         })
