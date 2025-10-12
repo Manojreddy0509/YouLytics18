@@ -32,7 +32,7 @@ def get_comments(video_id, api_key=None):
                 all_comments.append(top_comment)
 
             # Get ALL replies for this top-level comment
-            parent_id = item["id"]
+            parent_id = item["snippet"]["topLevelComment"]["id"]
             replies = get_replies(youtube, parent_id)
             for reply in replies:
                 all_comments.append(f"↳ {reply}")
