@@ -1,3 +1,16 @@
+import warnings
+import logging
+
+# Suppress Python warnings
+warnings.filterwarnings("ignore")
+
+# Suppress Transformers library info/warnings
+logging.getLogger("transformers").setLevel(logging.ERROR)
+
+# Suppress Flask/Werkzeug info logs (only show errors)
+log = logging.getLogger('werkzeug')
+log.setLevel(logging.ERROR)
+
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 import os
@@ -373,4 +386,4 @@ if __name__ == '__main__':
     print("   Environment: ✅ Loaded")
     print("   Server: http://127.0.0.1:5001")
     print("=" * 50)
-    app.run(debug=True, port=5001, host='127.0.0.1')
+    app.run(debug=False, use_reloader=False, port=5001, host='127.0.0.1')
