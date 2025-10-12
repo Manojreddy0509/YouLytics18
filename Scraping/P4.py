@@ -5,7 +5,6 @@ from P2 import get_comments
 from P3 import save_comments
 from model import PretrainedSentimentAnalyzer  # <-- This is required
 
-api_key = "AIzaSyDGcHWGFK2BHWswtYvJiMvjmZPuFvxvQ7E"
 url = "https://www.youtube.com/watch?v=8xUher8-5_Q"
 video_id = get_vid(url)
 comments = get_comments(video_id, api_key)
