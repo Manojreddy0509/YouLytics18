@@ -35,7 +35,20 @@ app = Flask(__name__)
 app.config['SECRET_KEY'] = os.getenv('SECRET_KEY', 'fallback-secret-key')
 JWT_SECRET = os.getenv('JWT_SECRET', 'fallback-jwt-secret')
 YOUTUBE_API_KEY = os.getenv('YOUTUBE_API_KEY', '')
-CORS(app)
+
+# Configure CORS to allow frontend domain
+CORS(app, resources={
+    r"/*": {
+        "origins": [
+            "https://youlytics-frontend.onrender.com",
+            "http://localhost:3000",  # For local development
+            "http://127.0.0.1:3000"
+        ],
+        "methods": ["GET", "POST", "OPTIONS"],
+        "allow_headers": ["Content-Type", "Authorization"],
+        "supports_credentials": True
+    }
+})
 
 print("=" * 60)
 print("🚀 YouLytics Backend Starting...")
