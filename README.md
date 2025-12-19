@@ -1,17 +1,6 @@
----
-title: YouLytics Backend
-emoji: 📊
-colorFrom: red
-colorTo: purple
-sdk: docker
-pinned: false
----
+
 
 # YouLytics - Advanced YouTube Analytics Platform
-
-![YouTube Analytics](https://img.shields.io/badge/YouTube-Analytics-red?logo=youtube)
-![Flask](https://img.shields.io/badge/Flask-Backend-green?logo=flask)
-![React](https://img.shields.io/badge/React-Frontend-blue?logo=react)
 
 **YouLytics** is a powerful full-stack web application that provides comprehensive YouTube video analysis, including sentiment analysis of comments and AI-powered video summarization.
 
@@ -57,7 +46,7 @@ pinned: false
 - **Lucide React** - Icon library
 - **CSS3** - Modern styling with animations
 
-## 🚀 Quick Start
+
 
 ### Prerequisites
 - Python 3.11+
