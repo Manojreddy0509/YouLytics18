@@ -1,6 +1,10 @@
 import warnings
 import logging
 
+print("=" * 70)
+print("📦 app.py module loading started...")
+print("=" * 70)
+
 # Suppress Python warnings
 warnings.filterwarnings("ignore")
 # Suppress Transformers library info/warnings
