@@ -35,93 +35,68 @@ def download_audio_from_url(url: str) -> str:
     if not url.startswith("http"):
         url = f"https://www.youtube.com/watch?v={url}"
 
-    ydl_opts = {
-        'format': 'bestaudio/best',
-        'outtmpl': 'temp_audio.%(ext)s',
-        'quiet': False,
-        'no_warnings': False,
-        'nocheckcertificate': True,
-        'http_headers': {
-            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0 Safari/537.36',
-        },
-        'postprocessors': [
-            {
-                'key': 'FFmpegExtractAudio',
-                'preferredcodec': 'mp3',
-                'preferredquality': '192',
-            }
-        ],
-    }
+    # Try different client configurations to avoid bot detection
+    clients = [
+        ['android', 'ios', 'web'],
+        ['web', 'android'],
+        ['mweb', 'android'],
+        ['tv', 'web']
+    ]
 
-    # Add a simple DNS check print
-    try:
-        import socket
-        ip = socket.gethostbyname('www.youtube.com')
-        print(f"🌐 DNS Check: www.youtube.com resolved to {ip}")
-    except Exception as dns_err:
-        print(f"⚠️ DNS Check Failed: {dns_err}")
+    last_error = ""
+    for client_list in clients:
+        print(f"🔄 Attempting download with clients: {client_list}")
+        ydl_opts = {
+            'format': 'bestaudio/best',
+            'outtmpl': 'temp_audio.%(ext)s',
+            'quiet': False,
+            'no_warnings': False,
+            'nocheckcertificate': True,
+            'geo_bypass': True,
+            'extractor_args': {
+                'youtube': {
+                    'player_client': client_list,
+                }
+            },
+            'http_headers': {
+                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0 Safari/537.36',
+                'Accept-Language': 'en-US,en;q=0.9',
+                'Referer': 'https://www.youtube.com/',
+            },
+            'postprocessors': [
+                {
+                    'key': 'FFmpegExtractAudio',
+                    'preferredcodec': 'mp3',
+                    'preferredquality': '192',
+                }
+            ],
+        }
 
-    # Optional cookies (helps with 403/age-restricted/private videos)
-    if YTDLP_COOKIEFILE:
-        ydl_opts['cookiefile'] = YTDLP_COOKIEFILE
-    if YTDLP_COOKIES_FROM_BROWSER:
-        ydl_opts['cookiesfrombrowser'] = (YTDLP_COOKIES_FROM_BROWSER,)
-    
-    try:
-        with yt_dlp.YoutubeDL(ydl_opts) as ydl:
-            print("⬇️ Starting download...")
-            ydl.download([url])
-        print("✅ Audio download completed")
-        return TEMP_AUDIO
-    except Exception as e:
-        print(f"❌ Audio download failed: {e}")
-        # Try alternative approach
-        return download_audio_alternative(url)
+        # Add cookies if provided
+        if YTDLP_COOKIEFILE:
+            ydl_opts['cookiefile'] = YTDLP_COOKIEFILE
+        elif os.path.exists("cookies.txt"):
+            ydl_opts['cookiefile'] = "cookies.txt"
 
-def download_audio_alternative(url: str) -> str:
-    """
-    Alternative download method with different options
-    """
-    print("🔄 Trying alternative download method...")
-    
-    ydl_opts = {
-        'format': 'bestaudio/best',
-        'outtmpl': 'temp_audio.%(ext)s',
-        'quiet': False,
-        'no_warnings': False,
-        'geo_bypass': True,
-        'nocheckcertificate': True,
-        # Simulate a browser more effectively
-        'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0 Safari/537.36',
-        'referer': 'https://www.youtube.com/',
-        'extract_flat': False,
-        'extractor_args': {
-            'youtube': {
-                'player_client': ['android', 'web']
-            }
-        },
-        'postprocessors': [
-            {
-                'key': 'FFmpegExtractAudio',
-                'preferredcodec': 'mp3',
-                'preferredquality': '192',
-            }
-        ],
-    }
+        try:
+            # Print DNS check for debugging
+            try:
+                import socket
+                socket.gethostbyname('www.youtube.com')
+            except:
+                pass
 
-    if YTDLP_COOKIEFILE:
-        ydl_opts['cookiefile'] = YTDLP_COOKIEFILE
-    if YTDLP_COOKIES_FROM_BROWSER:
-        ydl_opts['cookiesfrombrowser'] = (YTDLP_COOKIES_FROM_BROWSER,)
-    
-    try:
-        with yt_dlp.YoutubeDL(ydl_opts) as ydl:
-            ydl.download([url])
-        print("✅ Alternative download completed")
-        return TEMP_AUDIO
-    except Exception as e:
-        print(f"❌ Alternative download also failed: {e}")
-        raise Exception(f"Could not download video: {str(e)}")
+            with yt_dlp.YoutubeDL(ydl_opts) as ydl:
+                ydl.download([url])
+            print("✅ Audio download completed successfully!")
+            return TEMP_AUDIO
+        except Exception as e:
+            last_error = str(e)
+            print(f"⚠️ Download attempt failed with {client_list}: {e}")
+            continue
+
+    print(f"❌ All download attempts failed. Last error: {last_error}")
+    raise Exception(f"Could not download video: {last_error}")
 
 def transcribe_and_translate_to_english(audio_path: str, whisper_model_size: str = WHISPER_MODEL_SIZE) -> str:
     """
