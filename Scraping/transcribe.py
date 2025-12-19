@@ -75,12 +75,18 @@ def download_audio_from_url(url: str) -> str:
         print("💉 DNS Monkey Patch applied successfully.")
     print("----------------------")
 
+    # Initialize cookie file variable
+    YTDLP_COOKIEFILE = None
+
     # Check for YOUTUBE_COOKIES env var (optional, but recommended if 429/403 errors occur)
     if os.getenv("YOUTUBE_COOKIES"):
         print("🍪 Cookies detected in environment.")
         with open("cookies.txt", "w") as f:
             f.write(os.getenv("YOUTUBE_COOKIES"))
         YTDLP_COOKIEFILE = "cookies.txt"
+    # Fallback to global env var if set
+    elif os.getenv("YTDLP_COOKIEFILE"):
+         YTDLP_COOKIEFILE = os.getenv("YTDLP_COOKIEFILE")
 
     # Simplified, robust extraction options
     ydl_opts = {
