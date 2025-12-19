@@ -44,7 +44,7 @@ def download_audio_from_url(url: str) -> str:
     ]
 
     # --- DNS MONKEY PATCH ---
-    # This is the "Nuclear Option" to force Python to see www.youtube.com
+    # This is the "Nuclear Option" to force Python to see www.youtube.com and m.youtube.com
     import socket
     
     # 1. Find a working IP
@@ -70,8 +70,8 @@ def download_audio_from_url(url: str) -> str:
             socket._original_getaddrinfo = socket.getaddrinfo
 
         def patched_getaddrinfo(host, port, family=0, type=0, proto=0, flags=0):
-            # Intercept www.youtube.com and return our working IP
-            if host == 'www.youtube.com':
+            # Intercept www.youtube.com AND m.youtube.com and return our working IP
+            if host in ['www.youtube.com', 'm.youtube.com']:
                 # print(f"🛡️ Intercepting DNS lookup for {host} -> {working_ip}")
                 # Return standard getaddrinfo structure for the WORKING IP
                 return socket._original_getaddrinfo(working_ip, port, family, type, proto, flags)
@@ -80,8 +80,17 @@ def download_audio_from_url(url: str) -> str:
             return socket._original_getaddrinfo(host, port, family, type, proto, flags)
 
         socket.getaddrinfo = patched_getaddrinfo
-        print("💉 DNS Monkey Patch applied successfully.")
+        print("💉 DNS Monkey Patch applied successfully (covering www/m subdomains).")
     print("----------------------")
+
+    # --- COOKIES HANDLING ---
+    # Check for YOUTUBE_COOKIES env var and create file if it exists
+    yt_cookies_content = os.getenv("YOUTUBE_COOKIES")
+    if yt_cookies_content:
+        print("🍪 Found YOUTUBE_COOKIES environment variable. Creating cookies.txt...")
+        with open("cookies.txt", "w") as f:
+            f.write(yt_cookies_content)
+        YTDLP_COOKIEFILE = "cookies.txt"
 
     last_error = ""
     for client_list in clients:
@@ -101,11 +110,6 @@ def download_audio_from_url(url: str) -> str:
                     'player_client': client_list,
                 }
             },
-            'http_headers': {
-                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0 Safari/537.36',
-                'Accept-Language': 'en-US,en;q=0.9',
-                'Referer': 'https://www.youtube.com/',
-            },
             'postprocessors': [
                 {
                     'key': 'FFmpegExtractAudio',
@@ -120,6 +124,11 @@ def download_audio_from_url(url: str) -> str:
             ydl_opts['cookiefile'] = YTDLP_COOKIEFILE
         elif os.path.exists("cookies.txt"):
             ydl_opts['cookiefile'] = "cookies.txt"
+        
+        # Ensure we have some default headers if none provided (yt-dlp handles this, but good to ensure referer)
+        ydl_opts['http_headers'] = {
+             'Referer': 'https://www.youtube.com/',
+        }
 
         try:
             with yt_dlp.YoutubeDL(ydl_opts) as ydl:
