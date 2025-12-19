@@ -88,9 +88,7 @@
    npm start
    \`\`\`
 
-4. **Access the application**
-   - Frontend: http://localhost:3000
-   - Backend API: http://localhost:5001
+
 
 ## 🌐 Deployment
 
@@ -160,22 +158,3 @@ python -m pytest
 cd Frontend && npm test
 \`\`\`
 
-### Code Style
-- Backend: Follow PEP 8 guidelines
-- Frontend: ESLint with React configuration
-
-## 📝 License
-
-This project is open source and available under the MIT License.
-
-## 🤝 Contributing
-
-Contributions are welcome! Please feel free to submit a Pull Request.
-
-## 📧 Support
-
-For issues and questions, please open an issue on GitHub.
-
----
-
-**Built with ❤️ using Flask and React**
