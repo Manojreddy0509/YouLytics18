@@ -33,20 +33,34 @@ JWT_SECRET = os.getenv('JWT_SECRET', 'fallback-jwt-secret')
 YOUTUBE_API_KEY = os.getenv('YOUTUBE_API_KEY', '')
 CORS(app)
 
+print("=" * 60)
+print("🚀 YouLytics Backend Starting...")
+print(f"   Flask app initialized: {app.name}")
+print(f"   CORS enabled: ✅")
+print(f"   SECRET_KEY configured: {'✅' if os.getenv('SECRET_KEY') else '⚠️  Using fallback'}")
+print(f"   JWT_SECRET configured: {'✅' if os.getenv('JWT_SECRET') else '⚠️  Using fallback'}")
+print(f"   YOUTUBE_API_KEY configured: {'✅' if YOUTUBE_API_KEY else '❌ Missing'}")
+print("=" * 60)
+
 # Initialize database
 def init_db():
-    conn = sqlite3.connect('users.db')
-    c = conn.cursor()
-    c.execute('''
-        CREATE TABLE IF NOT EXISTS users (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            email TEXT UNIQUE NOT NULL,
-            password TEXT NOT NULL,
-            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-        )
-    ''')
-    conn.commit()
-    conn.close()
+    try:
+        conn = sqlite3.connect('users.db')
+        c = conn.cursor()
+        c.execute('''
+            CREATE TABLE IF NOT EXISTS users (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                email TEXT UNIQUE NOT NULL,
+                password TEXT NOT NULL,
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            )
+        ''')
+        conn.commit()
+        conn.close()
+        print("✅ Database initialized successfully")
+    except Exception as e:
+        print(f"❌ Database initialization failed: {e}")
+        raise
 
 init_db()
 
@@ -185,24 +199,36 @@ def get_analyzer():
 # Health check endpoint for deployment platforms
 @app.route('/health')
 def health():
-    return jsonify({"status": "healthy"}), 200
+    try:
+        print("🏥 Health check requested")
+        return jsonify({"status": "healthy", "timestamp": datetime.datetime.utcnow().isoformat()}), 200
+    except Exception as e:
+        print(f"❌ Health check failed: {e}")
+        return jsonify({"status": "error", "error": str(e)}), 500
 
 @app.route('/')
 def home():
-    return jsonify({
-        "message": "YouLytics API is running!",
-        "status": {
-            "comment_analysis": COMMENT_AVAILABLE,
-            "video_summarization": SUMMARIZE_AVAILABLE
-        },
-        "endpoints": {
-            "/register": "POST - Create new account",
-            "/login": "POST - Login to account",
-            "/analyze-comments": "POST - Analyze comment sentiment",
-            "/summarize-video": "POST - Summarize video content", 
-            "/full-analysis": "POST - Complete analysis (comments + summary)"
-        }
-    })
+    try:
+        print("🏠 Home endpoint requested")
+        return jsonify({
+            "message": "YouLytics API is running!",
+            "status": {
+                "comment_analysis": COMMENT_AVAILABLE,
+                "video_summarization": SUMMARIZE_AVAILABLE
+            },
+            "endpoints": {
+                "/health": "GET - Health check",
+                "/register": "POST - Create new account",
+                "/login": "POST - Login to account",
+                "/analyze-comments": "POST - Analyze comment sentiment",
+                "/summarize-video": "POST - Summarize video content", 
+                "/full-analysis": "POST - Complete analysis (comments + summary)"
+            }
+        })
+    except Exception as e:
+        print(f"❌ Home endpoint failed: {e}")
+        traceback.print_exc()
+        return jsonify({"error": str(e)}), 500
 
 @app.route('/analyze-comments', methods=['POST'])
 @token_required
