@@ -90,12 +90,67 @@ const App = () => {
       }
 
       const result = await response.json();
-      setData(result);
+      
+      // Check if this is an async task (202 status with task_id)
+      if (response.status === 202 && result.task_id) {
+        // Start polling for task completion
+        await pollTaskStatus(result.task_id);
+      } else {
+        // Synchronous response (comments analysis)
+        setData(result);
+        setLoading(false);
+      }
     } catch (err) {
       setError(`Connection failed: ${err.message}. Please check if the backend is running and reachable.`);
-    } finally {
       setLoading(false);
     }
+  };
+
+  const pollTaskStatus = async (taskId) => {
+    const maxAttempts = 180; // 6 minutes max (180 * 2s)
+    let attempts = 0;
+
+    const checkStatus = async () => {
+      try {
+        const response = await fetch(`${API_BASE_URL}/task-status/${taskId}`, {
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        });
+
+        if (!response.ok) {
+          throw new Error(`Failed to check task status: ${response.status}`);
+        }
+
+        const statusData = await response.json();
+        
+        if (statusData.status === 'SUCCESS') {
+          // Task completed successfully
+          setData(statusData.result);
+          setLoading(false);
+          return true;
+        } else if (statusData.status === 'FAILURE') {
+          // Task failed
+          throw new Error(statusData.error || 'Task processing failed');
+        } else if (statusData.status === 'PENDING' || statusData.status === 'STARTED') {
+          // Task still processing
+          attempts++;
+          if (attempts >= maxAttempts) {
+            throw new Error('Task timeout - processing took too long');
+          }
+          // Continue polling after 2 seconds
+          setTimeout(checkStatus, 2000);
+          return false;
+        }
+      } catch (err) {
+        setError(`Task polling failed: ${err.message}`);
+        setLoading(false);
+        return true; // Stop polling on error
+      }
+    };
+
+    // Start the polling
+    await checkStatus();
   };
 
   const handleKeyPress = (e) => {
