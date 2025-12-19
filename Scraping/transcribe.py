@@ -98,12 +98,7 @@ def download_audio_from_url(url: str) -> str:
         'geo_bypass': True,
         # Use IPv4 source address to avoid IPv6 blocks
         'source_address': '0.0.0.0', 
-        # Use a mobile client which is often less restricted
-        'extractor_args': {
-            'youtube': {
-                'player_client': ['android', 'ios'],
-            }
-        },
+        # Standard client selection (removed android/ios restriction as it causes format errors with web cookies)
         'postprocessors': [
             {
                 'key': 'FFmpegExtractAudio',
