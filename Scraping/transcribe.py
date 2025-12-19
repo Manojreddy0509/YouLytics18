@@ -1,188 +1,194 @@
-# transcribe.py - FIXED VERSION
+
 import os
 import yt_dlp
 import whisper
 import traceback
+import socket
 from dotenv import load_dotenv
+from youtube_transcript_api import YouTubeTranscriptApi, TranscriptsDisabled, NoTranscriptFound
 
 # Load environment variables
 load_dotenv()
 
-# Use environment variable with fallback
-WHISPER_MODEL_SIZE = os.getenv("WHISPER_MODEL_SIZE", "base").strip()
+# Global variable for the Whisper model (loaded once per process)
+WHISPER_MODEL = None
 
-# Rest of your existing code...
-
-WHISPER_MODEL_SIZE = os.getenv("WHISPER_MODEL_SIZE", "base").strip()
-TEMP_AUDIO = "temp_audio.mp3"
-TRANSCRIPTION_FILE = "transcription.txt"
-
-# Optional yt-dlp config to handle restricted/403 videos
-# - YTDLP_COOKIEFILE: path to a Netscape cookies.txt file
-# - YTDLP_COOKIES_FROM_BROWSER: e.g. "chrome", "firefox", "safari" (requires browser profile access)
-YTDLP_COOKIEFILE = os.getenv("YTDLP_COOKIEFILE", "").strip()
-YTDLP_COOKIES_FROM_BROWSER = os.getenv("YTDLP_COOKIES_FROM_BROWSER", "").strip()
-
-def download_audio_from_url(url: str) -> str:
+def init_whisper(model_name="base"):
     """
-    Download best audio for a given URL (supports YouTube, etc.)
-    Saves as temp_audio.mp3 in the current working directory.
-    Returns path to downloaded audio file.
+    Loads the Whisper model into the global variable WHISPER_MODEL.
+    Should be called once at worker startup.
     """
-    print(f"🎬 Downloading audio from: {url}")
-    
-    # If user provided a YouTube ID, build a YouTube url:
-    if not url.startswith("http"):
-        url = f"https://www.youtube.com/watch?v={url}"
-
-    # Try different client configurations to avoid bot detection
-    clients = [
-        ['android', 'ios', 'web'],
-        ['web', 'android'],
-        ['mweb', 'android'],
-        ['tv', 'web']
-    ]
-
-    # --- DNS MONKEY PATCH ---
-    # This is necessary because the hosting environment fails to resolve www.youtube.com
-    import socket
-    
-    # 1. Find a working IP from accessible Google domains
-    working_ip = None
-    print("--- 🕵️ DNS Hunter ---")
-    for domain in ['youtube.com', 'm.youtube.com', 'google.com', 'youtube.googleapis.com']:
+    global WHISPER_MODEL
+    if WHISPER_MODEL is None:
+        print(f"🔊 Loading Whisper model: {model_name}...")
         try:
-            ip = socket.gethostbyname(domain)
-            print(f"✅ Found working IP from {domain}: {ip}")
-            working_ip = ip
-            break
-        except:
-            continue
+            WHISPER_MODEL = whisper.load_model(model_name)
+            print("✅ Whisper model loaded successfully.")
+        except Exception as e:
+            print(f"❌ Failed to load Whisper model: {e}")
+            raise
+
+def get_transcript_from_youtube_captions(video_id):
+    """
+    Tries to fetch transcripts using youtube_transcript_api.
+    Returns the transcript string or None if not found.
+    """
+    print(f"🔍 Checking for YouTube captions for ID: {video_id}")
+    try:
+        transcript_list = YouTubeTranscriptApi.get_transcript(video_id)
+        # transcript_list is a list of dicts: {'text': '...', 'start': ...}
+        full_text = " ".join([t['text'] for t in transcript_list])
+        print("✅ Found YouTube captions.")
+        return full_text
+    except (TranscriptsDisabled, NoTranscriptFound):
+        print("⚠️ No captions found/disabled.")
+        return None
+    except Exception as e:
+        print(f"⚠️ Error fetching captions: {e}")
+        return None
+
+def download_audio_with_ytdlp(video_url, cookiefile=None, outpath="temp_audio.mp3"):
+    """
+    Robust audio download using yt-dlp.
+    Handles DNS patching and cookie file usage logic internally.
+    """
+    print(f"⬇️ Starting download for: {video_url}")
     
-    if working_ip:
-        print(f"🎯 Locking target IP: {working_ip}")
-        # Monkey Patch socket.getaddrinfo
-        if not getattr(socket, '_original_getaddrinfo', None):
-            socket._original_getaddrinfo = socket.getaddrinfo
+    # --- DNS MONKEY PATCH (Retained from previous fix) ---
+    working_ip = None
+    # Quick check to see if we need it
+    try:
+        socket.gethostbyname('www.youtube.com')
+    except:
+        print("--- 🕵️ DNS Hunter (Fallback) ---")
+        for domain in ['youtube.com', 'm.youtube.com', 'google.com']:
+            try:
+                ip = socket.gethostbyname(domain)
+                working_ip = ip
+                break
+            except:
+                continue
+        
+        if working_ip:
+            if not getattr(socket, '_original_getaddrinfo', None):
+                socket._original_getaddrinfo = socket.getaddrinfo
 
-        def patched_getaddrinfo(host, port, family=0, type=0, proto=0, flags=0):
-            # Intercept www.youtube.com AND m.youtube.com
-            if host in ['www.youtube.com', 'm.youtube.com']:
-                return socket._original_getaddrinfo(working_ip, port, family, type, proto, flags)
-            return socket._original_getaddrinfo(host, port, family, type, proto, flags)
+            def patched_getaddrinfo(host, port, family=0, type=0, proto=0, flags=0):
+                if host in ['www.youtube.com', 'm.youtube.com']:
+                    return socket._original_getaddrinfo(working_ip, port, family, type, proto, flags)
+                return socket._original_getaddrinfo(host, port, family, type, proto, flags)
 
-        socket.getaddrinfo = patched_getaddrinfo
-        print("💉 DNS Monkey Patch applied successfully.")
-    print("----------------------")
+            socket.getaddrinfo = patched_getaddrinfo
+            print(f"💉 DNS Monkey Patch applied: {working_ip}")
 
-    # Initialize cookie file variable
-    YTDLP_COOKIEFILE = None
-
-    # Check for YOUTUBE_COOKIES env var (optional, but recommended if 429/403 errors occur)
-    if os.getenv("YOUTUBE_COOKIES"):
-        print("🍪 Cookies detected in environment.")
-        with open("cookies.txt", "w") as f:
-            f.write(os.getenv("YOUTUBE_COOKIES"))
-        YTDLP_COOKIEFILE = "cookies.txt"
-    # Fallback to global env var if set
-    elif os.getenv("YTDLP_COOKIEFILE"):
-         YTDLP_COOKIEFILE = os.getenv("YTDLP_COOKIEFILE")
-
-    # Simplified, robust extraction options
+    # Prepare options
     ydl_opts = {
         'format': 'bestaudio/best',
-        'outtmpl': 'temp_audio.%(ext)s',
+        'outtmpl': outpath.replace('.mp3', ''),  # yt-dlp adds extension based on postprocessor
         'quiet': False,
         'no_warnings': False,
         'nocheckcertificate': True,
         'geo_bypass': True,
-        # Use IPv4 source address to avoid IPv6 blocks
-        'source_address': '0.0.0.0', 
-        # Standard client selection (removed android/ios restriction as it causes format errors with web cookies)
-        'postprocessors': [
-            {
-                'key': 'FFmpegExtractAudio',
-                'preferredcodec': 'mp3',
-                'preferredquality': '192',
-            }
-        ],
+        'source_address': '0.0.0.0',
+        'postprocessors': [{
+            'key': 'FFmpegExtractAudio',
+            'preferredcodec': 'mp3',
+            'preferredquality': '192',
+        }],
     }
 
-    if YTDLP_COOKIEFILE and os.path.exists(YTDLP_COOKIEFILE):
-        ydl_opts['cookiefile'] = YTDLP_COOKIEFILE
+    # Handle Cookies
+    # 1. Passed argument (highest priority)
+    # 2. Env var content (YOUTUBE_COOKIES) written to file
+    # 3. Env var pointer (YTDLP_COOKIEFILE)
+    
+    final_cookiefile = None
+    if cookiefile and os.path.exists(cookiefile):
+        final_cookiefile = cookiefile
+    elif os.getenv("YOUTUBE_COOKIES"):
+        # Create temp cookie file from env var
+        with open("cookies.txt", "w") as f:
+            f.write(os.getenv("YOUTUBE_COOKIES"))
+        final_cookiefile = "cookies.txt"
+    elif os.getenv("YTDLP_COOKIEFILE"):
+        final_cookiefile = os.getenv("YTDLP_COOKIEFILE")
+
+    if final_cookiefile:
+        print(f"🍪 Using cookies from: {final_cookiefile}")
+        ydl_opts['cookiefile'] = final_cookiefile
 
     try:
-        print(f"⬇️ Starting download for: {url}")
         with yt_dlp.YoutubeDL(ydl_opts) as ydl:
-            ydl.download([url])
-        print("✅ Audio download completed successfully!")
-        return TEMP_AUDIO
+            ydl.download([video_url])
+        
+        # Check actual output filename
+        possible_out = outpath
+        if not os.path.exists(possible_out):
+            # sometimes yt-dlp naming varies, but outtmpl should handle it mostly.
+            # verify simply:
+            if os.path.exists(outpath + ".mp3"): # edge case
+                os.rename(outpath + ".mp3", outpath)
+        
+        if os.path.exists(outpath):
+            print("✅ Audio download completed.")
+            return outpath
+        else:
+             raise Exception("Output file not found after download.")
+
     except Exception as e:
         print(f"❌ Download failed: {e}")
-        raise Exception(f"Video download failed. The server might be blocked by YouTube. Error: {str(e)}")
+        msg = str(e)
+        if "Sign in" in msg or "cookies" in msg:
+            raise Exception("YouTube requires authentication (Cookies). Please configure YOUTUBE_COOKIES.")
+        raise
 
-def transcribe_and_translate_to_english(audio_path: str, whisper_model_size: str = WHISPER_MODEL_SIZE) -> str:
+def transcribe_audio_file(audio_file_path):
     """
-    Uses OpenAI Whisper (python package) to transcribe and translate to English.
-    Returns the English text string and also writes it to transcription.txt.
+    Transcribes a local audio file using the global Whisper model.
     """
-    print(f"🔊 Loading Whisper model: {whisper_model_size}")
+    global WHISPER_MODEL
+    if WHISPER_MODEL is None:
+        # Fallback for direct usage, though init_whisper is preferred
+        init_whisper()
+    
+    print(f"🎤 Transcribing audio file: {audio_file_path}")
     try:
-        model = whisper.load_model(whisper_model_size)
-        print("✅ Whisper model loaded successfully")
-        
-        print("🎤 Starting transcription...")
-        # Use task="translate" to ensure output is in English if original language differs.
-        result = model.transcribe(audio_path, task="translate", fp16=False)
+        result = WHISPER_MODEL.transcribe(audio_file_path, task="translate", fp16=False)
         text = result.get("text", "").strip()
-        
-        print(f"✅ Transcription completed: {len(text)} characters")
-        
-        # Save to file
-        with open(TRANSCRIPTION_FILE, "w", encoding="utf-8") as f:
-            f.write(text)
-        print(f"💾 Transcription saved to: {TRANSCRIPTION_FILE}")
-        
+        print(f"✅ Transcription completed: {len(text)} chars")
         return text
     except Exception as e:
         print(f"❌ Transcription failed: {e}")
-        print(f"Debug info: {traceback.format_exc()}")
         raise
 
-def cleanup_temp_audio():
-    if os.path.exists(TEMP_AUDIO):
-        try:
-            os.remove(TEMP_AUDIO)
-            print("🧹 Temporary audio file cleaned up")
-        except Exception as e:
-            print(f"⚠️ Could not remove temp audio file: {e}")
-
-def transcribe_video_or_url(source: str) -> str:
+def transcribe_audio_from_video(video_url, video_id=None, cookies_path=None):
     """
-    Top-level convenience function:
-    - if source is a local file path and exists -> transcribe local file
-    - else treat as URL/YouTube ID -> download audio then transcribe
-    Returns transcribed (English) text.
+    Main entry point:
+    1. Try captions (fastest).
+    2. If no captions, download audio with yt-dlp.
+    3. Transcribe audio.
+    4. Clean up.
+    Returns: transcript text.
     """
-    print(f"🎯 Starting transcription for: {source}")
+    print(f"🎬 Processing video: {video_url} (ID: {video_id})")
     
-    # If it's a local file that exists, use it directly with whisper
-    if os.path.exists(source):
-        print("📁 Using local file")
-        audio_path = source
-        cleanup_needed = False
-    else:
-        print("🌐 Downloading from URL")
-        audio_path = download_audio_from_url(source)
-        cleanup_needed = True
-
+    # 1. Try Captions
+    if video_id:
+        text = get_transcript_from_youtube_captions(video_id)
+        if text and len(text) > 50:
+            return text
+    
+    # 2. Download & Transcribe
+    temp_audio = f"temp_{video_id if video_id else 'audio'}.mp3"
     try:
-        text = transcribe_and_translate_to_english(audio_path)
+        audio_path = download_audio_with_ytdlp(video_url, cookiefile=cookies_path, outpath=temp_audio)
+        text = transcribe_audio_file(audio_path)
         return text
-    except Exception as e:
-        print(f"❌ Transcription process failed: {e}")
-        return f"Transcription failed: {str(e)}\n\nPlease try a different YouTube video or check if the video is available."
     finally:
-        # If we downloaded to temp_audio.mp3, remove it
-        if cleanup_needed and audio_path == TEMP_AUDIO:
-            cleanup_temp_audio()
+        # 4. Clean up
+        if os.path.exists(temp_audio):
+            try:
+                os.remove(temp_audio)
+                print("🧹 Temp file cleaned.")
+            except:
+                pass

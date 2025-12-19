@@ -75,8 +75,16 @@
    cp .env.example .env
    # Edit .env and add your API keys
    
-   # Run the backend
-   python app.py
+   # Install & Start Redis (Required for Background Tasks)
+   # Mac: brew install redis && brew services start redis
+   # Linux: sudo apt-get install redis-server && sudo service redis-server start
+   
+   # Run the application (Two Terminals)
+   # Terminal 1: Background Worker
+   celery -A tasks.celery worker --loglevel=info -Q default -c 1
+   
+   # Terminal 2: API Server
+   gunicorn app:app --bind 0.0.0.0:7860
    \`\`\`
 
 3. **Set up the frontend**

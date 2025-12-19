@@ -296,53 +296,61 @@ def analyze_comments():
 @app.route('/summarize-video', methods=['POST'])
 @token_required
 def summarize_video():
+    """
+    Enqueues a video summarization task via Celery.
+    """
     try:
         data = request.get_json()
         if not data:
             return jsonify({'error': 'No JSON data provided'}), 400
             
         youtube_url = data.get('url')
+        cookies_path = data.get('cookies_path') # Optional
         
         if not youtube_url:
             return jsonify({'error': 'YouTube URL is required'}), 400
         
-        # Lazy load dependencies
-        from Scraping.transcribe import transcribe_video_or_url
-        from Summarise.summarize import summarize_transcription_file
+        # Lazy import of tasks to avoid circular imports if app is imported by tasks
+        from tasks import transcribe_and_summarize
         
-        print(f"🎥 Summarizing video for: {youtube_url}")
-        request_id = str(uuid.uuid4())[:8]
-        transcription_file = f"transcription_{request_id}.txt"
-        summary_file = f"summary_{request_id}.txt"
+        print(f"📨 Enqueuing summarization task for: {youtube_url}")
         
-        transcription = transcribe_video_or_url(youtube_url)
-        
-        with open(transcription_file, 'w', encoding='utf-8') as f:
-            f.write(transcription)
-        
-        summary_result = summarize_transcription_file(transcription_file, summary_file)
-        
-        with open(summary_file, 'r', encoding='utf-8') as f:
-            full_summary = f.read()
-        
-        # Cleanup
-        for file in [transcription_file, summary_file]:
-            if os.path.exists(file):
-                os.remove(file)
+        # Enqueue Task
+        # video_id extraction happens inside the task or wrapper, but we pass URL primarily
+        task = transcribe_and_summarize.delay(youtube_url, None, cookies_path)
         
         return jsonify({
-            'type': 'summary',
-            'success': True,
-            'transcription_length': len(transcription),
-            'transcription_preview': transcription[:500] + "..." if len(transcription) > 500 else transcription,
-            'full_summary': full_summary,
-            'section_summaries': summary_result.get('sections', []),
-            'final_summary': summary_result.get('final_summary', '')
-        })
+            "message": "Task submitted",
+            "task_id": task.id
+        }), 202
         
     except Exception as e:
         print(f"❌ Error in summarize-video: {str(e)}")
         return jsonify({'error': f'Video summarization failed: {str(e)}'}), 500
+
+from tasks import celery
+from celery.result import AsyncResult
+
+@app.route('/task-status/<task_id>', methods=['GET'])
+def get_task_status(task_id):
+    """
+    Check status of a background task.
+    """
+    try:
+        task_result = AsyncResult(task_id, app=celery)
+        result = {
+            "task_id": task_id,
+            "status": task_result.status,
+        }
+        
+        if task_result.status == 'SUCCESS':
+            result["result"] = task_result.result
+        elif task_result.status == 'FAILURE':
+            result["error"] = str(task_result.result)
+        
+        return jsonify(result)
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
 
 @app.route('/full-analysis', methods=['POST'])
 @token_required
