@@ -16,5 +16,5 @@ COPY . .
 
 ENV TOKENIZERS_PARALLELISM=false
 
-# Render/Heroku-style platforms provide $PORT
-CMD gunicorn app:app --bind 0.0.0.0:${PORT:-5001} --timeout 120 --workers 1
+# Hugging Face Spaces (Docker) expects the app to listen on port 7860
+CMD gunicorn app:app --bind 0.0.0.0:7860 --timeout 120 --workers 1
