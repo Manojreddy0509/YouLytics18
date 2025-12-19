@@ -185,6 +185,11 @@ except Exception as e:
     SUMMARIZE_AVAILABLE = False
     print(f"❌ Summarization import failed: {e}")
 
+# Health check endpoint for deployment platforms
+@app.route('/health')
+def health():
+    return jsonify({"status": "healthy"}), 200
+
 @app.route('/')
 def home():
     return jsonify({
