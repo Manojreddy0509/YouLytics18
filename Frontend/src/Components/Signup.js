@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { UserPlus, AlertCircle } from 'lucide-react';
 
+const API_BASE_URL = process.env.REACT_APP_API_BASE_URL || 'http://127.0.0.1:5001';
+
 const Signup = ({ onLogin, switchToLogin }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -26,7 +28,7 @@ const Signup = ({ onLogin, switchToLogin }) => {
     }
 
     try {
-      const response = await fetch('http://127.0.0.1:5001/register', {
+      const response = await fetch(`${API_BASE_URL}/register`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

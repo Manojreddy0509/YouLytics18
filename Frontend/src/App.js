@@ -4,6 +4,8 @@ import './App.css';
 import Login from './Components/Login';
 import Signup from './Components/Signup';
 
+const API_BASE_URL = process.env.REACT_APP_API_BASE_URL || 'http://127.0.0.1:5001';
+
 const App = () => {
   const [url, setUrl] = useState('');
   const [loading, setLoading] = useState(false);
@@ -73,7 +75,7 @@ const App = () => {
           endpoint = '/full-analysis';
       }
 
-      const response = await fetch(`http://127.0.0.1:5001${endpoint}`, {
+      const response = await fetch(`${API_BASE_URL}${endpoint}`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
