@@ -44,10 +44,10 @@ def download_audio_from_url(url: str) -> str:
     ]
 
     # --- DNS MONKEY PATCH ---
-    # This is the "Nuclear Option" to force Python to see www.youtube.com and m.youtube.com
+    # This is necessary because the hosting environment fails to resolve www.youtube.com
     import socket
     
-    # 1. Find a working IP
+    # 1. Find a working IP from accessible Google domains
     working_ip = None
     print("--- 🕵️ DNS Hunter ---")
     for domain in ['youtube.com', 'm.youtube.com', 'google.com', 'youtube.googleapis.com']:
@@ -59,89 +59,66 @@ def download_audio_from_url(url: str) -> str:
         except:
             continue
     
-    if not working_ip:
-        print("❌ CRITICAL: Could not find ANY working IP for Google/YouTube services.")
-    else:
+    if working_ip:
         print(f"🎯 Locking target IP: {working_ip}")
-        
-        # 2. Monkey Patch socket.getaddrinfo
-        # Store original so we don't break other lookups
+        # Monkey Patch socket.getaddrinfo
         if not getattr(socket, '_original_getaddrinfo', None):
             socket._original_getaddrinfo = socket.getaddrinfo
 
         def patched_getaddrinfo(host, port, family=0, type=0, proto=0, flags=0):
-            # Intercept www.youtube.com AND m.youtube.com and return our working IP
+            # Intercept www.youtube.com AND m.youtube.com
             if host in ['www.youtube.com', 'm.youtube.com']:
-                # print(f"🛡️ Intercepting DNS lookup for {host} -> {working_ip}")
-                # Return standard getaddrinfo structure for the WORKING IP
                 return socket._original_getaddrinfo(working_ip, port, family, type, proto, flags)
-            
-            # Passthrough everything else
             return socket._original_getaddrinfo(host, port, family, type, proto, flags)
 
         socket.getaddrinfo = patched_getaddrinfo
-        print("💉 DNS Monkey Patch applied successfully (covering www/m subdomains).")
+        print("💉 DNS Monkey Patch applied successfully.")
     print("----------------------")
 
-    # --- COOKIES HANDLING ---
-    # Check for YOUTUBE_COOKIES env var and create file if it exists
-    yt_cookies_content = os.getenv("YOUTUBE_COOKIES")
-    if yt_cookies_content:
-        print("🍪 Found YOUTUBE_COOKIES environment variable. Creating cookies.txt...")
+    # Check for YOUTUBE_COOKIES env var (optional, but recommended if 429/403 errors occur)
+    if os.getenv("YOUTUBE_COOKIES"):
+        print("🍪 Cookies detected in environment.")
         with open("cookies.txt", "w") as f:
-            f.write(yt_cookies_content)
+            f.write(os.getenv("YOUTUBE_COOKIES"))
         YTDLP_COOKIEFILE = "cookies.txt"
 
-    last_error = ""
-    for client_list in clients:
-        print(f"🔄 Attempting download with clients: {client_list}")
-        ydl_opts = {
-            'format': 'bestaudio/best',
-            'outtmpl': 'temp_audio.%(ext)s',
-            'quiet': False,
-            'no_warnings': False,
-            'nocheckcertificate': True,
-            'geo_bypass': True,
-            # FORCE IPv4 to avoid resolution issues on HF
-            'source_address': '0.0.0.0',
-            # Add DNS override if we found a working IP
-            'extractor_args': {
-                'youtube': {
-                    'player_client': client_list,
-                }
-            },
-            'postprocessors': [
-                {
-                    'key': 'FFmpegExtractAudio',
-                    'preferredcodec': 'mp3',
-                    'preferredquality': '192',
-                }
-            ],
-        }
+    # Simplified, robust extraction options
+    ydl_opts = {
+        'format': 'bestaudio/best',
+        'outtmpl': 'temp_audio.%(ext)s',
+        'quiet': False,
+        'no_warnings': False,
+        'nocheckcertificate': True,
+        'geo_bypass': True,
+        # Use IPv4 source address to avoid IPv6 blocks
+        'source_address': '0.0.0.0', 
+        # Use a mobile client which is often less restricted
+        'extractor_args': {
+            'youtube': {
+                'player_client': ['android', 'ios'],
+            }
+        },
+        'postprocessors': [
+            {
+                'key': 'FFmpegExtractAudio',
+                'preferredcodec': 'mp3',
+                'preferredquality': '192',
+            }
+        ],
+    }
 
-        # Add cookies if provided
-        if YTDLP_COOKIEFILE:
-            ydl_opts['cookiefile'] = YTDLP_COOKIEFILE
-        elif os.path.exists("cookies.txt"):
-            ydl_opts['cookiefile'] = "cookies.txt"
-        
-        # Ensure we have some default headers if none provided (yt-dlp handles this, but good to ensure referer)
-        ydl_opts['http_headers'] = {
-             'Referer': 'https://www.youtube.com/',
-        }
+    if YTDLP_COOKIEFILE and os.path.exists(YTDLP_COOKIEFILE):
+        ydl_opts['cookiefile'] = YTDLP_COOKIEFILE
 
-        try:
-            with yt_dlp.YoutubeDL(ydl_opts) as ydl:
-                ydl.download([url])
-            print("✅ Audio download completed successfully!")
-            return TEMP_AUDIO
-        except Exception as e:
-            last_error = str(e)
-            print(f"⚠️ Download attempt failed with {client_list}: {e}")
-            continue
-
-    print(f"❌ All download attempts failed. Last error: {last_error}")
-    raise Exception(f"Could not download video: {last_error}")
+    try:
+        print(f"⬇️ Starting download for: {url}")
+        with yt_dlp.YoutubeDL(ydl_opts) as ydl:
+            ydl.download([url])
+        print("✅ Audio download completed successfully!")
+        return TEMP_AUDIO
+    except Exception as e:
+        print(f"❌ Download failed: {e}")
+        raise Exception(f"Video download failed. The server might be blocked by YouTube. Error: {str(e)}")
 
 def transcribe_and_translate_to_english(audio_path: str, whisper_model_size: str = WHISPER_MODEL_SIZE) -> str:
     """
