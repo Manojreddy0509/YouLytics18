@@ -21,7 +21,7 @@ const App = () => {
   useEffect(() => {
     const savedToken = localStorage.getItem('token');
     const savedUser = localStorage.getItem('user');
-    
+
     if (savedToken && savedUser) {
       setToken(savedToken);
       setUser(JSON.parse(savedUser));
@@ -58,10 +58,10 @@ const App = () => {
     setLoading(true);
     setError('');
     setData(null);
-    
+
     try {
       let endpoint = '';
-      switch(analysisType) {
+      switch (analysisType) {
         case 'comments':
           endpoint = '/analyze-comments';
           break;
@@ -88,11 +88,11 @@ const App = () => {
         const errorData = await response.json();
         throw new Error(errorData.error || `Server error: ${response.status}`);
       }
-      
+
       const result = await response.json();
       setData(result);
     } catch (err) {
-      setError(`Failed to connect to the server. Make sure the backend is running on http://localhost:5001. Error: ${err.message}`);
+      setError(`Connection failed: ${err.message}. Please check if the backend is running and reachable.`);
     } finally {
       setLoading(false);
     }
@@ -115,7 +115,7 @@ const App = () => {
         <span className="stat-percentage">{percentage}%</span>
       </div>
       <div className="stat-bar">
-        <div 
+        <div
           className={`stat-bar-fill ${color}`}
           style={{ width: `${percentage}%` }}
         ></div>
@@ -181,7 +181,7 @@ const App = () => {
             {summaryData.section_count || summaryData.chunk_count || 0} sections
           </span>
         </div>
-        
+
         <div className="summary-content">
           {/* Final Summary */}
           <div className="summary-card highlight">
@@ -265,7 +265,7 @@ const App = () => {
             <p className="brand-subtitle">Advanced YouTube Analysis Platform</p>
           </div>
         </div>
-        
+
         {user && (
           <div className="user-info">
             <User size={16} />
@@ -306,7 +306,7 @@ const App = () => {
         <div className="control-section">
           <div className="analysis-type-selector">
             <div className="type-buttons">
-              <button 
+              <button
                 className={`type-btn ${analysisType === 'full' ? 'active' : ''}`}
                 onClick={() => setAnalysisType('full')}
               >
@@ -314,7 +314,7 @@ const App = () => {
                 Full Analysis
                 <span>Comments + Summary</span>
               </button>
-              <button 
+              <button
                 className={`type-btn ${analysisType === 'comments' ? 'active' : ''}`}
                 onClick={() => setAnalysisType('comments')}
               >
@@ -322,7 +322,7 @@ const App = () => {
                 Comments Only
                 <span>Sentiment Analysis</span>
               </button>
-              <button 
+              <button
                 className={`type-btn ${analysisType === 'summary' ? 'active' : ''}`}
                 onClick={() => setAnalysisType('summary')}
               >
@@ -347,8 +347,8 @@ const App = () => {
                 />
                 <div className="input-decoration"></div>
               </div>
-              <button 
-                onClick={analyzeContent} 
+              <button
+                onClick={analyzeContent}
                 disabled={loading}
                 className={`analyze-btn ${analysisType}`}
               >
@@ -360,9 +360,9 @@ const App = () => {
                 ) : (
                   <>
                     <Sparkles size={20} />
-                    {analysisType === 'comments' ? 'Analyze Comments' : 
-                     analysisType === 'summary' ? 'Summarize Video' : 
-                     'Run Full Analysis'}
+                    {analysisType === 'comments' ? 'Analyze Comments' :
+                      analysisType === 'summary' ? 'Summarize Video' :
+                        'Run Full Analysis'}
                   </>
                 )}
               </button>
@@ -433,7 +433,7 @@ const App = () => {
                       <span className="total-count">{data.comments_analysis?.total_comments || data.total_comments}</span>
                     </div>
                   </div>
-                  
+
                   <StatCard
                     title="Positive"
                     count={data.comments_analysis?.positive?.count || data.positive?.count}
@@ -441,7 +441,7 @@ const App = () => {
                     color="positive"
                     icon={<ThumbsUp size={20} />}
                   />
-                  
+
                   <StatCard
                     title="Negative"
                     count={data.comments_analysis?.negative?.count || data.negative?.count}
@@ -449,7 +449,7 @@ const App = () => {
                     color="negative"
                     icon={<ThumbsDown size={20} />}
                   />
-                  
+
                   <StatCard
                     title="Neutral"
                     count={data.comments_analysis?.neutral?.count || data.neutral?.count}
@@ -466,13 +466,13 @@ const App = () => {
                     title="Positive Comments"
                     color="positive"
                   />
-                  
+
                   <CommentSection
                     comments={data.comments_analysis?.negative?.comments || data.negative?.comments || []}
                     title="Negative Comments"
                     color="negative"
                   />
-                  
+
                   <CommentSection
                     comments={data.comments_analysis?.neutral?.comments || data.neutral?.comments || []}
                     title="Neutral Comments"
@@ -489,7 +489,7 @@ const App = () => {
 
             {/* Reset Button */}
             <div className="action-section">
-              <button 
+              <button
                 onClick={() => {
                   setData(null);
                   setUrl('');

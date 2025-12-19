@@ -40,20 +40,9 @@ def download_audio_from_url(url: str) -> str:
         'outtmpl': 'temp_audio.%(ext)s',
         'quiet': False,
         'no_warnings': False,
-        # Common YouTube hardening options (403/consent/age-gate often need one of these)
-        'geo_bypass': True,
         'nocheckcertificate': True,
-        # Prefer alternate client implementations if the default web player gets blocked
-        'extractor_args': {
-            'youtube': {
-                'player_client': ['android', 'web']
-            }
-        },
-        # Simulate a real browser
         'http_headers': {
             'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0 Safari/537.36',
-            'Accept-Language': 'en-US,en;q=0.9',
-            'Referer': 'https://www.youtube.com/',
         },
         'postprocessors': [
             {
@@ -63,6 +52,14 @@ def download_audio_from_url(url: str) -> str:
             }
         ],
     }
+
+    # Add a simple DNS check print
+    try:
+        import socket
+        ip = socket.gethostbyname('www.youtube.com')
+        print(f"🌐 DNS Check: www.youtube.com resolved to {ip}")
+    except Exception as dns_err:
+        print(f"⚠️ DNS Check Failed: {dns_err}")
 
     # Optional cookies (helps with 403/age-restricted/private videos)
     if YTDLP_COOKIEFILE:
