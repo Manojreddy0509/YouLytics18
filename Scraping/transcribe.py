@@ -43,19 +43,29 @@ def download_audio_from_url(url: str) -> str:
         ['tv', 'web']
     ]
 
-    # DNS Debugging Block
-    print("--- 🌐 Network Diagnostics ---")
+    # DNS Debugging and Override Block
+    print("--- 🌐 Network Diagnostics & DNS Override ---")
+    custom_dns_override = {}
     try:
         import socket
-        for domain in ['google.com', 'www.youtube.com', 'youtube.googleapis.com']:
+        domains_to_test = ['google.com', 'www.youtube.com', 'youtube.com', 'm.youtube.com', 'youtube.googleapis.com']
+        
+        for domain in domains_to_test:
             try:
                 ip = socket.gethostbyname(domain)
                 print(f"✅ Resolved {domain} to {ip}")
+                # Save the IP for common domains to use as overrides if needed
+                if "youtube.com" in domain and not custom_dns_override.get("www.youtube.com"):
+                    custom_dns_override["www.youtube.com"] = ip
             except Exception as e:
                 print(f"❌ Failed to resolve {domain}: {e}")
+
+        # If www.youtube.com failed but youtube.com worked, try to use its IP
+        if "www.youtube.com" not in [d for d in domains_to_test if "✅" in d] and custom_dns_override.get("www.youtube.com"):
+            print(f"🔧 Applying DNS Override: Mapping 'www.youtube.com' to {custom_dns_override['www.youtube.com']}")
     except Exception as e:
         print(f"❌ Diagnostic error: {e}")
-    print("------------------------------")
+    print("---------------------------------------------")
 
     last_error = ""
     for client_list in clients:
@@ -69,6 +79,7 @@ def download_audio_from_url(url: str) -> str:
             'geo_bypass': True,
             # FORCE IPv4 to avoid resolution issues on HF
             'source_address': '0.0.0.0',
+            # Add DNS override if we found a working IP
             'extractor_args': {
                 'youtube': {
                     'player_client': client_list,
