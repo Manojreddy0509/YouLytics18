@@ -1,3 +1,12 @@
+---
+title: YouLytics Backend
+emoji: 📊
+colorFrom: red
+colorTo: purple
+sdk: docker
+pinned: false
+---
+
 # YouLytics - Advanced YouTube Analytics Platform
 
 ![YouTube Analytics](https://img.shields.io/badge/YouTube-Analytics-red?logo=youtube)
