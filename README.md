@@ -1,4 +1,12 @@
 
+---
+title: YouLytics Backend
+emoji: 📊
+colorFrom: blue
+colorTo: purple
+sdk: docker
+pinned: false
+---
 
 # YouLytics - Advanced YouTube Analytics Platform
 
