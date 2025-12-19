@@ -163,27 +163,24 @@ def token_required(f):
     decorator.__name__ = f.__name__
     return decorator
 
-# Import comment analysis
-try:
-    from Scraping.P1 import get_vid
-    from Scraping.P2 import get_comments
-    from Scraping.model import PretrainedSentimentAnalyzer
-    analyzer = PretrainedSentimentAnalyzer()
-    COMMENT_AVAILABLE = True
-    print("✅ Comment analysis modules loaded successfully")
-except Exception as e:
-    COMMENT_AVAILABLE = False
-    print(f"❌ Comment analysis import failed: {e}")
+# Lazy loading for ML models to reduce startup memory
+# Models will be loaded on first request, not at startup
+COMMENT_AVAILABLE = True  # Set to True by default, will be checked on use
+SUMMARIZE_AVAILABLE = True
+analyzer = None  # Will be loaded lazily
 
-# Import summarization
-try:
-    from Scraping.transcribe import transcribe_video_or_url
-    from Summarise.summarize import summarize_transcription_file
-    SUMMARIZE_AVAILABLE = True
-    print("✅ Summarization modules loaded successfully")
-except Exception as e:
-    SUMMARIZE_AVAILABLE = False
-    print(f"❌ Summarization import failed: {e}")
+def get_analyzer():
+    """Lazy load the sentiment analyzer on first use"""
+    global analyzer
+    if analyzer is None:
+        try:
+            from Scraping.model import PretrainedSentimentAnalyzer
+            analyzer = PretrainedSentimentAnalyzer()
+            print("✅ Sentiment analyzer loaded")
+        except Exception as e:
+            print(f"❌ Failed to load analyzer: {e}")
+            raise
+    return analyzer
 
 # Health check endpoint for deployment platforms
 @app.route('/health')
@@ -220,13 +217,17 @@ def analyze_comments():
         if not youtube_url:
             return jsonify({'error': 'YouTube URL is required'}), 400
         
-        if not COMMENT_AVAILABLE:
-            return jsonify({'error': 'Comment analysis not available'}), 500
-            
+        # Lazy load dependencies
+        from Scraping.P1 import get_vid
+        from Scraping.P2 import get_comments
+        
         print(f"🔍 Analyzing comments for: {youtube_url}")
         video_id = get_vid(youtube_url)
-        comments = get_comments(video_id, YOUTUBE_API_KEY)  # Use env variable
-        sentiment_data = analyzer.analyze_all_comments(comments)
+        comments = get_comments(video_id, YOUTUBE_API_KEY)
+        
+        # Lazy load analyzer on first use
+        current_analyzer = get_analyzer()
+        sentiment_data = current_analyzer.analyze_all_comments(comments)
         
         total = len(comments)
         response = {
@@ -268,9 +269,10 @@ def summarize_video():
         if not youtube_url:
             return jsonify({'error': 'YouTube URL is required'}), 400
         
-        if not SUMMARIZE_AVAILABLE:
-            return jsonify({'error': 'Video summarization is not available'}), 500
-            
+        # Lazy load dependencies
+        from Scraping.transcribe import transcribe_video_or_url
+        from Summarise.summarize import summarize_transcription_file
+        
         print(f"🎥 Summarizing video for: {youtube_url}")
         request_id = str(uuid.uuid4())[:8]
         transcription_file = f"transcription_{request_id}.txt"
@@ -322,10 +324,16 @@ def full_analysis():
         
         # Comments analysis
         comments_data = {}
-        if COMMENT_AVAILABLE:
+        try:
+            from Scraping.P1 import get_vid
+            from Scraping.P2 import get_comments
+            
             video_id = get_vid(youtube_url)
-            comments = get_comments(video_id, YOUTUBE_API_KEY)  # Use env variable
-            sentiment_data = analyzer.analyze_all_comments(comments)
+            comments = get_comments(video_id, YOUTUBE_API_KEY)
+            
+            # Lazy load analyzer
+            current_analyzer = get_analyzer()
+            sentiment_data = current_analyzer.analyze_all_comments(comments)
             
             total = len(comments)
             comments_data = {
@@ -347,12 +355,14 @@ def full_analysis():
                     'comments': sentiment_data['neutral']
                 }
             }
-        else:
-            comments_data = {'error': 'Comment analysis not available'}
+        except Exception as comment_error:
+            comments_data = {'error': f'Comment analysis failed: {str(comment_error)}'}
         
         # Video summarization
         summary_data = {}
-        if SUMMARIZE_AVAILABLE:
+        try:
+            from Scraping.transcribe import transcribe_video_or_url
+            from Summarise.summarize import summarize_transcription_file
             try:
                 request_id = str(uuid.uuid4())[:8]
                 transcription_file = f"transcription_{request_id}.txt"
@@ -383,8 +393,8 @@ def full_analysis():
                 }
             except Exception as e:
                 summary_data = {'error': f'Summarization failed: {str(e)}'}
-        else:
-            summary_data = {'error': 'Video summarization not available'}
+        except ImportError as import_error:
+            summary_data = {'error': f'Video summarization not available: {str(import_error)}'}
         
         return jsonify({
             'type': 'full', 
