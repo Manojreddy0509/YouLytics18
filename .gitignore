@@ -61,5 +61,6 @@ Frontend/yarn-error.log*
 
 # Temporary files
 temp_audio.*
+transcription.txt
 transcription_*.txt
 summary_*.txt

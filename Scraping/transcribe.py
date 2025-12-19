@@ -17,6 +17,12 @@ WHISPER_MODEL_SIZE = os.getenv("WHISPER_MODEL_SIZE", "base").strip()
 TEMP_AUDIO = "temp_audio.mp3"
 TRANSCRIPTION_FILE = "transcription.txt"
 
+# Optional yt-dlp config to handle restricted/403 videos
+# - YTDLP_COOKIEFILE: path to a Netscape cookies.txt file
+# - YTDLP_COOKIES_FROM_BROWSER: e.g. "chrome", "firefox", "safari" (requires browser profile access)
+YTDLP_COOKIEFILE = os.getenv("YTDLP_COOKIEFILE", "").strip()
+YTDLP_COOKIES_FROM_BROWSER = os.getenv("YTDLP_COOKIES_FROM_BROWSER", "").strip()
+
 def download_audio_from_url(url: str) -> str:
     """
     Download best audio for a given URL (supports YouTube, etc.)
@@ -34,14 +40,20 @@ def download_audio_from_url(url: str) -> str:
         'outtmpl': 'temp_audio.%(ext)s',
         'quiet': False,
         'no_warnings': False,
-        # ADD THESE OPTIONS TO FIX 403 ERROR:
+        # Common YouTube hardening options (403/consent/age-gate often need one of these)
+        'geo_bypass': True,
+        'nocheckcertificate': True,
+        # Prefer alternate client implementations if the default web player gets blocked
+        'extractor_args': {
+            'youtube': {
+                'player_client': ['android', 'web']
+            }
+        },
+        # Simulate a real browser
         'http_headers': {
-            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
-            'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
-            'Accept-Language': 'en-us,en;q=0.5',
-            'Accept-Encoding': 'gzip,deflate',
-            'Accept-Charset': 'ISO-8859-1,utf-8;q=0.7,*;q=0.7',
-            'Connection': 'keep-alive',
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0 Safari/537.36',
+            'Accept-Language': 'en-US,en;q=0.9',
+            'Referer': 'https://www.youtube.com/',
         },
         'postprocessors': [
             {
@@ -51,6 +63,12 @@ def download_audio_from_url(url: str) -> str:
             }
         ],
     }
+
+    # Optional cookies (helps with 403/age-restricted/private videos)
+    if YTDLP_COOKIEFILE:
+        ydl_opts['cookiefile'] = YTDLP_COOKIEFILE
+    if YTDLP_COOKIES_FROM_BROWSER:
+        ydl_opts['cookiesfrombrowser'] = (YTDLP_COOKIES_FROM_BROWSER,)
     
     try:
         with yt_dlp.YoutubeDL(ydl_opts) as ydl:
@@ -74,10 +92,17 @@ def download_audio_alternative(url: str) -> str:
         'outtmpl': 'temp_audio.%(ext)s',
         'quiet': False,
         'no_warnings': False,
+        'geo_bypass': True,
+        'nocheckcertificate': True,
         # Simulate a browser more effectively
-        'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
+        'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0 Safari/537.36',
         'referer': 'https://www.youtube.com/',
         'extract_flat': False,
+        'extractor_args': {
+            'youtube': {
+                'player_client': ['android', 'web']
+            }
+        },
         'postprocessors': [
             {
                 'key': 'FFmpegExtractAudio',
@@ -86,6 +111,11 @@ def download_audio_alternative(url: str) -> str:
             }
         ],
     }
+
+    if YTDLP_COOKIEFILE:
+        ydl_opts['cookiefile'] = YTDLP_COOKIEFILE
+    if YTDLP_COOKIES_FROM_BROWSER:
+        ydl_opts['cookiesfrombrowser'] = (YTDLP_COOKIES_FROM_BROWSER,)
     
     try:
         with yt_dlp.YoutubeDL(ydl_opts) as ydl:

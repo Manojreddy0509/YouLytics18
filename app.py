@@ -25,6 +25,7 @@ import sqlite3
 import bcrypt
 import jwt
 import datetime
+from jwt import ExpiredSignatureError, InvalidTokenError
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = os.getenv('SECRET_KEY', 'fallback-secret-key')
@@ -78,6 +79,10 @@ def register():
                 'exp': datetime.datetime.utcnow() + datetime.timedelta(days=7)
             }, JWT_SECRET, algorithm='HS256')
 
+            # PyJWT may return bytes depending on version; normalize to str for JSON.
+            if isinstance(token, bytes):
+                token = token.decode('utf-8')
+
             return jsonify({
                 'message': 'User created successfully',
                 'token': token,
@@ -117,6 +122,10 @@ def login():
                 'exp': datetime.datetime.utcnow() + datetime.timedelta(days=7)
             }, JWT_SECRET, algorithm='HS256')
 
+            # PyJWT may return bytes depending on version; normalize to str for JSON.
+            if isinstance(token, bytes):
+                token = token.decode('utf-8')
+
             return jsonify({
                 'message': 'Login successful',
                 'token': token,
@@ -131,20 +140,26 @@ def login():
 # JWT token required decorator
 def token_required(f):
     def decorator(*args, **kwargs):
-        token = request.headers.get('Authorization')
-        
-        if not token:
+        auth_header = request.headers.get('Authorization')
+
+        if not auth_header:
             return jsonify({'error': 'Token is missing'}), 401
-        
+
+        # Expected: "Bearer <jwt>". Be tolerant of quotes / byte-string repr.
+        token = auth_header.replace('Bearer ', '').strip().strip('"').strip("'")
+        if token.startswith("b'") and token.endswith("'"):
+            token = token[2:-1]
+
         try:
-            token = token.replace('Bearer ', '')
             data = jwt.decode(token, JWT_SECRET, algorithms=['HS256'])
             request.user = data
-        except:
+        except ExpiredSignatureError:
+            return jsonify({'error': 'Token has expired'}), 401
+        except InvalidTokenError:
             return jsonify({'error': 'Token is invalid'}), 401
-        
+
         return f(*args, **kwargs)
-    
+
     decorator.__name__ = f.__name__
     return decorator
 
