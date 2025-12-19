@@ -43,29 +43,45 @@ def download_audio_from_url(url: str) -> str:
         ['tv', 'web']
     ]
 
-    # DNS Debugging and Override Block
-    print("--- 🌐 Network Diagnostics & DNS Override ---")
-    custom_dns_override = {}
-    try:
-        import socket
-        domains_to_test = ['google.com', 'www.youtube.com', 'youtube.com', 'm.youtube.com', 'youtube.googleapis.com']
+    # --- DNS MONKEY PATCH ---
+    # This is the "Nuclear Option" to force Python to see www.youtube.com
+    import socket
+    
+    # 1. Find a working IP
+    working_ip = None
+    print("--- 🕵️ DNS Hunter ---")
+    for domain in ['youtube.com', 'm.youtube.com', 'google.com', 'youtube.googleapis.com']:
+        try:
+            ip = socket.gethostbyname(domain)
+            print(f"✅ Found working IP from {domain}: {ip}")
+            working_ip = ip
+            break
+        except:
+            continue
+    
+    if not working_ip:
+        print("❌ CRITICAL: Could not find ANY working IP for Google/YouTube services.")
+    else:
+        print(f"🎯 Locking target IP: {working_ip}")
         
-        for domain in domains_to_test:
-            try:
-                ip = socket.gethostbyname(domain)
-                print(f"✅ Resolved {domain} to {ip}")
-                # Save the IP for common domains to use as overrides if needed
-                if "youtube.com" in domain and not custom_dns_override.get("www.youtube.com"):
-                    custom_dns_override["www.youtube.com"] = ip
-            except Exception as e:
-                print(f"❌ Failed to resolve {domain}: {e}")
+        # 2. Monkey Patch socket.getaddrinfo
+        # Store original so we don't break other lookups
+        if not getattr(socket, '_original_getaddrinfo', None):
+            socket._original_getaddrinfo = socket.getaddrinfo
 
-        # If www.youtube.com failed but youtube.com worked, try to use its IP
-        if "www.youtube.com" not in [d for d in domains_to_test if "✅" in d] and custom_dns_override.get("www.youtube.com"):
-            print(f"🔧 Applying DNS Override: Mapping 'www.youtube.com' to {custom_dns_override['www.youtube.com']}")
-    except Exception as e:
-        print(f"❌ Diagnostic error: {e}")
-    print("---------------------------------------------")
+        def patched_getaddrinfo(host, port, family=0, type=0, proto=0, flags=0):
+            # Intercept www.youtube.com and return our working IP
+            if host == 'www.youtube.com':
+                # print(f"🛡️ Intercepting DNS lookup for {host} -> {working_ip}")
+                # Return standard getaddrinfo structure for the WORKING IP
+                return socket._original_getaddrinfo(working_ip, port, family, type, proto, flags)
+            
+            # Passthrough everything else
+            return socket._original_getaddrinfo(host, port, family, type, proto, flags)
+
+        socket.getaddrinfo = patched_getaddrinfo
+        print("💉 DNS Monkey Patch applied successfully.")
+    print("----------------------")
 
     last_error = ""
     for client_list in clients:
