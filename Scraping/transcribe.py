@@ -43,6 +43,20 @@ def download_audio_from_url(url: str) -> str:
         ['tv', 'web']
     ]
 
+    # DNS Debugging Block
+    print("--- 🌐 Network Diagnostics ---")
+    try:
+        import socket
+        for domain in ['google.com', 'www.youtube.com', 'youtube.googleapis.com']:
+            try:
+                ip = socket.gethostbyname(domain)
+                print(f"✅ Resolved {domain} to {ip}")
+            except Exception as e:
+                print(f"❌ Failed to resolve {domain}: {e}")
+    except Exception as e:
+        print(f"❌ Diagnostic error: {e}")
+    print("------------------------------")
+
     last_error = ""
     for client_list in clients:
         print(f"🔄 Attempting download with clients: {client_list}")
@@ -53,6 +67,8 @@ def download_audio_from_url(url: str) -> str:
             'no_warnings': False,
             'nocheckcertificate': True,
             'geo_bypass': True,
+            # FORCE IPv4 to avoid resolution issues on HF
+            'source_address': '0.0.0.0',
             'extractor_args': {
                 'youtube': {
                     'player_client': client_list,
@@ -79,13 +95,6 @@ def download_audio_from_url(url: str) -> str:
             ydl_opts['cookiefile'] = "cookies.txt"
 
         try:
-            # Print DNS check for debugging
-            try:
-                import socket
-                socket.gethostbyname('www.youtube.com')
-            except:
-                pass
-
             with yt_dlp.YoutubeDL(ydl_opts) as ydl:
                 ydl.download([url])
             print("✅ Audio download completed successfully!")
