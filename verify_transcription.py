@@ -1,10 +1,11 @@
 import sys
 import os
+import traceback
 
 # Add the current directory to sys.path so we can import Scraping
 sys.path.append(os.getcwd())
 
-from Scraping.transcribe import transcribe_audio_from_video, init_whisper
+from Scraping.transcribe import transcribe_audio_from_video
 
 def main():
     if len(sys.argv) < 2:
@@ -25,27 +26,25 @@ def main():
     print(f"🆔 Video ID: {video_id}")
     
     try:
-        # Initialize whisper once
-        print("📥 Initializing Whisper...")
-        init_whisper("base")
-        
-        # Run transcription
         print("🎬 Running transcribe_audio_from_video...")
         transcript = transcribe_audio_from_video(video_url, video_id)
         
-        print("\n" + "="*50)
-        print("✅ SUCCESS!")
-        print(f"Length: {len(transcript)} characters")
-        print("Preview:")
-        print(transcript[:500] + "...")
-        print("="*50)
-        
+        if transcript:
+            print("\n" + "="*50)
+            print("✅ SUCCESS!")
+            print(f"Length: {len(transcript)} characters")
+            print(f"Preview:\n{transcript[:500]}...")
+            print("="*50)
+        else:
+            print("\n" + "x"*50)
+            print("❌ FAILED: No transcript returned.")
+            print("x"*50)
+            
     except Exception as e:
-        print("\n" + "!"*50)
-        print("❌ FAILURE!")
-        print(f"Error: {e}")
-        print("!"*50)
-        sys.exit(1)
+        print("\n" + "x"*50)
+        print(f"💥 CRITICAL ERROR: {e}")
+        traceback.print_exc()
+        print("x"*50)
 
 if __name__ == "__main__":
     main()

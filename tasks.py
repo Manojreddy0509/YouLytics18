@@ -2,7 +2,7 @@
 import os
 from celery import Celery
 from celery.signals import worker_process_init
-from Scraping.transcribe import transcribe_audio_from_video, init_whisper
+from Scraping.transcribe import transcribe_audio_from_video
 from Summarise.summarize import summarize_text, init_summarizer
 
 # Redis Configuration (Defaults for localhost, but likely overridden in prod)
@@ -20,7 +20,6 @@ def init_worker(**kwargs):
     """
     print("👷 Worker process initializing...")
     try:
-        init_whisper("base")
         init_summarizer()
         print("✅ Models initialized in worker process.")
     except Exception as e:
