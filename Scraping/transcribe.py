@@ -47,12 +47,19 @@ def get_transcript_from_youtube_captions(video_id):
         print(f"⚠️ Error fetching captions: {e}")
         return None
 
-def download_audio_with_ytdlp(video_url, cookiefile=None, outpath="temp_audio.mp3"):
+def download_audio_with_ytdlp(video_url, use_cookies=True, cookiefile=None, outpath="temp_audio.mp3"):
     """
     Robust audio download using yt-dlp.
     Handles DNS patching and cookie file usage logic internally.
+    
+    Args:
+        video_url: YouTube video URL
+        use_cookies: If True, attempt to use cookies. If False, skip cookies entirely.
+        cookiefile: Path to cookie file (optional)
+        outpath: Output path for audio file
     """
-    print(f"⬇️ Starting download for: {video_url}")
+    cookie_mode = "with cookies" if use_cookies else "WITHOUT cookies"
+    print(f"⬇️ Starting download for: {video_url} ({cookie_mode})")
     
     # --- DNS MONKEY PATCH (Retained from previous fix) ---
     working_ip = None
@@ -97,25 +104,26 @@ def download_audio_with_ytdlp(video_url, cookiefile=None, outpath="temp_audio.mp
         }],
     }
 
-    # Handle Cookies
-    # 1. Passed argument (highest priority)
-    # 2. Env var content (YOUTUBE_COOKIES) written to file
-    # 3. Env var pointer (YTDLP_COOKIEFILE)
-    
-    final_cookiefile = None
-    if cookiefile and os.path.exists(cookiefile):
-        final_cookiefile = cookiefile
-    elif os.getenv("YOUTUBE_COOKIES"):
-        # Create temp cookie file from env var
-        with open("cookies.txt", "w") as f:
-            f.write(os.getenv("YOUTUBE_COOKIES"))
-        final_cookiefile = "cookies.txt"
-    elif os.getenv("YTDLP_COOKIEFILE"):
-        final_cookiefile = os.getenv("YTDLP_COOKIEFILE")
+    # Handle Cookies - Only if use_cookies=True
+    if use_cookies:
+        final_cookiefile = None
+        if cookiefile and os.path.exists(cookiefile):
+            final_cookiefile = cookiefile
+        elif os.getenv("YOUTUBE_COOKIES"):
+            # Create temp cookie file from env var
+            with open("cookies.txt", "w") as f:
+                f.write(os.getenv("YOUTUBE_COOKIES"))
+            final_cookiefile = "cookies.txt"
+        elif os.getenv("YTDLP_COOKIEFILE"):
+            final_cookiefile = os.getenv("YTDLP_COOKIEFILE")
 
-    if final_cookiefile:
-        print(f"🍪 Using cookies from: {final_cookiefile}")
-        ydl_opts['cookiefile'] = final_cookiefile
+        if final_cookiefile:
+            print(f"🍪 Using cookies from: {final_cookiefile}")
+            ydl_opts['cookiefile'] = final_cookiefile
+        else:
+            print("⚠️ Cookies requested but none found")
+    else:
+        print("🔓 Attempting download without authentication")
 
     try:
         with yt_dlp.YoutubeDL(ydl_opts) as ydl:
@@ -136,11 +144,18 @@ def download_audio_with_ytdlp(video_url, cookiefile=None, outpath="temp_audio.mp
              raise Exception("Output file not found after download.")
 
     except Exception as e:
-        print(f"❌ Download failed: {e}")
-        msg = str(e)
-        if "Sign in" in msg or "cookies" in msg:
-            raise Exception("YouTube requires authentication (Cookies). Please configure YOUTUBE_COOKIES.")
-        raise
+        error_msg = str(e)
+        print(f"❌ Download failed: {error_msg}")
+        
+        # Return specific error type for better handling upstream
+        if "Sign in" in error_msg or "not a bot" in error_msg:
+            raise Exception("NEEDS_AUTH")
+        elif "Private video" in error_msg:
+            raise Exception("This video is private and cannot be accessed.")
+        elif "Video unavailable" in error_msg:
+            raise Exception("This video is unavailable or has been removed.")
+        else:
+            raise
 
 def transcribe_audio_file(audio_file_path):
     """
@@ -163,32 +178,110 @@ def transcribe_audio_file(audio_file_path):
 
 def transcribe_audio_from_video(video_url, video_id=None, cookies_path=None):
     """
-    Main entry point:
-    1. Try captions (fastest).
-    2. If no captions, download audio with yt-dlp.
-    3. Transcribe audio.
-    4. Clean up.
-    Returns: transcript text.
+    Main entry point with robust multi-tier fallback strategy:
+    1. Try YouTube API captions (fastest, no auth)
+    2. Try downloading without cookies (works for public videos)
+    3. Try downloading with cookies (if cookies are available)
+    4. Transcribe audio with Whisper
+    5. Clean up temp files
+    
+    Returns: transcript text
+    Raises: Exception with user-friendly error message if all methods fail
     """
     print(f"🎬 Processing video: {video_url} (ID: {video_id})")
-    
-    # 1. Try Captions
-    if video_id:
-        text = get_transcript_from_youtube_captions(video_id)
-        if text and len(text) > 50:
-            return text
-    
-    # 2. Download & Transcribe
     temp_audio = f"temp_{video_id if video_id else 'audio'}.mp3"
+    
+    # ═══════════════════════════════════════════════════════════
+    # TIER 1: Try YouTube API Captions (No Download Needed)
+    # ═══════════════════════════════════════════════════════════
+    if video_id:
+        print("📋 [TIER 1] Attempting to fetch YouTube captions via API...")
+        caption_text = get_transcript_from_youtube_captions(video_id)
+        if caption_text and len(caption_text) > 50:
+            print("✅ Successfully obtained captions from YouTube API")
+            return caption_text
+        print("⚠️ No suitable captions found, proceeding to audio download...")
+    
+    # ═══════════════════════════════════════════════════════════
+    # TIER 2: Try Download WITHOUT Cookies (Public Videos)
+    # ═══════════════════════════════════════════════════════════
+    print("🔓 [TIER 2] Attempting download WITHOUT authentication (public videos)...")
     try:
-        audio_path = download_audio_with_ytdlp(video_url, cookiefile=cookies_path, outpath=temp_audio)
-        text = transcribe_audio_file(audio_path)
-        return text
-    finally:
-        # 4. Clean up
-        if os.path.exists(temp_audio):
-            try:
-                os.remove(temp_audio)
-                print("🧹 Temp file cleaned.")
-            except:
-                pass
+        audio_path = download_audio_with_ytdlp(
+            video_url, 
+            use_cookies=False,  # Don't use cookies
+            outpath=temp_audio
+        )
+        print("✅ Download succeeded without authentication!")
+        try:
+            text = transcribe_audio_file(audio_path)
+            return text
+        finally:
+            cleanup_temp_file(temp_audio)
+    
+    except Exception as e:
+        error_msg = str(e)
+        
+        # If it's not an auth issue, this is a real error
+        if error_msg != "NEEDS_AUTH":
+            print(f"❌ Download failed with error: {error_msg}")
+            cleanup_temp_file(temp_audio)
+            raise Exception(f"Unable to download video: {error_msg}")
+        
+        # Auth required - try with cookies
+        print("🔐 Video requires authentication, attempting with cookies...")
+    
+    # ═══════════════════════════════════════════════════════════
+    # TIER 3: Try Download WITH Cookies (Restricted Videos)
+    # ═══════════════════════════════════════════════════════════
+    print("🍪 [TIER 3] Attempting download WITH cookies...")
+    
+    # Check if cookies are available
+    has_cookies = (
+        cookies_path and os.path.exists(cookies_path)
+    ) or os.getenv("YOUTUBE_COOKIES") or os.getenv("YTDLP_COOKIEFILE")
+    
+    if not has_cookies:
+        cleanup_temp_file(temp_audio)
+        raise Exception(
+            "This video requires authentication, but no cookies are configured. "
+            "Please add YouTube cookies to access age-restricted or members-only content. "
+            "See: https://github.com/yt-dlp/yt-dlp/wiki/FAQ#how-do-i-pass-cookies-to-yt-dlp"
+        )
+    
+    try:
+        audio_path = download_audio_with_ytdlp(
+            video_url,
+            use_cookies=True,
+            cookiefile=cookies_path,
+            outpath=temp_audio
+        )
+        print("✅ Download succeeded with cookie authentication!")
+        try:
+            text = transcribe_audio_file(audio_path)
+            return text
+        finally:
+            cleanup_temp_file(temp_audio)
+    
+    except Exception as e:
+        error_msg = str(e)
+        cleanup_temp_file(temp_audio)
+        
+        # Provide helpful error message
+        if error_msg == "NEEDS_AUTH":
+            raise Exception(
+                "Cookie authentication failed - your cookies may be expired or invalid. "
+                "Please update your YouTube cookies. "
+                "See: https://github.com/yt-dlp/yt-dlp/wiki/Extractors#exporting-youtube-cookies"
+            )
+        else:
+            raise Exception(f"Video download failed: {error_msg}")
+
+def cleanup_temp_file(filepath):
+    """Helper function to safely remove temporary files"""
+    if os.path.exists(filepath):
+        try:
+            os.remove(filepath)
+            print(f"🧹 Cleaned up temp file: {filepath}")
+        except Exception as e:
+            print(f"⚠️ Could not remove temp file {filepath}: {e}")
