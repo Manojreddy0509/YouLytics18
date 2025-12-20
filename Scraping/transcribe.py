@@ -62,23 +62,70 @@ def init_whisper(model_name="base"):
             print(f"❌ Failed to load Whisper model: {e}")
             raise
 
-def get_transcript_from_youtube_captions(video_id):
+def get_transcript_from_youtube_captions(video_id, cookies_path=None):
     """
     Tries to fetch transcripts using youtube_transcript_api.
-    Returns the transcript string or None if not found.
+    Uses list_transcripts for better robustness and supports cookies.
     """
     # Ensure Network is patched before API call
     apply_dns_patch()
     
     print(f"🔍 Checking for YouTube captions for ID: {video_id}")
+    
+    # Prepare cookies argument if file exists
+    cookies_arg = None
+    if cookies_path and os.path.exists(cookies_path):
+        cookies_arg = cookies_path
+    
     try:
-        transcript_list = YouTubeTranscriptApi.get_transcript(video_id)
-        # transcript_list is a list of dicts: {'text': '...', 'start': ...}
-        full_text = " ".join([t['text'] for t in transcript_list])
-        print("✅ Found YouTube captions.")
-        return full_text
-    except (TranscriptsDisabled, NoTranscriptFound):
-        print("⚠️ No captions found/disabled.")
+        # fetch lists of transcripts
+        transcript_list = YouTubeTranscriptApi.list_transcripts(video_id, cookies=cookies_arg)
+        
+        transcript = None
+        
+        # 1. Try manually created English
+        try:
+            transcript = transcript_list.find_manually_created_transcript(['en', 'en-US', 'en-GB'])
+            print("✅ Found manually created English captions.")
+        except:
+            pass
+            
+        # 2. Try auto-generated English
+        if not transcript:
+            try:
+                transcript = transcript_list.find_generated_transcript(['en', 'en-US', 'en-GB'])
+                print("✅ Found auto-generated English captions.")
+            except:
+                pass
+                
+        # 3. Fallback: Any English-ish transcript?
+        if not transcript:
+             for t in transcript_list:
+                if t.language_code.startswith('en'):
+                    transcript = t
+                    print(f"✅ Found English caption track: {t.language_code}")
+                    break
+        
+        # 4. Fallback: Translate whatever exists to English
+        if not transcript:
+            try:
+                # Get the first available transcript and translate it
+                first_transcript = next(iter(transcript_list))
+                if first_transcript.is_translatable:
+                    transcript = first_transcript.translate('en')
+                    print(f"✅ Translating captions from {first_transcript.language_code} to English.")
+            except:
+                pass
+
+        if transcript:
+            full_text = " ".join([t['text'] for t in transcript.fetch()])
+            return full_text
+        
+        print("⚠️ No suitable captions found.")
+        return None
+        
+    except (TranscriptsDisabled, NoTranscriptFound) as e:
+        print(f"⚠️ No captions found/disabled: {e}")
         return None
     except Exception as e:
         print(f"⚠️ Error fetching captions: {e}")
@@ -209,7 +256,7 @@ def transcribe_audio_from_video(video_url, video_id=None, cookies_path=None):
     # ═══════════════════════════════════════════════════════════
     if video_id:
         print("📋 [TIER 1] Attempting to fetch YouTube captions via API...")
-        caption_text = get_transcript_from_youtube_captions(video_id)
+        caption_text = get_transcript_from_youtube_captions(video_id, cookies_path=cookies_path)
         if caption_text and len(caption_text) > 50:
             print("✅ Successfully obtained captions from YouTube API")
             return caption_text
