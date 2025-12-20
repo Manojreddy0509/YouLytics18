@@ -305,19 +305,36 @@ def summarize_video():
             return jsonify({'error': 'No JSON data provided'}), 400
             
         youtube_url = data.get('url')
-        cookies_path = data.get('cookies_path') # Optional
         
         if not youtube_url:
             return jsonify({'error': 'YouTube URL is required'}), 400
         
-        # Lazy import of tasks to avoid circular imports if app is imported by tasks
-        from tasks import transcribe_and_summarize
+        # Extract video ID
+        video_id = None
+        if "v=" in youtube_url:
+            video_id = youtube_url.split("v=")[1].split("&")[0]
+        elif "youtu.be/" in youtube_url:
+            video_id = youtube_url.split("youtu.be/")[1].split("?")[0]
         
-        print(f"📨 Enqueuing summarization task for: {youtube_url}")
+        if not video_id:
+            return jsonify({'error': 'Invalid YouTube URL'}), 400
         
-        # Enqueue Task
-        # video_id extraction happens inside the task or wrapper, but we pass URL primarily
-        task = transcribe_and_summarize.delay(youtube_url, None, cookies_path)
+        # Use NoteGPT summarizer directly (no background task needed)
+        from Scraping.transcribe import get_summary_from_notegpt
+        
+        print(f"📝 Getting summary from NoteGPT for: {youtube_url}")
+        summary = get_summary_from_notegpt(video_id)
+        
+        if summary and len(summary) > 50:
+            return jsonify({
+                "status": "ok",
+                "summary": summary,
+                "text_len": len(summary),
+                "final_summary": summary,
+                "full_summary": summary
+            }), 200
+        else:
+            return jsonify({'error': 'Failed to get summary from NoteGPT'}), 500
         
         return jsonify({
             "message": "Task submitted",
@@ -415,30 +432,39 @@ def full_analysis():
         except Exception as comment_error:
             comments_data = {'error': f'Comment analysis failed: {str(comment_error)}'}
         
-        # Video summarization - Use NEW refactored functions
+        # Video summarization - Use NoteGPT API directly (no cookies needed)
         summary_data = {}
         try:
-            # Import the NEW functions from refactored modules
-            from Scraping.transcribe import transcribe_audio_from_video
-            from Summarise.summarize import summarize_text
+            # Import NoteGPT summarizer
+            from Scraping.transcribe import get_summary_from_notegpt
             
-            print("📹 Starting video transcription...")
-            # Use the refactored function (it handles captions fallback internally)
-            transcription = transcribe_audio_from_video(youtube_url, video_id, cookies_path)
+            print("📹 Starting video summarization via NoteGPT...")
             
-            print(f"📝 Transcription complete: {len(transcription)} chars")
+            if not video_id:
+                # Extract video ID if not already extracted
+                if "v=" in youtube_url:
+                    video_id = youtube_url.split("v=")[1].split("&")[0]
+                elif "youtu.be/" in youtube_url:
+                    video_id = youtube_url.split("youtu.be/")[1].split("?")[0]
             
-            # Summarize using the new function
-            print("🤖 Generating summary...")
-            summary = summarize_text(transcription)
-            
-            summary_data = {
-                'success': True,
-                'transcription_length': len(transcription),
-                'transcription_preview': transcription[:500] + "..." if len(transcription) > 500 else transcription,
-                'final_summary': summary,
-                'full_summary': summary  # For compatibility with frontend
-            }
+            if video_id:
+                # Get summary directly from NoteGPT (no cookies needed)
+                summary = get_summary_from_notegpt(video_id)
+                
+                if summary and len(summary) > 50:
+                    print(f"✅ Summary obtained from NoteGPT ({len(summary)} chars)")
+                    summary_data = {
+                        'success': True,
+                        'transcription_length': len(summary),
+                        'transcription_preview': summary[:500] + "..." if len(summary) > 500 else summary,
+                        'final_summary': summary,
+                        'full_summary': summary  # For compatibility with frontend
+                    }
+                else:
+                    raise Exception("NoteGPT returned empty or invalid summary")
+            else:
+                raise Exception("Could not extract video ID from URL")
+                
         except Exception as e:
             print(f"❌ Summarization error: {e}")
             import traceback

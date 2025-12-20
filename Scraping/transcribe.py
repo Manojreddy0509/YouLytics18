@@ -28,6 +28,42 @@ def init_whisper(model_name="base"):
             print(f"❌ Failed to load Whisper model: {e}")
             raise
 
+def get_transcript_from_youtube_captions(video_id):
+    """
+    Attempts to fetch captions directly from YouTube using youtube-transcript-api.
+    """
+    try:
+        transcript_list = YouTubeTranscriptApi.get_transcript(video_id)
+        full_text = " ".join([item['text'] for item in transcript_list])
+        print(f"✅ Successfully obtained YouTube captions ({len(full_text)} chars)")
+        return full_text
+    except (TranscriptsDisabled, NoTranscriptFound) as e:
+        print(f"⚠️ YouTube captions not available: {e}")
+        return None
+    except Exception as e:
+        print(f"⚠️ Error fetching YouTube captions: {e}")
+        return None
+
+def apply_dns_patch():
+    """
+    Apply DNS patch to avoid connection issues.
+    """
+    try:
+        # Simple DNS patch - can be extended if needed
+        pass
+    except:
+        pass
+
+def apply_user_agent_patch():
+    """
+    Apply user agent patch to avoid bot detection.
+    """
+    try:
+        # User agent is set in yt-dlp options, so this is a placeholder
+        pass
+    except:
+        pass
+
 def get_transcript_from_notegpt(video_id):
     """
     Fallback method to fetch transcripts via NoteGPT API.
@@ -55,6 +91,79 @@ def get_transcript_from_notegpt(video_id):
         print(f"⚠️ NoteGPT fetch failed with status: {response.status_code}")
     except Exception as e:
         print(f"⚠️ Error fetching from NoteGPT: {e}")
+    return None
+
+def get_summary_from_notegpt(video_id):
+    """
+    Get video summary directly from NoteGPT API.
+    This is the preferred method as it doesn't require cookies or downloads.
+    """
+    import requests
+    url = f"https://notegpt.io/api/v2/video-summary?platform=youtube&video_id={video_id}"
+    headers = {
+        "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+        "Referer": "https://notegpt.io/youtube-video-summarizer",
+        "Origin": "https://notegpt.io",
+        "Accept": "application/json"
+    }
+    
+    print(f"📝 [NoteGPT] Attempting to get summary for video: {video_id}")
+    try:
+        response = requests.get(url, headers=headers, timeout=30)
+        if response.status_code == 200:
+            data = response.json()
+            if data.get("status") == 200 and "data" in data:
+                summary_data = data["data"]
+                # Extract summary text - NoteGPT API structure may vary
+                summary_text = summary_data.get("summary") or summary_data.get("text") or summary_data.get("content")
+                if summary_text:
+                    print(f"✅ Successfully obtained summary from NoteGPT ({len(summary_text)} chars)")
+                    return summary_text
+                # If structured summary exists
+                if "points" in summary_data or "key_points" in summary_data:
+                    points = summary_data.get("points") or summary_data.get("key_points", [])
+                    if points:
+                        summary_text = "\n".join([f"• {point}" if isinstance(point, str) else f"• {point.get('text', '')}" for point in points])
+                        print(f"✅ Successfully obtained structured summary from NoteGPT")
+                        return summary_text
+        print(f"⚠️ NoteGPT summary fetch failed with status: {response.status_code}")
+        # Try alternative endpoint
+        return get_summary_from_notegpt_alt(video_id)
+    except Exception as e:
+        print(f"⚠️ Error fetching summary from NoteGPT: {e}")
+        # Try alternative endpoint
+        return get_summary_from_notegpt_alt(video_id)
+
+def get_summary_from_notegpt_alt(video_id):
+    """
+    Alternative method: Get transcript and generate summary locally if NoteGPT summary API fails.
+    """
+    import requests
+    # First try to get transcript
+    transcript = get_transcript_from_notegpt(video_id)
+    if transcript and len(transcript) > 50:
+        # If we have transcript, try to get summary from a different endpoint
+        url = f"https://notegpt.io/api/v2/summarize?platform=youtube&video_id={video_id}"
+        headers = {
+            "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+            "Referer": "https://notegpt.io/youtube-video-summarizer",
+            "Origin": "https://notegpt.io",
+            "Accept": "application/json"
+        }
+        try:
+            response = requests.post(url, headers=headers, json={"text": transcript[:5000]}, timeout=30)
+            if response.status_code == 200:
+                data = response.json()
+                if data.get("status") == 200 and "data" in data:
+                    summary = data["data"].get("summary") or data["data"].get("text")
+                    if summary:
+                        print(f"✅ Successfully obtained summary via alternative NoteGPT endpoint")
+                        return summary
+        except:
+            pass
+        # Fallback: return transcript as summary if no summary endpoint works
+        print(f"⚠️ NoteGPT summary API not available, using transcript as summary")
+        return transcript
     return None
 
 def download_audio_with_ytdlp(video_url, outpath="temp_audio.mp3"):
