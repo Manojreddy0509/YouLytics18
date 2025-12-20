@@ -13,6 +13,35 @@ load_dotenv()
 # Global variable for the Whisper model (loaded once per process)
 WHISPER_MODEL = None
 
+def apply_user_agent_patch():
+    """
+    Patches requests.Session.request to ensure a browser-like User-Agent
+    defaults on all outgoing requests. This helps bypass simple bot checks.
+    """
+    import requests
+    
+    # Check if already patched
+    if getattr(requests.Session, '_patched_for_ua', False):
+        return
+
+    _original_request = requests.Session.request
+    
+    def patched_request(self, method, url, *args, **kwargs):
+        # Default Headers mimicking Chrome on macOS
+        headers = kwargs.get('headers', {})
+        if not headers:
+            headers = {}
+        
+        if 'User-Agent' not in headers:
+            headers['User-Agent'] = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
+        
+        kwargs['headers'] = headers
+        return _original_request(self, method, url, *args, **kwargs)
+
+    requests.Session.request = patched_request
+    requests.Session._patched_for_ua = True
+    print("🎭 User-Agent Patch applied to requests.")
+
 def apply_dns_patch():
     """
     Applies a DNS monkey patch to resolve YouTube domains using a working IP.
@@ -69,6 +98,7 @@ def get_transcript_from_youtube_captions(video_id):
     """
     # Ensure Network is patched before API call
     apply_dns_patch()
+    apply_user_agent_patch()
     
     print(f"🔍 Checking for YouTube captions for ID: {video_id}")
     
@@ -139,6 +169,7 @@ def download_audio_with_ytdlp(video_url, use_cookies=True, cookiefile=None, outp
     """
     # Ensure Network is patched before download
     apply_dns_patch()
+    apply_user_agent_patch()
     
     cookie_mode = "with cookies" if use_cookies else "WITHOUT cookies"
     print(f"⬇️ Starting download for: {video_url} ({cookie_mode})")
@@ -152,6 +183,8 @@ def download_audio_with_ytdlp(video_url, use_cookies=True, cookiefile=None, outp
         'nocheckcertificate': True,
         'geo_bypass': True,
         'source_address': '0.0.0.0',
+        'user_agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+        'referer': 'https://www.youtube.com/',
         'postprocessors': [{
             'key': 'FFmpegExtractAudio',
             'preferredcodec': 'mp3',
