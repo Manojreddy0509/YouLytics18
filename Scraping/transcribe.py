@@ -238,6 +238,68 @@ def download_audio_with_ytdlp(video_url, outpath="temp_audio.mp3"):
         else:
             raise
 
+def download_audio_with_ytdlp_with_cookies(video_url, cookies_path, outpath="temp_audio.mp3"):
+    """
+    Authenticated audio download using yt-dlp with cookies.
+    Used as a fallback when guest access is blocked.
+    """
+    # Ensure Network is patched
+    apply_dns_patch()
+    apply_user_agent_patch()
+    
+    print(f"⬇️ Starting AUTHENTICATED download for: {video_url}")
+
+    # Prepare options
+    ydl_opts = {
+        'format': 'bestaudio/best',
+        'outtmpl': outpath.replace('.mp3', ''),
+        'quiet': False,
+        'no_warnings': False,
+        'nocheckcertificate': True,
+        'geo_bypass': True,
+        'source_address': '0.0.0.0',
+        # Browser impersonation
+        'user_agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+        'referer': 'https://www.youtube.com/',
+        'postprocessors': [{
+            'key': 'FFmpegExtractAudio',
+            'preferredcodec': 'mp3',
+            'preferredquality': '192',
+        }],
+        # COOKIES ENABLED
+        'cookiefile': cookies_path,
+    }
+    
+    # Validation
+    if not cookies_path or not os.path.exists(cookies_path):
+        # Fallback to env var if path invalid but env exists?
+        if os.getenv("YOUTUBE_COOKIES"):
+            print("🍪 Using cookies from Environment Variable YOUTUBE_COOKIES")
+            with open("cookies_temp.txt", "w") as f:
+                f.write(os.getenv("YOUTUBE_COOKIES"))
+            ydl_opts['cookiefile'] = "cookies_temp.txt"
+        else:
+            raise Exception("Authentication required but no valid cookies found.")
+
+    try:
+        with yt_dlp.YoutubeDL(ydl_opts) as ydl:
+            ydl.download([video_url])
+        
+        # Check actual output filename
+        if not os.path.exists(outpath):
+            if os.path.exists(outpath + ".mp3"): 
+                os.rename(outpath + ".mp3", outpath)
+        
+        if os.path.exists(outpath):
+            print("✅ Authenticated audio download completed.")
+            return outpath
+        else:
+             raise Exception("Output file not found after download.")
+    
+    except Exception as e:
+        print(f"❌ Authenticated download failed: {e}")
+        raise
+
 def transcribe_audio_file(audio_file_path):
     """
     Transcribes a local audio file using the global Whisper model.
@@ -257,16 +319,14 @@ def transcribe_audio_file(audio_file_path):
         print(f"❌ Transcription failed: {e}")
         raise
 
-def transcribe_audio_from_video(video_url, video_id=None):
+def transcribe_audio_from_video(video_url, video_id=None, cookies_path=None):
     """
-    Main entry point with robust fallback strategy:
-    1. Try YouTube API captions (Guest Mode - No Cookies)
-    2. Try downloading audio (Guest Mode - No Cookies)
-    3. Transcribe audio with Whisper
-    4. Clean up temp files
-    
-    Returns: transcript text
-    Raises: Exception with user-friendly error message if all methods fail
+    Main entry point with robust multi-tier fallback strategy:
+    1. Try YouTube API captions (Guest Mode)
+    2. Try downloading limit without cookies (Guest Mode)
+    3. Try downloading WITH cookies (Auth Mode - Bypass for blocked IPs)
+    4. Transcribe audio with Whisper
+    5. Clean up temp files
     """
     print(f"🎬 Processing video: {video_url} (ID: {video_id})")
     temp_audio = f"temp_{video_id if video_id else 'audio'}.mp3"
@@ -283,7 +343,7 @@ def transcribe_audio_from_video(video_url, video_id=None):
         print("⚠️ No suitable captions found, proceeding to audio download...")
     
     # ═══════════════════════════════════════════════════════════
-    # TIER 2: Download Audio (GUEST MODE ONLY)
+    # TIER 2: Download Audio (GUEST MODE)
     # ═══════════════════════════════════════════════════════════
     print("🔓 [TIER 2] Attempting download WITHOUT authentication (public videos)...")
     
@@ -297,15 +357,37 @@ def transcribe_audio_from_video(video_url, video_id=None):
         return text
             
     except Exception as e:
-        print(f"❌ Transcription failed: {e}")
-        # Detailed error for user feedback
+        print(f"❌ [TIER 2] Guest download failed: {e}")
+        # Identify if it's an Auth error
         msg = str(e)
-        if "Too Many Requests" in msg or "429" in msg:
-             raise Exception("YouTube is rate-limiting this server (IP Blocked). Please try again later.")
-        elif "Sign in" in msg:
-             raise Exception("YouTube requires sign-in for this video, but guest mode is enforced.")
-        else:
-             raise Exception(f"Failed to transcribe video: {msg}")
+        if "Sign in" not in msg and "bot" not in msg and "429" not in msg:
+             # Real error (not auth), try one more time or fail?
+             pass 
+    
+    # ═══════════════════════════════════════════════════════════
+    # TIER 3: Download Audio (AUTH MODE - COOKIES)
+    # ═══════════════════════════════════════════════════════════
+    print("🍪 [TIER 3] IP Blocked/Auth Required. Attempting download WITH cookies...")
+    
+    # Check if we actually have cookies
+    if not cookies_path and not os.getenv("YOUTUBE_COOKIES"):
+        print("❌ No cookies configured. Cannot proceed with Tier 3.")
+        raise Exception("YouTube blocked guest access (Sign in required). Please configure COOKIES to bypass this.")
+
+    try:
+         # To use cookies, we need to pass them to yt-dlp. 
+         # But wait, `download_audio_with_ytdlp` signature was simplified! 
+         # I need to update THAT function too or handle it here.
+         # I will update `download_audio_with_ytdlp` in the next step.
+         # For now, I'll pass `cookiefile=cookies_path` assuming I will fix the callee.
+         audio_path = download_audio_with_ytdlp_with_cookies(video_url, cookies_path, temp_audio) 
+         
+         text = transcribe_audio_file(audio_path)
+         return text
+         
+    except Exception as e:
+        print(f"❌ [TIER 3] Cookie download failed: {e}")
+        raise Exception(f"Failed to transcribe (Cookies invalid?): {e}")
 
     finally:
         cleanup_temp_file(temp_audio)

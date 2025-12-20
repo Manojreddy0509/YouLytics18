@@ -27,7 +27,7 @@ def init_worker(**kwargs):
         print(f"❌ Failed to initialize models in worker: {e}")
 
 @celery.task(bind=True, max_retries=2, default_retry_delay=10)
-def transcribe_and_summarize(self, video_url, video_id=None):
+def transcribe_and_summarize(self, video_url, video_id=None, cookies_path=None):
     """
     Main background task.
     """
@@ -36,7 +36,7 @@ def transcribe_and_summarize(self, video_url, video_id=None):
         # 1. Transcribe (Captions or Download -> Whisper)
         # Note: We don't pass cookies_path directly if it's strictly file based, 
         # but transcribe_audio_from_video handles env vars internally too.
-        transcript = transcribe_audio_from_video(video_url, video_id)
+        transcript = transcribe_audio_from_video(video_url, video_id, cookies_path)
         
         # 2. Summarize
         summary = summarize_text(transcript)
