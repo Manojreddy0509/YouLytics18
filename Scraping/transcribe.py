@@ -1,92 +1,32 @@
 import os
-import traceback
 import socket
 import random
+import traceback
 from dotenv import load_dotenv
 from youtube_transcript_api import YouTubeTranscriptApi, TranscriptsDisabled, NoTranscriptFound
+import yt_dlp
+import whisper
 
 # Load environment variables
 load_dotenv()
 
-def apply_user_agent_patch():
-    """
-    Patches requests.Session.request to ensure a browser-like User-Agent
-    defaults on all outgoing requests. This helps bypass simple bot checks.
-    """
-    import requests
-    
-    # Check if already patched
-    if getattr(requests.Session, '_patched_for_ua', False):
-        return
+# Global variable for the Whisper model (loaded once per process)
+WHISPER_MODEL = None
 
-    _original_request = requests.Session.request
-    
-    def patched_request(self, method, url, *args, **kwargs):
-        # Default Headers mimicking Chrome on macOS
-        headers = kwargs.get('headers', {})
-        if not headers:
-            headers = {}
-        
-        if 'User-Agent' not in headers:
-            headers['User-Agent'] = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
-        
-        kwargs['headers'] = headers
-        return _original_request(self, method, url, *args, **kwargs)
-
-    requests.Session.request = patched_request
-    requests.Session._patched_for_ua = True
-    print("🎭 User-Agent Patch applied to requests.")
-
-def apply_dns_patch():
+def init_whisper(model_name="base"):
     """
-    Applies a DNS monkey patch to resolve YouTube domains using a RANDOM working IP.
-    This helps bypass 429 (Too Many Requests) by rotating destination IPs.
+    Loads the Whisper model into the global variable WHISPER_MODEL.
+    Should be called once at worker startup.
     """
-    # Quick check: we ALWAYS want to check for new IPs on HF Spaces
-    print("--- 🕵️ DNS Hunter (Randomized) ---")
-    
-    candidates = []
-    # Domains to harvest IPs from
-    domains = [
-        'www.youtube.com', 
-        'm.youtube.com', 
-        'youtube.com', 
-        'google.com', 
-        'www.google.com'
-    ]
-    
-    for domain in domains:
+    global WHISPER_MODEL
+    if WHISPER_MODEL is None:
+        print(f"🔊 Loading Whisper model: {model_name}...")
         try:
-            # gethostbyname_ex returns (hostname, aliaslist, ipaddrlist)
-            _, _, ips = socket.gethostbyname_ex(domain)
-            for ip in ips:
-                if ":" not in ip: # prefer IPv4 for compatibility
-                    candidates.append(ip)
-        except:
-            continue
-            
-    # Add some known good Google IPs as backups
-    candidates.extend(['142.250.190.46', '142.250.191.206', '172.217.204.206', '142.250.72.206'])
-    
-    working_ip = None
-    if candidates:
-        # De-duplicate
-        candidates = list(set(candidates))
-        working_ip = random.choice(candidates)
-        print(f"🎲 Random IP selected from {len(candidates)} candidates: {working_ip}")
-    
-    if working_ip:
-        if not getattr(socket, '_original_getaddrinfo', None):
-            socket._original_getaddrinfo = socket.getaddrinfo
-
-        def patched_getaddrinfo(host, port, family=0, type=0, proto=0, flags=0):
-            if host in ['www.youtube.com', 'm.youtube.com', 'youtube.com']:
-                return socket._original_getaddrinfo(working_ip, port, family, type, proto, flags)
-            return socket._original_getaddrinfo(host, port, family, type, proto, flags)
-
-        socket.getaddrinfo = patched_getaddrinfo
-        print(f"💉 DNS Monkey Patch applied globally: {working_ip}")
-
+            WHISPER_MODEL = whisper.load_model(model_name)
+            print("✅ Whisper model loaded successfully.")
+        except Exception as e:
+            print(f"❌ Failed to load Whisper model: {e}")
+            raise
 
 def get_transcript_from_notegpt(video_id):
     """
@@ -117,130 +57,196 @@ def get_transcript_from_notegpt(video_id):
         print(f"⚠️ Error fetching from NoteGPT: {e}")
     return None
 
-def get_transcript_from_youtube_captions(video_id):
+def download_audio_with_ytdlp(video_url, outpath="temp_audio.mp3"):
     """
-    Tries to fetch transcripts using youtube_transcript_api.
-    Uses list_transcripts for better robustness.
+    Robust audio download using yt-dlp.
+    NO COOKIES - STRICTLY GUEST MODE.
     """
-    # Ensure Network is patched before API call
+    # Ensure Network is patched before download
     apply_dns_patch()
     apply_user_agent_patch()
     
-    print(f"🔍 Checking for YouTube captions for ID: {video_id}")
-    
+    print(f"⬇️ Starting download for: {video_url} (GUEST MODE / NO COOKIES)")
+
+    # Prepare options
+    ydl_opts = {
+        'format': 'bestaudio/best',
+        'outtmpl': outpath.replace('.mp3', ''),
+        'quiet': False,
+        'no_warnings': False,
+        'nocheckcertificate': True,
+        'geo_bypass': True,
+        'source_address': '0.0.0.0',
+        'extractor_args': {
+            'youtube': {
+                'player_client': ['android'],
+            }
+        },
+        'referer': 'https://www.youtube.com/',
+        'postprocessors': [{
+            'key': 'FFmpegExtractAudio',
+            'preferredcodec': 'mp3',
+            'preferredquality': '192',
+        }],
+        'cookiefile': None,
+        'cookiesfrombrowser': None,
+    }
+
     try:
-        # TIER 1: Try fetching transcripts via API
-        # Handle different library versions by checking for class methods vs instance methods
-        api = YouTubeTranscriptApi()
+        with yt_dlp.YoutubeDL(ydl_opts) as ydl:
+            ydl.download([video_url])
         
-        try:
-            # Try instance fetch (v1.2.x style) or class method get_transcript (v0.6.x style)
-            if hasattr(api, 'fetch'):
-                transcript_data = api.fetch(video_id, languages=['en', 'en-US', 'en-GB'])
-            elif hasattr(YouTubeTranscriptApi, 'get_transcript'):
-                transcript_data = YouTubeTranscriptApi.get_transcript(video_id, languages=['en', 'en-US', 'en-GB'])
-            else:
-                transcript_data = None
-
-            if transcript_data:
-                # TD is iterable. We need to handle both dicts and objects for snippets.
-                segments = list(transcript_data.fetch()) if hasattr(transcript_data, 'fetch') else transcript_data
-                
-                parts = []
-                for s in segments:
-                    if isinstance(s, dict):
-                        parts.append(s.get('text', ''))
-                    else:
-                        parts.append(getattr(s, 'text', ''))
-                
-                full_text = " ".join(parts).strip()
-                if full_text:
-                    print("✅ Successfully obtained captions from YouTube API")
-                    return full_text
-        except Exception as e:
-            print(f"⚠️ Direct caption fetch failed: {e}")
-
-        try:
-            # Fallback to listing transcripts
-            if hasattr(api, 'list'):
-                transcript_list = api.list(video_id)
-            elif hasattr(YouTubeTranscriptApi, 'list_transcripts'):
-                transcript_list = YouTubeTranscriptApi.list_transcripts(video_id)
-            else:
-                 return None
-            
-            transcript = None
-            
-            # 1. Try manually created English
-            try:
-                transcript = transcript_list.find_manually_created_transcript(['en', 'en-US', 'en-GB'])
-            except:
-                pass
-                
-            # 2. Try auto-generated English
-            if not transcript:
-                try:
-                    transcript = transcript_list.find_generated_transcript(['en', 'en-US', 'en-GB'])
-                except:
-                    pass
-            
-            if transcript:
-                segments = list(transcript.fetch())
-                parts = []
-                for s in segments:
-                    if isinstance(s, dict):
-                        parts.append(s.get('text', ''))
-                    else:
-                        parts.append(getattr(s, 'text', ''))
-                
-                full_text = " ".join(parts).strip()
-                return full_text
-        except Exception as inner_e:
-            print(f"⚠️ List transcripts failed: {inner_e}")
-            
-        return None
+        if not os.path.exists(outpath):
+            if os.path.exists(outpath + ".mp3"): 
+                os.rename(outpath + ".mp3", outpath)
         
-    except (TranscriptsDisabled, NoTranscriptFound) as e:
-        print(f"⚠️ No captions found/disabled: {e}")
-        return None
+        if os.path.exists(outpath):
+            print("✅ Audio download completed.")
+            return outpath
+        else:
+             raise Exception("Output file not found after download.")
+
     except Exception as e:
-        print(f"⚠️ Error fetching captions: {e}")
-        return None
+        error_msg = str(e)
+        print(f"❌ Download failed: {error_msg}")
+        if "Sign in" in error_msg or "not a bot" in error_msg:
+            raise Exception("NEEDS_AUTH")
+        else:
+            raise
+
+def download_audio_with_ytdlp_with_cookies(video_url, cookies_path, outpath="temp_audio.mp3"):
+    """
+    Authenticated audio download using yt-dlp with cookies.
+    """
+    # Ensure Network is patched
+    apply_dns_patch()
+    apply_user_agent_patch()
+    
+    print(f"⬇️ Starting AUTHENTICATED download for: {video_url}")
+
+    # Prepare options
+    ydl_opts = {
+        'format': 'bestaudio/best',
+        'outtmpl': outpath.replace('.mp3', ''),
+        'quiet': False,
+        'no_warnings': False,
+        'nocheckcertificate': True,
+        'geo_bypass': True,
+        'source_address': '0.0.0.0',
+        'user_agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+        'referer': 'https://www.youtube.com/',
+        'postprocessors': [{
+            'key': 'FFmpegExtractAudio',
+            'preferredcodec': 'mp3',
+            'preferredquality': '192',
+        }],
+        'cookiefile': cookies_path,
+    }
+    
+    if not cookies_path or not os.path.exists(cookies_path):
+        if os.getenv("YOUTUBE_COOKIES"):
+            print("🍪 Using cookies from Environment Variable YOUTUBE_COOKIES")
+            with open("cookies_temp.txt", "w") as f:
+                f.write(os.getenv("YOUTUBE_COOKIES"))
+            ydl_opts['cookiefile'] = "cookies_temp.txt"
+        else:
+            raise Exception("Authentication required but no valid cookies found.")
+
+    try:
+        with yt_dlp.YoutubeDL(ydl_opts) as ydl:
+            ydl.download([video_url])
+        
+        if not os.path.exists(outpath):
+            if os.path.exists(outpath + ".mp3"): 
+                os.rename(outpath + ".mp3", outpath)
+        
+        if os.path.exists(outpath):
+            print("✅ Authenticated audio download completed.")
+            return outpath
+        else:
+             raise Exception("Output file not found after download.")
+    except Exception as e:
+        print(f"❌ Authenticated download failed: {e}")
+        raise
+
+def transcribe_audio_file(audio_file_path):
+    """
+    Transcribes a local audio file using the global Whisper model.
+    """
+    global WHISPER_MODEL
+    if WHISPER_MODEL is None:
+        init_whisper()
+    
+    print(f"🎤 Transcribing audio file: {audio_file_path}")
+    try:
+        result = WHISPER_MODEL.transcribe(audio_file_path, task="translate", fp16=False)
+        text = result.get("text", "").strip()
+        print(f"✅ Transcription completed: {len(text)} chars")
+        return text
+    except Exception as e:
+        print(f"❌ Transcription failed: {e}")
+        raise
 
 def transcribe_audio_from_video(video_url, video_id=None, cookies_path=None):
     """
-    Main entry point for transcription.
-    Exclusively uses API-based methods to ensure cloud reliability:
-    1. Try YouTube API Captions
-    2. Fallback to NoteGPT API
+    Full entry point with multi-tier fallback strategy:
+    1. Try YouTube API captions
+    2. Try NoteGPT API fallback
+    3. Try Guest Mode download (yt-dlp)
+    4. Try Auth Mode download (cookies)
     """
     print(f"🎬 Processing video: {video_url} (ID: {video_id})")
+    temp_audio = f"temp_{video_id if video_id else 'audio'}.mp3"
     
     if not video_id:
-        print("⚠️ No video ID provided, attempting to extract from URL.")
-        # Minimal extraction if needed, but usually video_id is passed
         if "v=" in video_url:
             video_id = video_url.split("v=")[1].split("&")[0]
         elif "youtu.be/" in video_url:
             video_id = video_url.split("youtu.be/")[1].split("?")[0]
 
     if video_id:
-        # ═══════════════════════════════════════════════════════════
-        # TIER 1: Try YouTube API Captions
-        # ═══════════════════════════════════════════════════════════
+        # TIER 1: YouTube API
         print("📋 [TIER 1] Attempting to fetch YouTube captions via API...")
         caption_text = get_transcript_from_youtube_captions(video_id)
         if caption_text and len(caption_text) > 50:
             print("✅ Successfully obtained captions from YouTube API")
             return caption_text
         
-        # ═══════════════════════════════════════════════════════════
-        # TIER 2: NoteGPT API Fallback (High Reliability)
-        # ═══════════════════════════════════════════════════════════
+        # TIER 2: NoteGPT
         print("📋 [TIER 2] YouTube API failed. Attempting NoteGPT fallback...")
         caption_text = get_transcript_from_notegpt(video_id)
         if caption_text and len(caption_text) > 50:
             print("✅ Successfully obtained transcript from NoteGPT")
             return caption_text
 
-    raise Exception("Could not obtain transcription from YouTube API or NoteGPT fallback.")
+    # TIER 3: Guest Mode Download
+    print("🔓 [TIER 3] Attempting download WITHOUT authentication...")
+    try:
+        audio_path = download_audio_with_ytdlp(video_url, outpath=temp_audio)
+        text = transcribe_audio_file(audio_path)
+        cleanup_temp_file(audio_path)
+        return text
+    except Exception as e:
+        print(f"⚠️ Guest mode download failed: {e}")
+        
+    # TIER 4: Auth Mode Download
+    print("🔑 [TIER 4] Attempting download WITH cookies...")
+    try:
+        audio_path = download_audio_with_ytdlp_with_cookies(video_url, cookies_path, temp_audio)
+        text = transcribe_audio_file(audio_path)
+        cleanup_temp_file(audio_path)
+        return text
+    except Exception as e:
+        print(f"❌ Tier 4 failed: {e}")
+        raise Exception("Failed to obtain transcription through any tier (API, NoteGPT, or Download).")
+    finally:
+        cleanup_temp_file(temp_audio)
+
+def cleanup_temp_file(filepath):
+    """Helper function to safely remove temporary files"""
+    if filepath and os.path.exists(filepath):
+        try:
+            os.remove(filepath)
+            print(f"🧹 Cleaned up temp file: {filepath}")
+        except Exception as e:
+            print(f"⚠️ Could not remove temp file {filepath}: {e}")

@@ -1,9 +1,10 @@
 FROM python:3.11-slim
 
 # System deps: ffmpeg for audio extraction, plus minimal build tools for some wheels
-# System deps: git for requirements, and redis-server for background tasks
+# System deps: ffmpeg for audio processing, git, nodejs for yt-dlp js execution, and redis-server
 RUN apt-get update \
-  && apt-get install -y --no-install-recommends git redis-server \
+  && apt-get install -y --no-install-recommends ffmpeg git redis-server nodejs \
+  && ( [ -e /usr/bin/node ] || ln -s /usr/bin/nodejs /usr/bin/node ) \
   && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
