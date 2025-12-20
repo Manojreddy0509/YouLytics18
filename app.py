@@ -217,6 +217,30 @@ def health():
         print(f"❌ Health check failed: {e}")
         return jsonify({"status": "error", "error": str(e)}), 500
 
+@app.route('/test-transcribe')
+def test_transcribe():
+    """Debug endpoint to test transcription tiers on live server"""
+    video_url = request.args.get('url', 'https://www.youtube.com/watch?v=CIpqjG4M3c0')
+    video_id = request.args.get('id', 'CIpqjG4M3c0')
+    
+    from Scraping.transcribe import transcribe_audio_from_video, init_whisper
+    try:
+        init_whisper("base")
+        # I'll modify transcribe_audio_from_video temporarily to return the tier if I need to,
+        # but for now let's just see the result or error.
+        result = transcribe_audio_from_video(video_url, video_id)
+        return jsonify({
+            "status": "success",
+            "length": len(result),
+            "preview": result[:200]
+        })
+    except Exception as e:
+        return jsonify({
+            "status": "error",
+            "error": str(e),
+            "traceback": traceback.format_exc()
+        }), 500
+
 @app.route('/')
 def home():
     try:
