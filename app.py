@@ -320,21 +320,23 @@ def summarize_video():
             return jsonify({'error': 'Invalid YouTube URL'}), 400
         
         # Use NoteGPT summarizer directly (no background task needed)
+        # This function has multiple fallbacks: NoteGPT API -> Transcript + Local Summarization
         from Scraping.transcribe import get_summary_from_notegpt
         
         print(f"📝 Getting summary from NoteGPT for: {youtube_url}")
         summary = get_summary_from_notegpt(video_id)
         
-        if summary and len(summary) > 50:
+        if summary and len(str(summary).strip()) > 50:
+            summary_str = str(summary).strip()
             return jsonify({
                 "status": "ok",
-                "summary": summary,
-                "text_len": len(summary),
-                "final_summary": summary,
-                "full_summary": summary
+                "summary": summary_str,
+                "text_len": len(summary_str),
+                "final_summary": summary_str,
+                "full_summary": summary_str
             }), 200
         else:
-            return jsonify({'error': 'Failed to get summary from NoteGPT'}), 500
+            return jsonify({'error': f'Failed to get summary. Got: {str(summary)[:100] if summary else "None"}'}), 500
         
         return jsonify({
             "message": "Task submitted",
@@ -378,7 +380,6 @@ def full_analysis():
             return jsonify({'error': 'No JSON data provided'}), 400
             
         youtube_url = data.get('url')
-        cookies_path = data.get('cookies_path') # Optional
         
         if not youtube_url:
             return jsonify({'error': 'YouTube URL is required'}), 400
@@ -449,19 +450,21 @@ def full_analysis():
             
             if video_id:
                 # Get summary directly from NoteGPT (no cookies needed)
+                # This function has multiple fallbacks: NoteGPT API -> Transcript + Local Summarization
                 summary = get_summary_from_notegpt(video_id)
                 
-                if summary and len(summary) > 50:
-                    print(f"✅ Summary obtained from NoteGPT ({len(summary)} chars)")
+                if summary and len(str(summary).strip()) > 50:
+                    summary_str = str(summary).strip()
+                    print(f"✅ Summary obtained ({len(summary_str)} chars)")
                     summary_data = {
                         'success': True,
-                        'transcription_length': len(summary),
-                        'transcription_preview': summary[:500] + "..." if len(summary) > 500 else summary,
-                        'final_summary': summary,
-                        'full_summary': summary  # For compatibility with frontend
+                        'transcription_length': len(summary_str),
+                        'transcription_preview': summary_str[:500] + "..." if len(summary_str) > 500 else summary_str,
+                        'final_summary': summary_str,
+                        'full_summary': summary_str  # For compatibility with frontend
                     }
                 else:
-                    raise Exception("NoteGPT returned empty or invalid summary")
+                    raise Exception(f"Summary generation failed. Got: {str(summary)[:100] if summary else 'None'}")
             else:
                 raise Exception("Could not extract video ID from URL")
                 

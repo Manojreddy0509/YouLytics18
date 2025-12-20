@@ -97,6 +97,7 @@ def get_summary_from_notegpt(video_id):
     """
     Get video summary directly from NoteGPT API.
     This is the preferred method as it doesn't require cookies or downloads.
+    Falls back to getting transcript and summarizing locally if API fails.
     """
     import requests
     url = f"https://notegpt.io/api/v2/video-summary?platform=youtube&video_id={video_id}"
@@ -110,39 +111,69 @@ def get_summary_from_notegpt(video_id):
     print(f"📝 [NoteGPT] Attempting to get summary for video: {video_id}")
     try:
         response = requests.get(url, headers=headers, timeout=30)
+        print(f"📝 [NoteGPT] Response status: {response.status_code}")
+        
         if response.status_code == 200:
             data = response.json()
+            print(f"📝 [NoteGPT] Response data keys: {list(data.keys()) if isinstance(data, dict) else 'Not a dict'}")
+            
+            # Try different response structures
+            summary_text = None
+            
+            # Structure 1: data.status == 200 and data.data exists
             if data.get("status") == 200 and "data" in data:
                 summary_data = data["data"]
-                # Extract summary text - NoteGPT API structure may vary
-                summary_text = summary_data.get("summary") or summary_data.get("text") or summary_data.get("content")
-                if summary_text:
-                    print(f"✅ Successfully obtained summary from NoteGPT ({len(summary_text)} chars)")
-                    return summary_text
+                summary_text = (summary_data.get("summary") or 
+                               summary_data.get("text") or 
+                               summary_data.get("content") or
+                               summary_data.get("summary_text"))
+                
                 # If structured summary exists
-                if "points" in summary_data or "key_points" in summary_data:
-                    points = summary_data.get("points") or summary_data.get("key_points", [])
-                    if points:
-                        summary_text = "\n".join([f"• {point}" if isinstance(point, str) else f"• {point.get('text', '')}" for point in points])
-                        print(f"✅ Successfully obtained structured summary from NoteGPT")
-                        return summary_text
+                if not summary_text:
+                    if "points" in summary_data or "key_points" in summary_data:
+                        points = summary_data.get("points") or summary_data.get("key_points", [])
+                        if points:
+                            summary_text = "\n".join([f"• {point}" if isinstance(point, str) else f"• {point.get('text', '')}" for point in points])
+            
+            # Structure 2: Direct summary in response
+            if not summary_text:
+                summary_text = (data.get("summary") or 
+                               data.get("text") or 
+                               data.get("content") or
+                               data.get("summary_text"))
+            
+            if summary_text and len(str(summary_text).strip()) > 50:
+                print(f"✅ Successfully obtained summary from NoteGPT ({len(str(summary_text))} chars)")
+                return str(summary_text).strip()
+            else:
+                print(f"⚠️ NoteGPT summary API returned empty or invalid data. Response: {str(data)[:200]}")
+        
         print(f"⚠️ NoteGPT summary fetch failed with status: {response.status_code}")
-        # Try alternative endpoint
-        return get_summary_from_notegpt_alt(video_id)
+        if response.status_code == 200:
+            print(f"⚠️ Response content: {response.text[:500]}")
+        
     except Exception as e:
         print(f"⚠️ Error fetching summary from NoteGPT: {e}")
-        # Try alternative endpoint
-        return get_summary_from_notegpt_alt(video_id)
+        import traceback
+        traceback.print_exc()
+    
+    # Fallback: Get transcript and summarize locally
+    print(f"🔄 [Fallback] Attempting to get transcript and summarize locally...")
+    return get_summary_from_notegpt_alt(video_id)
 
 def get_summary_from_notegpt_alt(video_id):
     """
     Alternative method: Get transcript and generate summary locally if NoteGPT summary API fails.
     """
     import requests
-    # First try to get transcript
+    # First try to get transcript from NoteGPT
+    print(f"🔄 [Fallback Step 1] Getting transcript from NoteGPT...")
     transcript = get_transcript_from_notegpt(video_id)
+    
     if transcript and len(transcript) > 50:
-        # If we have transcript, try to get summary from a different endpoint
+        print(f"✅ [Fallback Step 1] Got transcript ({len(transcript)} chars)")
+        
+        # Try to get summary from alternative NoteGPT endpoint
         url = f"https://notegpt.io/api/v2/summarize?platform=youtube&video_id={video_id}"
         headers = {
             "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
@@ -151,20 +182,39 @@ def get_summary_from_notegpt_alt(video_id):
             "Accept": "application/json"
         }
         try:
+            print(f"🔄 [Fallback Step 2] Trying alternative NoteGPT summarize endpoint...")
             response = requests.post(url, headers=headers, json={"text": transcript[:5000]}, timeout=30)
             if response.status_code == 200:
                 data = response.json()
                 if data.get("status") == 200 and "data" in data:
                     summary = data["data"].get("summary") or data["data"].get("text")
-                    if summary:
+                    if summary and len(str(summary).strip()) > 50:
                         print(f"✅ Successfully obtained summary via alternative NoteGPT endpoint")
-                        return summary
-        except:
-            pass
-        # Fallback: return transcript as summary if no summary endpoint works
-        print(f"⚠️ NoteGPT summary API not available, using transcript as summary")
-        return transcript
-    return None
+                        return str(summary).strip()
+        except Exception as e:
+            print(f"⚠️ Alternative NoteGPT endpoint failed: {e}")
+        
+        # Final fallback: Use local summarization model
+        print(f"🔄 [Fallback Step 3] Using local summarization model...")
+        try:
+            from Summarise.summarize import summarize_text, init_summarizer
+            # Initialize summarizer if not already done
+            init_summarizer()
+            summary = summarize_text(transcript)
+            if summary and len(summary) > 50:
+                print(f"✅ Successfully generated summary using local model ({len(summary)} chars)")
+                return summary
+        except Exception as e:
+            print(f"⚠️ Local summarization failed: {e}")
+            import traceback
+            traceback.print_exc()
+        
+        # Last resort: return transcript as summary
+        print(f"⚠️ All summarization methods failed, returning transcript as summary")
+        return transcript[:2000]  # Limit length for safety
+    else:
+        print(f"❌ [Fallback] Could not get transcript from NoteGPT")
+        return None
 
 def download_audio_with_ytdlp(video_url, outpath="temp_audio.mp3"):
     """
