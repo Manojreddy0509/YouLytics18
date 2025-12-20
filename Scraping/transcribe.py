@@ -62,24 +62,19 @@ def init_whisper(model_name="base"):
             print(f"❌ Failed to load Whisper model: {e}")
             raise
 
-def get_transcript_from_youtube_captions(video_id, cookies_path=None):
+def get_transcript_from_youtube_captions(video_id):
     """
     Tries to fetch transcripts using youtube_transcript_api.
-    Uses list_transcripts for better robustness and supports cookies.
+    Uses list_transcripts for better robustness.
     """
     # Ensure Network is patched before API call
     apply_dns_patch()
     
     print(f"🔍 Checking for YouTube captions for ID: {video_id}")
     
-    # Prepare cookies argument if file exists
-    cookies_arg = None
-    if cookies_path and os.path.exists(cookies_path):
-        cookies_arg = cookies_path
-    
     try:
-        # fetch lists of transcripts
-        transcript_list = YouTubeTranscriptApi.list_transcripts(video_id, cookies=cookies_arg)
+        # fetch lists of transcripts - NO cookies used to avoid bot detection with expired auth
+        transcript_list = YouTubeTranscriptApi.list_transcripts(video_id)
         
         transcript = None
         
@@ -256,7 +251,7 @@ def transcribe_audio_from_video(video_url, video_id=None, cookies_path=None):
     # ═══════════════════════════════════════════════════════════
     if video_id:
         print("📋 [TIER 1] Attempting to fetch YouTube captions via API...")
-        caption_text = get_transcript_from_youtube_captions(video_id, cookies_path=cookies_path)
+        caption_text = get_transcript_from_youtube_captions(video_id)
         if caption_text and len(caption_text) > 50:
             print("✅ Successfully obtained captions from YouTube API")
             return caption_text
