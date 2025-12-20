@@ -61,6 +61,8 @@ Frontend/yarn-error.log*
 
 # Temporary files
 temp_audio.*
+temp_*.mp3
 transcription.txt
 transcription_*.txt
 summary_*.txt
+test_notegpt.py

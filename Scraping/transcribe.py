@@ -120,50 +120,75 @@ def get_transcript_from_youtube_captions(video_id):
     print(f"🔍 Checking for YouTube captions for ID: {video_id}")
     
     try:
-        # fetch lists of transcripts - NO cookies used to avoid bot detection with expired auth
-        transcript_list = YouTubeTranscriptApi.list_transcripts(video_id)
+        # TIER 1: Try fetching transcripts via API
+        # Handle different library versions by checking for class methods vs instance methods
+        api = YouTubeTranscriptApi()
         
-        transcript = None
-        
-        # 1. Try manually created English
         try:
-            transcript = transcript_list.find_manually_created_transcript(['en', 'en-US', 'en-GB'])
-            print("✅ Found manually created English captions.")
-        except:
-            pass
+            # Try instance fetch (v1.2.x style) or class method get_transcript (v0.6.x style)
+            if hasattr(api, 'fetch'):
+                transcript_data = api.fetch(video_id, languages=['en', 'en-US', 'en-GB'])
+            elif hasattr(YouTubeTranscriptApi, 'get_transcript'):
+                transcript_data = YouTubeTranscriptApi.get_transcript(video_id, languages=['en', 'en-US', 'en-GB'])
+            else:
+                transcript_data = None
+
+            if transcript_data:
+                # TD is iterable. We need to handle both dicts and objects for snippets.
+                segments = list(transcript_data.fetch()) if hasattr(transcript_data, 'fetch') else transcript_data
+                
+                parts = []
+                for s in segments:
+                    if isinstance(s, dict):
+                        parts.append(s.get('text', ''))
+                    else:
+                        parts.append(getattr(s, 'text', ''))
+                
+                full_text = " ".join(parts).strip()
+                if full_text:
+                    print("✅ Successfully obtained captions from YouTube API")
+                    return full_text
+        except Exception as e:
+            print(f"⚠️ Direct caption fetch failed: {e}")
+
+        try:
+            # Fallback to listing transcripts
+            if hasattr(api, 'list'):
+                transcript_list = api.list(video_id)
+            elif hasattr(YouTubeTranscriptApi, 'list_transcripts'):
+                transcript_list = YouTubeTranscriptApi.list_transcripts(video_id)
+            else:
+                 return None
             
-        # 2. Try auto-generated English
-        if not transcript:
+            transcript = None
+            
+            # 1. Try manually created English
             try:
-                transcript = transcript_list.find_generated_transcript(['en', 'en-US', 'en-GB'])
-                print("✅ Found auto-generated English captions.")
+                transcript = transcript_list.find_manually_created_transcript(['en', 'en-US', 'en-GB'])
             except:
                 pass
                 
-        # 3. Fallback: Any English-ish transcript?
-        if not transcript:
-             for t in transcript_list:
-                if t.language_code.startswith('en'):
-                    transcript = t
-                    print(f"✅ Found English caption track: {t.language_code}")
-                    break
-        
-        # 4. Fallback: Translate whatever exists to English
-        if not transcript:
-            try:
-                # Get the first available transcript and translate it
-                first_transcript = next(iter(transcript_list))
-                if first_transcript.is_translatable:
-                    transcript = first_transcript.translate('en')
-                    print(f"✅ Translating captions from {first_transcript.language_code} to English.")
-            except:
-                pass
-
-        if transcript:
-            full_text = " ".join([t['text'] for t in transcript.fetch()])
-            return full_text
-        
-        print("⚠️ No suitable captions found.")
+            # 2. Try auto-generated English
+            if not transcript:
+                try:
+                    transcript = transcript_list.find_generated_transcript(['en', 'en-US', 'en-GB'])
+                except:
+                    pass
+            
+            if transcript:
+                segments = list(transcript.fetch())
+                parts = []
+                for s in segments:
+                    if isinstance(s, dict):
+                        parts.append(s.get('text', ''))
+                    else:
+                        parts.append(getattr(s, 'text', ''))
+                
+                full_text = " ".join(parts).strip()
+                return full_text
+        except Exception as inner_e:
+            print(f"⚠️ List transcripts failed: {inner_e}")
+            
         return None
         
     except (TranscriptsDisabled, NoTranscriptFound) as e:
@@ -380,11 +405,7 @@ def transcribe_audio_from_video(video_url, video_id=None, cookies_path=None):
         raise Exception("YouTube blocked guest access (Sign in required). Please configure COOKIES to bypass this.")
 
     try:
-         # To use cookies, we need to pass them to yt-dlp. 
-         # But wait, `download_audio_with_ytdlp` signature was simplified! 
-         # I need to update THAT function too or handle it here.
-         # I will update `download_audio_with_ytdlp` in the next step.
-         # For now, I'll pass `cookiefile=cookies_path` assuming I will fix the callee.
+         # Use dedicated authenticated downloader if guest mode fails
          audio_path = download_audio_with_ytdlp_with_cookies(video_url, cookies_path, temp_audio) 
          
          text = transcribe_audio_file(audio_path)
