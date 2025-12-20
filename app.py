@@ -352,7 +352,8 @@ def get_task_status(task_id):
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
-@app.route('/full-analysis', methods=['POST'])\n@token_required
+@app.route('/full-analysis', methods=['POST'])
+@token_required
 def full_analysis():
     try:
         data = request.get_json()
