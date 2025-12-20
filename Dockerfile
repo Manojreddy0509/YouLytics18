@@ -4,7 +4,7 @@ FROM python:3.11-slim
 # System deps: ffmpeg for audio, git, and redis-server for background tasks
 RUN apt-get update \
   && apt-get install -y --no-install-recommends ffmpeg git redis-server nodejs \
-  && ln -s /usr/bin/nodejs /usr/bin/node \
+  && ln -sf /usr/bin/nodejs /usr/bin/node \
   && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
