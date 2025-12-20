@@ -21,10 +21,45 @@ def extract_video_id(url):
 # 2. GET TRANSCRIPT using youtube-transcript-api library
 def get_transcript(video_id):
     try:
-        # List of languages to try, prioritizing English
-        transcript_list = YouTubeTranscriptApi.get_transcript(video_id, languages=['en', 'en-US', 'en-GB', 'hi', 'es'])
-        full_text = ' '.join([entry['text'] for entry in transcript_list])
-        return full_text
+        # 1. Try fetching manually created transcripts first
+        transcript_list = YouTubeTranscriptApi.list_transcripts(video_id)
+        
+        transcript = None
+        
+        try:
+            # Try to find a manually created English transcript
+            transcript = transcript_list.find_manually_created_transcript(['en', 'en-US', 'en-GB'])
+        except:
+            try:
+                # Fallback to auto-generated English transcript
+                transcript = transcript_list.find_generated_transcript(['en', 'en-US', 'en-GB'])
+            except:
+                # Fallback to ANY available transcript (and translate it if needed, but here we just take it)
+                # If we really wanted to be fancy, we could translate, but let's just grab the first available one
+                # iterate over all available transcripts
+                for t in transcript_list:
+                    transcript = t
+                    break
+        
+        if transcript:
+            fetched_transcript = transcript.fetch()
+            full_text = ' '.join([entry['text'] for entry in fetched_transcript])
+            return full_text
+            
+        return None
+        
+    except Exception as e:
+        print(f"Error fetching transcript: {e}")
+        # Try the old simple method as a last resort fallback
+        try:
+            print("Trying fallback direct fetch method...")
+            transcript_list = YouTubeTranscriptApi.get_transcript(video_id)
+            full_text = ' '.join([entry['text'] for entry in transcript_list])
+            return full_text
+        except Exception as e2:
+            print(f"Fallback method also failed: {e2}")
+            return None
+            
     except Exception as e:
         print(f"Error fetching transcript: {e}")
         return None
@@ -101,7 +136,7 @@ def process_video_summary(url):
         
     transcript = get_transcript(video_id)
     if not transcript:
-        return {"error": "Could not retrieve transcript. Video might not have captions or they are disabled."}
+        return {"error": "Could not retrieve transcript. This video might not have captions, they might be disabled, or YouTube is blocking the request."}
         
     summary = summarize(transcript)
     
