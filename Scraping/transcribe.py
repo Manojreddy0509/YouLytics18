@@ -13,6 +13,40 @@ load_dotenv()
 # Global variable for the Whisper model (loaded once per process)
 WHISPER_MODEL = None
 
+def apply_dns_patch():
+    """
+    Applies a DNS monkey patch to resolve YouTube domains using a working IP.
+    This fixes specific container DNS resolution errors.
+    """
+    # Quick check to see if we need it
+    try:
+        socket.gethostbyname('www.youtube.com')
+        return  # DNS is working fine
+    except:
+        pass
+        
+    print("--- 🕵️ DNS Hunter (Global Patch) ---")
+    working_ip = None
+    for domain in ['youtube.com', 'm.youtube.com', 'google.com']:
+        try:
+            ip = socket.gethostbyname(domain)
+            working_ip = ip
+            break
+        except:
+            continue
+    
+    if working_ip:
+        if not getattr(socket, '_original_getaddrinfo', None):
+            socket._original_getaddrinfo = socket.getaddrinfo
+
+        def patched_getaddrinfo(host, port, family=0, type=0, proto=0, flags=0):
+            if host in ['www.youtube.com', 'm.youtube.com']:
+                return socket._original_getaddrinfo(working_ip, port, family, type, proto, flags)
+            return socket._original_getaddrinfo(host, port, family, type, proto, flags)
+
+        socket.getaddrinfo = patched_getaddrinfo
+        print(f"💉 DNS Monkey Patch applied globally: {working_ip}")
+
 def init_whisper(model_name="base"):
     """
     Loads the Whisper model into the global variable WHISPER_MODEL.
@@ -33,6 +67,9 @@ def get_transcript_from_youtube_captions(video_id):
     Tries to fetch transcripts using youtube_transcript_api.
     Returns the transcript string or None if not found.
     """
+    # Ensure Network is patched before API call
+    apply_dns_patch()
+    
     print(f"🔍 Checking for YouTube captions for ID: {video_id}")
     try:
         transcript_list = YouTubeTranscriptApi.get_transcript(video_id)
@@ -58,35 +95,11 @@ def download_audio_with_ytdlp(video_url, use_cookies=True, cookiefile=None, outp
         cookiefile: Path to cookie file (optional)
         outpath: Output path for audio file
     """
+    # Ensure Network is patched before download
+    apply_dns_patch()
+    
     cookie_mode = "with cookies" if use_cookies else "WITHOUT cookies"
     print(f"⬇️ Starting download for: {video_url} ({cookie_mode})")
-    
-    # --- DNS MONKEY PATCH (Retained from previous fix) ---
-    working_ip = None
-    # Quick check to see if we need it
-    try:
-        socket.gethostbyname('www.youtube.com')
-    except:
-        print("--- 🕵️ DNS Hunter (Fallback) ---")
-        for domain in ['youtube.com', 'm.youtube.com', 'google.com']:
-            try:
-                ip = socket.gethostbyname(domain)
-                working_ip = ip
-                break
-            except:
-                continue
-        
-        if working_ip:
-            if not getattr(socket, '_original_getaddrinfo', None):
-                socket._original_getaddrinfo = socket.getaddrinfo
-
-            def patched_getaddrinfo(host, port, family=0, type=0, proto=0, flags=0):
-                if host in ['www.youtube.com', 'm.youtube.com']:
-                    return socket._original_getaddrinfo(working_ip, port, family, type, proto, flags)
-                return socket._original_getaddrinfo(host, port, family, type, proto, flags)
-
-            socket.getaddrinfo = patched_getaddrinfo
-            print(f"💉 DNS Monkey Patch applied: {working_ip}")
 
     # Prepare options
     ydl_opts = {
