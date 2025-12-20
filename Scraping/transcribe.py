@@ -284,30 +284,9 @@ def transcribe_audio_from_video(video_url, video_id=None, cookies_path=None):
         print("⚠️ No suitable captions found, proceeding to audio download...")
     
     # ═══════════════════════════════════════════════════════════
-    # TIER 2: Try Download WITHOUT Cookies (Public Videos)
+    # TIER 2: Download Audio (GUEST MODE ONLY)
     # ═══════════════════════════════════════════════════════════
     print("🔓 [TIER 2] Attempting download WITHOUT authentication (public videos)...")
-    try:
-        audio_path = download_audio_with_ytdlp(
-            video_url, 
-            use_cookies=False,  # Don't use cookies
-            outpath=temp_audio
-        )
-        print("✅ Download succeeded without authentication!")
-        try:
-            text = transcribe_audio_file(audio_path)
-            return text
-        finally:
-            cleanup_temp_file(temp_audio)
-    
-    except Exception as e:
-        error_msg = str(e)
-        
-        # If it's not an auth issue, this is a real error
-        if error_msg != "NEEDS_AUTH":
-            print(f"❌ Download failed with error: {error_msg}")
-            cleanup_temp_file(temp_audio)
-            raise Exception(f"Unable to download video: {error_msg}")
     
     try:
         # Download audio (Strictly Guest Mode now)
