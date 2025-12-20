@@ -197,7 +197,12 @@ def download_audio_with_ytdlp(video_url, outpath="temp_audio.mp3"):
         'nocheckcertificate': True,
         'geo_bypass': True,
         'source_address': '0.0.0.0',
-        'user_agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+        # Use Android Client to mimic mobile app (often less strict)
+        'extractor_args': {
+            'youtube': {
+                'player_client': ['android'],
+            }
+        },
         'referer': 'https://www.youtube.com/',
         'postprocessors': [{
             'key': 'FFmpegExtractAudio',
