@@ -321,10 +321,23 @@ def summarize_video():
         
         # Use NoteGPT summarizer directly (no background task needed)
         # This function has multiple fallbacks: NoteGPT API -> Transcript + Local Summarization
-        from Scraping.transcribe import get_summary_from_notegpt
+        from Scraping.transcribe import get_summary_from_notegpt, transcribe_audio_from_video
+        from Summarise.summarize import summarize_text
         
         print(f"📝 Getting summary from NoteGPT for: {youtube_url}")
         summary = get_summary_from_notegpt(video_id)
+        
+        # Final safety net: local transcription + summarization if NoteGPT path failed
+        if not summary or len(str(summary).strip()) <= 50:
+            try:
+                print("🔄 Falling back to local transcription + summarization...")
+                transcription = transcribe_audio_from_video(youtube_url, video_id, None)
+                summary_local = summarize_text(transcription)
+                if summary_local and len(summary_local.strip()) > 50:
+                    summary = summary_local.strip()
+                    print(f"✅ Local summary obtained ({len(summary)} chars)")
+            except Exception as local_err:
+                print(f"⚠️ Local fallback failed: {local_err}")
         
         if summary and len(str(summary).strip()) > 50:
             summary_str = str(summary).strip()
@@ -336,7 +349,7 @@ def summarize_video():
                 "full_summary": summary_str
             }), 200
         else:
-            return jsonify({'error': f'Failed to get summary. Got: {str(summary)[:100] if summary else "None"}'}), 500
+            return jsonify({'error': f'Failed to get summary after fallbacks. Got: {str(summary)[:100] if summary else "None"}'}), 500
         
         return jsonify({
             "message": "Task submitted",
@@ -433,13 +446,13 @@ def full_analysis():
         except Exception as comment_error:
             comments_data = {'error': f'Comment analysis failed: {str(comment_error)}'}
         
-        # Video summarization - Use NoteGPT API directly (no cookies needed)
+        # Video summarization - primary NoteGPT + layered fallbacks
         summary_data = {}
         try:
-            # Import NoteGPT summarizer
-            from Scraping.transcribe import get_summary_from_notegpt
+            from Scraping.transcribe import get_summary_from_notegpt, transcribe_audio_from_video
+            from Summarise.summarize import summarize_text
             
-            print("📹 Starting video summarization via NoteGPT...")
+            print("📹 Starting video summarization via NoteGPT (with fallbacks)...")
             
             if not video_id:
                 # Extract video ID if not already extracted
@@ -448,10 +461,27 @@ def full_analysis():
                 elif "youtu.be/" in youtube_url:
                     video_id = youtube_url.split("youtu.be/")[1].split("?")[0]
             
-            if video_id:
-                # Get summary directly from NoteGPT (no cookies needed)
-                # This function has multiple fallbacks: NoteGPT API -> Transcript + Local Summarization
+            if not video_id:
+                summary_data = {'error': 'Could not extract video ID from URL'}
+            else:
+                summary = None
+                
+                # Tier 1: NoteGPT (includes its internal fallbacks)
                 summary = get_summary_from_notegpt(video_id)
+                
+                # Tier 2: Local transcription + summarization as safety net
+                if not summary or len(str(summary).strip()) <= 50:
+                    try:
+                        print("🔄 Falling back to local transcription + summarization...")
+                        transcription = transcribe_audio_from_video(youtube_url, video_id, None)
+                        summary_local = summarize_text(transcription)
+                        if summary_local and len(summary_local.strip()) > 50:
+                            summary = summary_local.strip()
+                            print(f"✅ Local summary obtained ({len(summary)} chars)")
+                        else:
+                            print("⚠️ Local summarization returned empty/short output.")
+                    except Exception as local_err:
+                        print(f"⚠️ Local summarization fallback failed: {local_err}")
                 
                 if summary and len(str(summary).strip()) > 50:
                     summary_str = str(summary).strip()
@@ -464,9 +494,7 @@ def full_analysis():
                         'full_summary': summary_str  # For compatibility with frontend
                     }
                 else:
-                    raise Exception(f"Summary generation failed. Got: {str(summary)[:100] if summary else 'None'}")
-            else:
-                raise Exception("Could not extract video ID from URL")
+                    summary_data = {'error': 'Summary generation failed after all fallbacks.'}
                 
         except Exception as e:
             print(f"❌ Summarization error: {e}")
