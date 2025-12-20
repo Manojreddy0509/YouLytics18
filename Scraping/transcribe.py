@@ -257,14 +257,13 @@ def transcribe_audio_file(audio_file_path):
         print(f"❌ Transcription failed: {e}")
         raise
 
-def transcribe_audio_from_video(video_url, video_id=None, cookies_path=None):
+def transcribe_audio_from_video(video_url, video_id=None):
     """
-    Main entry point with robust multi-tier fallback strategy:
-    1. Try YouTube API captions (fastest, no auth)
-    2. Try downloading without cookies (works for public videos)
-    3. Try downloading with cookies (if cookies are available)
-    4. Transcribe audio with Whisper
-    5. Clean up temp files
+    Main entry point with robust fallback strategy:
+    1. Try YouTube API captions (Guest Mode - No Cookies)
+    2. Try downloading audio (Guest Mode - No Cookies)
+    3. Transcribe audio with Whisper
+    4. Clean up temp files
     
     Returns: transcript text
     Raises: Exception with user-friendly error message if all methods fail

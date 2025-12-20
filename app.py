@@ -317,7 +317,7 @@ def summarize_video():
         
         # Enqueue Task
         # video_id extraction happens inside the task or wrapper, but we pass URL primarily
-        task = transcribe_and_summarize.delay(youtube_url, None, cookies_path)
+        task = transcribe_and_summarize.delay(youtube_url, None)
         
         return jsonify({
             "message": "Task submitted",
@@ -423,7 +423,7 @@ def full_analysis():
             
             print("📹 Starting video transcription...")
             # Use the refactored function (it handles captions fallback internally)
-            transcription = transcribe_audio_from_video(youtube_url, video_id, None)
+            transcription = transcribe_audio_from_video(youtube_url, video_id)
             
             print(f"📝 Transcription complete: {len(transcription)} chars")
             
