@@ -4,6 +4,7 @@ import yt_dlp
 import whisper
 import traceback
 import socket
+import random
 from dotenv import load_dotenv
 from youtube_transcript_api import YouTubeTranscriptApi, TranscriptsDisabled, NoTranscriptFound
 
