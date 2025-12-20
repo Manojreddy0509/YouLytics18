@@ -44,32 +44,48 @@ def apply_user_agent_patch():
 
 def apply_dns_patch():
     """
-    Applies a DNS monkey patch to resolve YouTube domains using a working IP.
-    This fixes specific container DNS resolution errors.
+    Applies a DNS monkey patch to resolve YouTube domains using a RANDOM working IP.
+    This helps bypass 429 (Too Many Requests) by rotating destination IPs.
     """
-    # Quick check to see if we need it
-    try:
-        socket.gethostbyname('www.youtube.com')
-        return  # DNS is working fine
-    except:
-        pass
-        
-    print("--- 🕵️ DNS Hunter (Global Patch) ---")
-    working_ip = None
-    for domain in ['youtube.com', 'm.youtube.com', 'google.com']:
+    # Quick check: we ALWAYS want to check for new IPs on HF Spaces
+    print("--- 🕵️ DNS Hunter (Randomized) ---")
+    
+    candidates = []
+    # Domains to harvest IPs from
+    domains = [
+        'www.youtube.com', 
+        'm.youtube.com', 
+        'youtube.com', 
+        'google.com', 
+        'www.google.com'
+    ]
+    
+    for domain in domains:
         try:
-            ip = socket.gethostbyname(domain)
-            working_ip = ip
-            break
+            # gethostbyname_ex returns (hostname, aliaslist, ipaddrlist)
+            _, _, ips = socket.gethostbyname_ex(domain)
+            for ip in ips:
+                if ":" not in ip: # prefer IPv4 for compatibility
+                    candidates.append(ip)
         except:
             continue
+            
+    # Add some known good Google IPs as backups
+    candidates.extend(['142.250.190.46', '142.250.191.206', '172.217.204.206', '142.250.72.206'])
+    
+    working_ip = None
+    if candidates:
+        # De-duplicate
+        candidates = list(set(candidates))
+        working_ip = random.choice(candidates)
+        print(f"🎲 Random IP selected from {len(candidates)} candidates: {working_ip}")
     
     if working_ip:
         if not getattr(socket, '_original_getaddrinfo', None):
             socket._original_getaddrinfo = socket.getaddrinfo
 
         def patched_getaddrinfo(host, port, family=0, type=0, proto=0, flags=0):
-            if host in ['www.youtube.com', 'm.youtube.com']:
+            if host in ['www.youtube.com', 'm.youtube.com', 'youtube.com']:
                 return socket._original_getaddrinfo(working_ip, port, family, type, proto, flags)
             return socket._original_getaddrinfo(host, port, family, type, proto, flags)
 
@@ -156,28 +172,25 @@ def get_transcript_from_youtube_captions(video_id):
         print(f"⚠️ Error fetching captions: {e}")
         return None
 
-def download_audio_with_ytdlp(video_url, use_cookies=True, cookiefile=None, outpath="temp_audio.mp3"):
+def download_audio_with_ytdlp(video_url, outpath="temp_audio.mp3"):
     """
     Robust audio download using yt-dlp.
-    Handles DNS patching and cookie file usage logic internally.
+    NO COOKIES - STRICTLY GUEST MODE.
     
     Args:
         video_url: YouTube video URL
-        use_cookies: If True, attempt to use cookies. If False, skip cookies entirely.
-        cookiefile: Path to cookie file (optional)
         outpath: Output path for audio file
     """
     # Ensure Network is patched before download
     apply_dns_patch()
     apply_user_agent_patch()
     
-    cookie_mode = "with cookies" if use_cookies else "WITHOUT cookies"
-    print(f"⬇️ Starting download for: {video_url} ({cookie_mode})")
+    print(f"⬇️ Starting download for: {video_url} (GUEST MODE / NO COOKIES)")
 
     # Prepare options
     ydl_opts = {
         'format': 'bestaudio/best',
-        'outtmpl': outpath.replace('.mp3', ''),  # yt-dlp adds extension based on postprocessor
+        'outtmpl': outpath.replace('.mp3', ''),
         'quiet': False,
         'no_warnings': False,
         'nocheckcertificate': True,
@@ -190,39 +203,18 @@ def download_audio_with_ytdlp(video_url, use_cookies=True, cookiefile=None, outp
             'preferredcodec': 'mp3',
             'preferredquality': '192',
         }],
+        # Explicitly disable cookies
+        'cookiefile': None,
+        'cookiesfrombrowser': None,
     }
-
-    # Handle Cookies - Only if use_cookies=True
-    if use_cookies:
-        final_cookiefile = None
-        if cookiefile and os.path.exists(cookiefile):
-            final_cookiefile = cookiefile
-        elif os.getenv("YOUTUBE_COOKIES"):
-            # Create temp cookie file from env var
-            with open("cookies.txt", "w") as f:
-                f.write(os.getenv("YOUTUBE_COOKIES"))
-            final_cookiefile = "cookies.txt"
-        elif os.getenv("YTDLP_COOKIEFILE"):
-            final_cookiefile = os.getenv("YTDLP_COOKIEFILE")
-
-        if final_cookiefile:
-            print(f"🍪 Using cookies from: {final_cookiefile}")
-            ydl_opts['cookiefile'] = final_cookiefile
-        else:
-            print("⚠️ Cookies requested but none found")
-    else:
-        print("🔓 Attempting download without authentication")
 
     try:
         with yt_dlp.YoutubeDL(ydl_opts) as ydl:
             ydl.download([video_url])
         
         # Check actual output filename
-        possible_out = outpath
-        if not os.path.exists(possible_out):
-            # sometimes yt-dlp naming varies, but outtmpl should handle it mostly.
-            # verify simply:
-            if os.path.exists(outpath + ".mp3"): # edge case
+        if not os.path.exists(outpath):
+            if os.path.exists(outpath + ".mp3"): 
                 os.rename(outpath + ".mp3", outpath)
         
         if os.path.exists(outpath):
@@ -315,55 +307,29 @@ def transcribe_audio_from_video(video_url, video_id=None, cookies_path=None):
             print(f"❌ Download failed with error: {error_msg}")
             cleanup_temp_file(temp_audio)
             raise Exception(f"Unable to download video: {error_msg}")
-        
-        # Auth required - try with cookies
-        print("🔐 Video requires authentication, attempting with cookies...")
-    
-    # ═══════════════════════════════════════════════════════════
-    # TIER 3: Try Download WITH Cookies (Restricted Videos)
-    # ═══════════════════════════════════════════════════════════
-    print("🍪 [TIER 3] Attempting download WITH cookies...")
-    
-    # Check if cookies are available
-    has_cookies = (
-        cookies_path and os.path.exists(cookies_path)
-    ) or os.getenv("YOUTUBE_COOKIES") or os.getenv("YTDLP_COOKIEFILE")
-    
-    if not has_cookies:
-        cleanup_temp_file(temp_audio)
-        raise Exception(
-            "This video requires authentication, but no cookies are configured. "
-            "Please add YouTube cookies to access age-restricted or members-only content. "
-            "See: https://github.com/yt-dlp/yt-dlp/wiki/FAQ#how-do-i-pass-cookies-to-yt-dlp"
-        )
     
     try:
-        audio_path = download_audio_with_ytdlp(
-            video_url,
-            use_cookies=True,
-            cookiefile=cookies_path,
-            outpath=temp_audio
-        )
-        print("✅ Download succeeded with cookie authentication!")
-        try:
-            text = transcribe_audio_file(audio_path)
-            return text
-        finally:
-            cleanup_temp_file(temp_audio)
-    
-    except Exception as e:
-        error_msg = str(e)
-        cleanup_temp_file(temp_audio)
+        # Download audio (Strictly Guest Mode now)
+        audio_path = download_audio_with_ytdlp(video_url, outpath=temp_audio)
         
-        # Provide helpful error message
-        if error_msg == "NEEDS_AUTH":
-            raise Exception(
-                "Cookie authentication failed - your cookies may be expired or invalid. "
-                "Please update your YouTube cookies. "
-                "See: https://github.com/yt-dlp/yt-dlp/wiki/Extractors#exporting-youtube-cookies"
-            )
+        # Transcribe
+        print(f"🎤 Transcribing audio file: {audio_path}")
+        text = transcribe_audio_file(audio_path)
+        return text
+            
+    except Exception as e:
+        print(f"❌ Transcription failed: {e}")
+        # Detailed error for user feedback
+        msg = str(e)
+        if "Too Many Requests" in msg or "429" in msg:
+             raise Exception("YouTube is rate-limiting this server (IP Blocked). Please try again later.")
+        elif "Sign in" in msg:
+             raise Exception("YouTube requires sign-in for this video, but guest mode is enforced.")
         else:
-            raise Exception(f"Video download failed: {error_msg}")
+             raise Exception(f"Failed to transcribe video: {msg}")
+
+    finally:
+        cleanup_temp_file(temp_audio)
 
 def cleanup_temp_file(filepath):
     """Helper function to safely remove temporary files"""
