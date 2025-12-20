@@ -4,7 +4,7 @@ import './App.css';
 import Login from './Components/Login';
 import Signup from './Components/Signup';
 
-const API_BASE_URL = process.env.REACT_APP_API_BASE_URL || 'http://127.0.0.1:5001';
+const API_BASE_URL = process.env.REACT_APP_API_BASE_URL || 'https://manojsai18-youlytics-backend.hf.space';
 
 const App = () => {
   const [url, setUrl] = useState('');
@@ -90,7 +90,7 @@ const App = () => {
       }
 
       const result = await response.json();
-      
+
       // Check if this is an async task (202 status with task_id)
       if (response.status === 202 && result.task_id) {
         // Start polling for task completion
@@ -123,7 +123,7 @@ const App = () => {
         }
 
         const statusData = await response.json();
-        
+
         if (statusData.status === 'SUCCESS') {
           // Task completed successfully
           setData(statusData.result);
