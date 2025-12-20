@@ -352,8 +352,7 @@ def get_task_status(task_id):
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
-@app.route('/full-analysis', methods=['POST'])
-@token_required
+@app.route('/full-analysis', methods=['POST'])\n@token_required
 def full_analysis():
     try:
         data = request.get_json()
@@ -367,13 +366,24 @@ def full_analysis():
         
         print(f"🎯 Starting full analysis for: {youtube_url}")
         
+        # Extract video ID for later use
+        video_id = None
+        try:
+            if "v=" in youtube_url:
+                video_id = youtube_url.split("v=")[1].split("&")[0]
+            elif "youtu.be" in youtube_url:
+                video_id = youtube_url.split("/")[-1]
+        except:
+            pass
+        
         # Comments analysis
         comments_data = {}
         try:
             from Scraping.P1 import get_vid
             from Scraping.P2 import get_comments
             
-            video_id = get_vid(youtube_url)
+            if not video_id:
+                video_id = get_vid(youtube_url)
             comments = get_comments(video_id, YOUTUBE_API_KEY)
             
             # Lazy load analyzer
@@ -403,43 +413,35 @@ def full_analysis():
         except Exception as comment_error:
             comments_data = {'error': f'Comment analysis failed: {str(comment_error)}'}
         
-        # Video summarization
+        # Video summarization - Use NEW refactored functions
         summary_data = {}
         try:
-            from Scraping.transcribe import transcribe_video_or_url
-            from Summarise.summarize import summarize_transcription_file
-            try:
-                request_id = str(uuid.uuid4())[:8]
-                transcription_file = f"transcription_{request_id}.txt"
-                summary_file = f"summary_{request_id}.txt"
-                
-                transcription = transcribe_video_or_url(youtube_url)
-                
-                with open(transcription_file, 'w', encoding='utf-8') as f:
-                    f.write(transcription)
-                
-                summary_result = summarize_transcription_file(transcription_file, summary_file)
-                
-                with open(summary_file, 'r', encoding='utf-8') as f:
-                    full_summary = f.read()
-                
-                # Cleanup
-                for file in [transcription_file, summary_file]:
-                    if os.path.exists(file):
-                        os.remove(file)
-                
-                summary_data = {
-                    'success': True,
-                    'transcription_length': len(transcription),
-                    'transcription_preview': transcription[:500] + "..." if len(transcription) > 500 else transcription,
-                    'full_summary': full_summary,
-                    'section_summaries': summary_result.get('sections', []),
-                    'final_summary': summary_result.get('final_summary', '')
-                }
-            except Exception as e:
-                summary_data = {'error': f'Summarization failed: {str(e)}'}
-        except ImportError as import_error:
-            summary_data = {'error': f'Video summarization not available: {str(import_error)}'}
+            # Import the NEW functions from refactored modules
+            from Scraping.transcribe import transcribe_audio_from_video
+            from Summarise.summarize import summarize_text
+            
+            print("📹 Starting video transcription...")
+            # Use the refactored function (it handles captions fallback internally)
+            transcription = transcribe_audio_from_video(youtube_url, video_id, None)
+            
+            print(f"📝 Transcription complete: {len(transcription)} chars")
+            
+            # Summarize using the new function
+            print("🤖 Generating summary...")
+            summary = summarize_text(transcription)
+            
+            summary_data = {
+                'success': True,
+                'transcription_length': len(transcription),
+                'transcription_preview': transcription[:500] + "..." if len(transcription) > 500 else transcription,
+                'final_summary': summary,
+                'full_summary': summary  # For compatibility with frontend
+            }
+        except Exception as e:
+            print(f"❌ Summarization error: {e}")
+            import traceback
+            traceback.print_exc()
+            summary_data = {'error': f'Summarization failed: {str(e)}'}
         
         return jsonify({
             'type': 'full', 
@@ -449,6 +451,8 @@ def full_analysis():
         
     except Exception as e:
         print(f"❌ Error in full-analysis: {str(e)}")
+        import traceback
+        traceback.print_exc()
         return jsonify({'error': f'Full analysis failed: {str(e)}'}), 500
 
 if __name__ == '__main__':
