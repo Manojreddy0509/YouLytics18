@@ -1,0 +1,9 @@
+{
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject",
+    "deploy:setup": "echo 'Creating production environment file...' && cp .env.production.example .env.production && echo 'Please edit Frontend/.env.production with your backend URL before deploying!'"
+  }
+}
