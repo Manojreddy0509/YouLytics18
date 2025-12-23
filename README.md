@@ -118,6 +118,20 @@ React UI (Charts + Insights)
 
 ---
 
+
+## 🌐 Live Demo
+
+🚀 **Try the application here:**  
+👉 https://youlytics-frontend.onrender.com/
+
+Paste any YouTube video link to:
+- Analyze audience sentiment (Positive / Negative / Neutral)
+- View sentiment distribution
+- Read an AI-generated summary of comments
+
+> ⚠️ Note: Initial load may take a few seconds due to cold start on free hosting.
+
+
 ## 📌 Key Features
 
 ✔ Accepts **any YouTube URL** (normal, short, Shorts)
