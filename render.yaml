@@ -1,0 +1,14 @@
+services:
+  - type: web
+    name: youlytics-backend
+    runtime: docker
+    healthCheckPath: /health
+    envVars:
+      - key: TOKENIZERS_PARALLELISM
+        value: false
+      - key: SECRET_KEY
+        generateValue: true
+      - key: JWT_SECRET
+        generateValue: true
+      - key: YOUTUBE_API_KEY
+        sync: false
