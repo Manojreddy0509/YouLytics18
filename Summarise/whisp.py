@@ -1,11 +1,67 @@
-# transcribe.py
+# whisp.py
 import os
 import yt_dlp
 import whisper
+from youtube_transcript_api import YouTubeTranscriptApi
+import re
 
 WHISPER_MODEL_SIZE = os.getenv("WHISPER_MODEL_SIZE", "base").strip()
 TEMP_AUDIO = "temp_audio.mp3"
 TRANSCRIPTION_FILE = "transcription.txt"
+
+def extract_video_id(url):
+    """Extract video ID from YouTube URL"""
+    patterns = [
+        r'(?:v=)([a-zA-Z0-9_-]{11})',      # youtube.com/watch?v=
+        r'(?:youtu\.be/)([a-zA-Z0-9_-]{11})', # youtu.be/
+        r'(?:embed/)([a-zA-Z0-9_-]{11})',   # youtube.com/embed/
+        r'(?:shorts/)([a-zA-Z0-9_-]{11})'   # youtube.com/shorts/
+    ]
+    for pattern in patterns:
+        match = re.search(pattern, url)
+        if match:
+            return match.group(1)
+    return None
+
+def get_transcript_if_available(url_or_id):
+    """
+    Try to fetch existing transcript from YouTube.
+    Returns (text, segments) or (None, None).
+    """
+    try:
+        video_id = extract_video_id(url_or_id)
+        if not video_id and len(url_or_id) == 11:
+            video_id = url_or_id
+            
+        if not video_id:
+            return None, None
+            
+        print(f"🔍 Checking for existing transcript for {video_id}...")
+        transcript_list = YouTubeTranscriptApi.get_transcript(video_id)
+        
+        # Convert to Whisper format
+        segments = []
+        full_text = ""
+        
+        for item in transcript_list:
+            text = item['text']
+            start = item['start']
+            duration = item['duration']
+            end = start + duration
+            
+            segments.append({
+                "start": start,
+                "end": end,
+                "text": text
+            })
+            full_text += text + " "
+            
+        print("✅ Found existing transcript!")
+        return full_text.strip(), segments
+        
+    except Exception as e:
+        print(f"ℹ️ No existing transcript found or error: {e}")
+        return None, None
 
 def download_audio_from_url(url: str) -> str:
     """
@@ -40,6 +96,7 @@ def transcribe_and_translate_to_english(audio_path: str, whisper_model_size: str
     Uses OpenAI Whisper (python package) to transcribe and translate to English.
     Returns the English text string and segments.
     """
+    print(f"🎧 Starting Whisper transcription (Model: {whisper_model_size})...")
     model = whisper.load_model(whisper_model_size)
     # Use task="translate" to ensure output is in English if original language differs.
     result = model.transcribe(audio_path, task="translate", fp16=False)
@@ -78,6 +135,7 @@ def transcribe_video_or_url(source: str):
     if os.path.exists(source):
         audio_path = source
     else:
+        print("📥 Downloading audio from YouTube...")
         audio_path = download_audio_from_url(source)
 
     try:

@@ -65,4 +65,5 @@ temp_*.mp3
 transcription.txt
 transcription_*.txt
 summary_*.txt
+static/downloads/
 test_notegpt.py

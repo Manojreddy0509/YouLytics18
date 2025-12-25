@@ -241,6 +241,33 @@ def home():
         traceback.print_exc()
         return jsonify({"error": str(e)}), 500
 
+from tasks import celery, transcribe_and_summarize, perform_full_analysis, analyze_comments_task
+from celery.result import AsyncResult
+
+@app.route('/task-status/<task_id>', methods=['GET'])
+def get_task_status(task_id):
+    """
+    Check status of a background task.
+    """
+    try:
+        task_result = AsyncResult(task_id, app=celery)
+        result = {
+            "task_id": task_id,
+            "status": task_result.status,
+        }
+        
+        if task_result.status == 'SUCCESS':
+            result["result"] = task_result.result
+        elif task_result.status == 'FAILURE':
+            result["error"] = str(task_result.result)
+        # Handle RETRY as PENDING for frontend compatibility
+        elif task_result.status == 'RETRY':
+            result["status"] = 'PENDING'
+        
+        return jsonify(result)
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
 @app.route('/analyze-comments', methods=['POST'])
 @token_required
 def analyze_comments():
@@ -254,44 +281,20 @@ def analyze_comments():
         if not youtube_url:
             return jsonify({'error': 'YouTube URL is required'}), 400
         
-        # Lazy load dependencies
-        from Scraping.P1 import get_vid
-        from Scraping.P2 import get_comments
+        print(f"🔍 Queuing comments analysis for: {youtube_url}")
         
-        print(f"🔍 Analyzing comments for: {youtube_url}")
-        video_id = get_vid(youtube_url)
-        comments = get_comments(video_id, YOUTUBE_API_KEY)
+        # Trigger background task
+        task = analyze_comments_task.delay(youtube_url, YOUTUBE_API_KEY)
         
-        # Lazy load analyzer on first use
-        current_analyzer = get_analyzer()
-        sentiment_data = current_analyzer.analyze_all_comments(comments)
-        
-        total = len(comments)
-        response = {
-            'type': 'comments', 
-            'video_id': video_id,
-            'total_comments': total,
-            'positive': {
-                'count': len(sentiment_data['positive']),
-                'percentage': round((len(sentiment_data['positive']) / total) * 100, 2) if total > 0 else 0,
-                'comments': sentiment_data['positive']
-            },
-            'negative': {
-                'count': len(sentiment_data['negative']),
-                'percentage': round((len(sentiment_data['negative']) / total) * 100, 2) if total > 0 else 0,
-                'comments': sentiment_data['negative']
-            },
-            'neutral': {
-                'count': len(sentiment_data['neutral']),
-                'percentage': round((len(sentiment_data['neutral']) / total) * 100, 2) if total > 0 else 0,
-                'comments': sentiment_data['neutral']
-            }
-        }
-        return jsonify(response)
+        return jsonify({
+            "status": "processing",
+            "task_id": task.id,
+            "message": "Comment analysis started in background"
+        }), 202
         
     except Exception as e:
         print(f"❌ Error in analyze-comments: {str(e)}")
-        return jsonify({'error': f'Comment analysis failed: {str(e)}'}), 500
+        return jsonify({'error': f'Comment analysis failed to start: {str(e)}'}), 500
 
 @app.route('/summarize-video', methods=['POST'])
 @token_required
@@ -324,29 +327,7 @@ def summarize_video():
         print(f"❌ Error in summarize-video: {str(e)}")
         return jsonify({'error': f'Video summarization failed to start: {str(e)}'}), 500
 
-from tasks import celery, transcribe_and_summarize, perform_full_analysis
-from celery.result import AsyncResult
 
-@app.route('/task-status/<task_id>', methods=['GET'])
-def get_task_status(task_id):
-    """
-    Check status of a background task.
-    """
-    try:
-        task_result = AsyncResult(task_id, app=celery)
-        result = {
-            "task_id": task_id,
-            "status": task_result.status,
-        }
-        
-        if task_result.status == 'SUCCESS':
-            result["result"] = task_result.result
-        elif task_result.status == 'FAILURE':
-            result["error"] = str(task_result.result)
-        
-        return jsonify(result)
-    except Exception as e:
-        return jsonify({"error": str(e)}), 500
 
 @app.route('/full-analysis', methods=['POST'])
 @token_required

@@ -1,4 +1,3 @@
-
 import os
 from celery import Celery
 from celery.signals import worker_process_init
@@ -134,4 +133,51 @@ def perform_full_analysis(self, video_url, youtube_api_key):
 
     except Exception as exc:
         print(f"❌ Full Analysis Task failed: {exc}")
+        raise self.retry(exc=exc)
+
+@celery.task(bind=True, max_retries=2, default_retry_delay=10)
+def analyze_comments_task(self, video_url, youtube_api_key):
+    """
+    Background task for comment analysis.
+    """
+    print(f"🚀 Comment Analysis Task started for: {video_url}")
+    try:
+        from Scraping.P1 import get_vid
+        from Scraping.P2 import get_comments
+        
+        video_id = get_vid(video_url)
+        comments = get_comments(video_id, youtube_api_key)
+        
+        global analyzer
+        if analyzer is None:
+            from Scraping.model import PretrainedSentimentAnalyzer
+            analyzer = PretrainedSentimentAnalyzer()
+            
+        sentiment_data = analyzer.analyze_all_comments(comments)
+        
+        total = len(comments)
+        result = {
+            'type': 'comments', 
+            'video_id': video_id,
+            'total_comments': total,
+            'positive': {
+                'count': len(sentiment_data['positive']),
+                'percentage': round((len(sentiment_data['positive']) / total) * 100, 2) if total > 0 else 0,
+                'comments': sentiment_data['positive']
+            },
+            'negative': {
+                'count': len(sentiment_data['negative']),
+                'percentage': round((len(sentiment_data['negative']) / total) * 100, 2) if total > 0 else 0,
+                'comments': sentiment_data['negative']
+            },
+            'neutral': {
+                'count': len(sentiment_data['neutral']),
+                'percentage': round((len(sentiment_data['neutral']) / total) * 100, 2) if total > 0 else 0,
+                'comments': sentiment_data['neutral']
+            }
+        }
+        return result
+        
+    except Exception as exc:
+        print(f"❌ Comment Analysis Task failed: {exc}")
         raise self.retry(exc=exc)
