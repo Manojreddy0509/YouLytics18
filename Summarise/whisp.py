@@ -61,10 +61,19 @@ def cleanup_temp_audio():
 def transcribe_video_or_url(source: str):
     """
     Top-level convenience function:
-    - if source is a local file path and exists -> transcribe local file
-    - else treat as URL/YouTube ID -> download audio then transcribe
+    - 1. Try fetching existing YouTube transcript (FAST)
+    - 2. If local file -> transcribe
+    - 3. If URL -> download audio -> transcribe (SLOW)
     Returns transcribed (English) text and segments.
     """
+    
+    # Strategy 1: Check for existing transcript first (if it looks like a URL/ID)
+    if not os.path.exists(source):
+        text, segments = get_transcript_if_available(source)
+        if text and segments:
+            return text, segments
+
+    # Strategy 2: Fallback to Whisper (Download + Transcribe)
     # If it's a local file that exists, use it directly with whisper
     if os.path.exists(source):
         audio_path = source
