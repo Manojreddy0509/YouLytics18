@@ -35,19 +35,21 @@ def download_audio_from_url(url: str) -> str:
     # temp_audio.mp3 should exist now
     return TEMP_AUDIO
 
-def transcribe_and_translate_to_english(audio_path: str, whisper_model_size: str = WHISPER_MODEL_SIZE) -> str:
+def transcribe_and_translate_to_english(audio_path: str, whisper_model_size: str = WHISPER_MODEL_SIZE):
     """
     Uses OpenAI Whisper (python package) to transcribe and translate to English.
-    Returns the English text string and also writes it to transcription.txt.
+    Returns the English text string and segments.
     """
     model = whisper.load_model(whisper_model_size)
     # Use task="translate" to ensure output is in English if original language differs.
     result = model.transcribe(audio_path, task="translate", fp16=False)
     text = result.get("text", "").strip()
+    segments = result.get("segments", [])
+    
     # Save to file
     with open(TRANSCRIPTION_FILE, "w", encoding="utf-8") as f:
         f.write(text)
-    return text
+    return text, segments
 
 def cleanup_temp_audio():
     if os.path.exists(TEMP_AUDIO):
@@ -56,12 +58,12 @@ def cleanup_temp_audio():
         except Exception:
             pass
 
-def transcribe_video_or_url(source: str) -> str:
+def transcribe_video_or_url(source: str):
     """
     Top-level convenience function:
     - if source is a local file path and exists -> transcribe local file
     - else treat as URL/YouTube ID -> download audio then transcribe
-    Returns transcribed (English) text.
+    Returns transcribed (English) text and segments.
     """
     # If it's a local file that exists, use it directly with whisper
     if os.path.exists(source):
@@ -70,9 +72,9 @@ def transcribe_video_or_url(source: str) -> str:
         audio_path = download_audio_from_url(source)
 
     try:
-        text = transcribe_and_translate_to_english(audio_path)
+        text, segments = transcribe_and_translate_to_english(audio_path)
     finally:
         # If we downloaded to temp_audio.mp3, remove it
         if audio_path == TEMP_AUDIO:
             cleanup_temp_audio()
-    return text
+    return text, segments

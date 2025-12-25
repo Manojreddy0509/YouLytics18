@@ -297,7 +297,7 @@ def analyze_comments():
 @token_required
 def summarize_video():
     """
-    Summarizes a video using the simple Python approach (YouTube Transcript + OpenAI).
+    Summarizes a video using the background task (yt-dlp + Whisper + DistilBART).
     """
     try:
         data = request.get_json()
@@ -308,28 +308,23 @@ def summarize_video():
         
         if not youtube_url:
             return jsonify({'error': 'YouTube URL is required'}), 400
-        
-        # Import the new simple summary module
-        from Summarise.simple_summary import process_video_summary
-        
-        print(f"📝 Summarizing video: {youtube_url}")
-        result = process_video_summary(youtube_url)
-        
-        if "error" in result:
-            return jsonify({'error': result["error"]}), 500
             
+        print(f"📝 Queuing video summarization for: {youtube_url}")
+        
+        # Trigger background task
+        task = transcribe_and_summarize.delay(youtube_url)
+        
         return jsonify({
-            "status": "ok",
-            "summary": result["summary"],
-            "final_summary": result["summary"],
-            "pdf_url": f"/static/downloads/{os.path.basename(result['pdf_path'])}"
-        }), 200
+            "status": "processing",
+            "task_id": task.id,
+            "message": "Summarization started in background"
+        }), 202
         
     except Exception as e:
         print(f"❌ Error in summarize-video: {str(e)}")
-        return jsonify({'error': f'Video summarization failed: {str(e)}'}), 500
+        return jsonify({'error': f'Video summarization failed to start: {str(e)}'}), 500
 
-from tasks import celery
+from tasks import celery, transcribe_and_summarize, perform_full_analysis
 from celery.result import AsyncResult
 
 @app.route('/task-status/<task_id>', methods=['GET'])
@@ -366,93 +361,20 @@ def full_analysis():
         if not youtube_url:
             return jsonify({'error': 'YouTube URL is required'}), 400
         
-        print(f"🎯 Starting full analysis for: {youtube_url}")
+        print(f"🎯 Queuing full analysis for: {youtube_url}")
         
-        # Extract video ID for later use
-        video_id = None
-        try:
-            if "v=" in youtube_url:
-                video_id = youtube_url.split("v=")[1].split("&")[0]
-            elif "youtu.be" in youtube_url:
-                video_id = youtube_url.split("/")[-1]
-        except:
-            pass
-        
-        # Comments analysis
-        comments_data = {}
-        try:
-            from Scraping.P1 import get_vid
-            from Scraping.P2 import get_comments
-            
-            if not video_id:
-                video_id = get_vid(youtube_url)
-            comments = get_comments(video_id, YOUTUBE_API_KEY)
-            
-            # Lazy load analyzer
-            current_analyzer = get_analyzer()
-            sentiment_data = current_analyzer.analyze_all_comments(comments)
-            
-            total = len(comments)
-            comments_data = {
-                'video_id': video_id,
-                'total_comments': total,
-                'positive': {
-                    'count': len(sentiment_data['positive']),
-                    'percentage': round((len(sentiment_data['positive']) / total) * 100, 2) if total > 0 else 0,
-                    'comments': sentiment_data['positive']
-                },
-                'negative': {
-                    'count': len(sentiment_data['negative']),
-                    'percentage': round((len(sentiment_data['negative']) / total) * 100, 2) if total > 0 else 0,
-                    'comments': sentiment_data['negative']
-                },
-                'neutral': {
-                    'count': len(sentiment_data['neutral']),
-                    'percentage': round((len(sentiment_data['neutral']) / total) * 100, 2) if total > 0 else 0,
-                    'comments': sentiment_data['neutral']
-                }
-            }
-        except Exception as comment_error:
-            comments_data = {'error': f'Comment analysis failed: {str(comment_error)}'}
-        
-        # Video summarization - simple Python approach
-        summary_data = {}
-        try:
-            from Summarise.simple_summary import process_video_summary
-            print("📹 Starting video summarization via Simple Python Approach...")
-            
-            summary_result = process_video_summary(youtube_url)
-            
-            if "error" in summary_result:
-                summary_data = {'error': summary_result["error"]}
-            else:
-                summary_str = summary_result["summary"]
-                summary_data = {
-                    'success': True,
-                    'transcription_length': len(summary_result.get("transcript_preview", "")),
-                    'transcription_preview': summary_result.get("transcript_preview", ""),
-                    'final_summary': summary_str,
-                    'full_summary': summary_str,
-                    'pdf_url': f"/static/downloads/{os.path.basename(summary_result['pdf_path'])}"
-                }
-
-        except Exception as e:
-            print(f"❌ Summarization error: {e}")
-            import traceback
-            traceback.print_exc()
-            summary_data = {'error': f'Summarization failed: {str(e)}'}
+        # Trigger background task
+        task = perform_full_analysis.delay(youtube_url, YOUTUBE_API_KEY)
         
         return jsonify({
-            'type': 'full', 
-            'comments_analysis': comments_data,
-            'video_summary': summary_data
-        })
+            "status": "processing",
+            "task_id": task.id,
+            "message": "Full analysis started in background"
+        }), 202
         
     except Exception as e:
         print(f"❌ Error in full-analysis: {str(e)}")
-        import traceback
-        traceback.print_exc()
-        return jsonify({'error': f'Full analysis failed: {str(e)}'}), 500
+        return jsonify({'error': f'Full analysis failed to start: {str(e)}'}), 500
 
 if __name__ == '__main__':
     print("=" * 50)

@@ -67,3 +67,72 @@ def summarize_text(text):
 
     final_summary = " ".join(summaries)
     return final_summary
+
+def format_time(seconds):
+    """Converts seconds to HH:MM:SS format"""
+    m, s = divmod(seconds, 60)
+    h, m = divmod(m, 60)
+    if h > 0:
+        return f"{int(h):02d}:{int(m):02d}:{int(s):02d}"
+    return f"{int(m):02d}:{int(s):02d}"
+
+def summarize_segments_to_sections(segments, chunk_duration=300):
+    """
+    Groups segments into time-based chunks (default 5 mins) and summarizes each chunk.
+    Returns a formatted markdown string with sections.
+    """
+    global SUMMARIZER_MODEL
+    if SUMMARIZER_MODEL is None:
+        init_summarizer()
+
+    if not segments:
+        return ""
+
+    grouped_chunks = []
+    current_chunk = {"text": "", "start": segments[0]['start'], "end": segments[0]['end']}
+    
+    for seg in segments:
+        start = seg['start']
+        end = seg['end']
+        text = seg['text'].strip()
+        
+        # If adding this segment exceeds the chunk duration (and we have some content), start new chunk
+        if (end - current_chunk['start'] > chunk_duration) and current_chunk['text']:
+            grouped_chunks.append(current_chunk)
+            current_chunk = {"text": text, "start": start, "end": end}
+        else:
+            current_chunk['text'] += " " + text
+            current_chunk['end'] = end
+            
+    # Add last chunk
+    if current_chunk['text']:
+        grouped_chunks.append(current_chunk)
+
+    final_output = []
+    section_list = []
+    
+    print(f"📝 Summarizing {len(grouped_chunks)} time-based sections...")
+
+    for i, chunk in enumerate(grouped_chunks):
+        text = chunk['text'].strip()
+        start_str = format_time(chunk['start'])
+        end_str = format_time(chunk['end'])
+        
+        if len(text.split()) < 30:
+            # Too short to summarize, just append text
+            summary = text
+        else:
+            try:
+                # We reuse the chunking logic inside summarize_text if the section is still too long
+                # But here we just want a summary of this section.
+                # Let's call the model directly or use summarize_text logic for this block
+                summary = summarize_text(text)
+            except Exception as e:
+                print(f"   ⚠️ Error summarizing section {start_str}-{end_str}: {e}")
+                summary = text
+
+        section_header = f"## Time: {start_str} - {end_str}"
+        final_output.append(f"{section_header}\n{summary}\n")
+        section_list.append(f"Time {start_str} - {end_str}: {summary}")
+
+    return "\n".join(final_output), section_list
