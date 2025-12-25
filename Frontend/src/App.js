@@ -107,7 +107,7 @@ const App = () => {
   };
 
   const pollTaskStatus = async (taskId) => {
-    const maxAttempts = 180; // 6 minutes max (180 * 2s)
+    const maxAttempts = 600; // 20 minutes max (600 * 2s) - Transcription can be slow
     let attempts = 0;
 
     const checkStatus = async () => {
