@@ -20,6 +20,13 @@ def init_worker(**kwargs):
     Load models once when the worker process starts.
     """
     print("👷 Worker process initializing...")
+    
+    # Ensure current directory is in sys.path for module discovery
+    import sys
+    import os
+    if os.getcwd() not in sys.path:
+        sys.path.append(os.getcwd())
+    
     try:
         # Load Summarization model
         init_summarizer()
