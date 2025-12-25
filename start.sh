@@ -7,6 +7,9 @@ redis-server --daemonize yes
 # Wait a moment for Redis to start
 sleep 2
 
+# Set PYTHONPATH to ensure modules are found
+export PYTHONPATH=$PYTHONPATH:$(pwd)
+
 # Start Celery Worker in the background - logs will appear in container logs
 echo "👷 Starting Celery worker..."
 celery -A tasks.celery worker --loglevel=info -Q default -c 1 &
