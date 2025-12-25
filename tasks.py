@@ -72,7 +72,8 @@ def perform_full_analysis(self, video_url, youtube_api_key):
             from Scraping.P2 import get_comments
             
             video_id = get_vid(video_url)
-            comments = get_comments(video_id, youtube_api_key)
+            # Limit comments for full analysis to keep it fast
+            comments = get_comments(video_id, youtube_api_key, max_comments=100)
             
             global analyzer
             if analyzer is None:
@@ -146,7 +147,8 @@ def analyze_comments_task(self, video_url, youtube_api_key):
         from Scraping.P2 import get_comments
         
         video_id = get_vid(video_url)
-        comments = get_comments(video_id, youtube_api_key)
+        # Limit comments to 300 for standalone analysis (deeper than full analysis)
+        comments = get_comments(video_id, youtube_api_key, max_comments=300)
         
         global analyzer
         if analyzer is None:
