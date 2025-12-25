@@ -1,3 +1,15 @@
+---
+title: YouLytics
+emoji: 🎥
+colorFrom: indigo
+colorTo: purple
+sdk: docker
+pinned: false
+---
+
+# YouLytics
+
+AI-powered YouTube analytics platform.
 
 # 🚀 YouLytics – Advanced YouTube Analytics Platform
 
