@@ -299,6 +299,14 @@ def summarize_video():
         # ✅ Audio-based transcription (NO captions)
         transcription = transcribe_youtube(youtube_url)
 
+        # Check if transcription failed
+        if "unavailable" in transcription.lower():
+            return jsonify({
+                'error': 'Video transcription failed due to network restrictions',
+                'message': transcription,
+                'type': 'summary'
+            }), 503
+
         print("📝 Summarizing transcription with DistilBART")
 
         # ✅ Abstractive summarization
@@ -371,6 +379,18 @@ def full_analysis():
         # ✅ Whisper transcription (audio-based)
         print("🧠 Transcribing video with Whisper...")
         transcription = transcribe_youtube(youtube_url)
+
+        # Check if transcription failed
+        if "unavailable" in transcription.lower():
+            return jsonify({
+                'type': 'full',
+                'comments_analysis': comments_data,
+                'video_summary': {
+                    'error': 'Video transcription failed due to network restrictions',
+                    'message': transcription
+                },
+                'success': False
+            }), 200  # Return 200 since comments worked
 
         # ✅ DistilBART summarization
         print("📝 Summarizing transcription...")
