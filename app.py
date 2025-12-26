@@ -18,6 +18,9 @@ from flask import Flask, request, jsonify
 from flask_cors import CORS
 import os
 from dotenv import load_dotenv
+from Scraping.comments import analyze_comments_logic
+from Scraping.whisper_transcribe import transcribe_youtube
+from Scraping.video_summarise import summarize_text
 
 # Load environment variables
 load_dotenv()
@@ -248,86 +251,74 @@ def analyze_comments():
         data = request.get_json()
         if not data:
             return jsonify({'error': 'No JSON data provided'}), 400
-            
+
         youtube_url = data.get('url')
-        
         if not youtube_url:
             return jsonify({'error': 'YouTube URL is required'}), 400
-        
-        # Lazy load dependencies
-        from Scraping.P1 import get_vid
-        from Scraping.P2 import get_comments
-        
+
         print(f"🔍 Analyzing comments for: {youtube_url}")
-        video_id = get_vid(youtube_url)
-        comments = get_comments(video_id, YOUTUBE_API_KEY)
-        
-        # Lazy load analyzer on first use
-        current_analyzer = get_analyzer()
-        sentiment_data = current_analyzer.analyze_all_comments(comments)
-        
-        total = len(comments)
-        response = {
-            'type': 'comments', 
-            'video_id': video_id,
-            'total_comments': total,
-            'positive': {
-                'count': len(sentiment_data['positive']),
-                'percentage': round((len(sentiment_data['positive']) / total) * 100, 2) if total > 0 else 0,
-                'comments': sentiment_data['positive']
-            },
-            'negative': {
-                'count': len(sentiment_data['negative']),
-                'percentage': round((len(sentiment_data['negative']) / total) * 100, 2) if total > 0 else 0,
-                'comments': sentiment_data['negative']
-            },
-            'neutral': {
-                'count': len(sentiment_data['neutral']),
-                'percentage': round((len(sentiment_data['neutral']) / total) * 100, 2) if total > 0 else 0,
-                'comments': sentiment_data['neutral']
-            }
-        }
-        return jsonify(response)
-        
+
+        # ✅ Call the single source of truth
+        from Scraping.comments import analyze_comments_logic
+        result = analyze_comments_logic(youtube_url, YOUTUBE_API_KEY)
+
+        return jsonify({
+            'type': 'comments',
+            **result
+        })
+
     except Exception as e:
         print(f"❌ Error in analyze-comments: {str(e)}")
-        return jsonify({'error': f'Comment analysis failed: {str(e)}'}), 500
+        import traceback
+        traceback.print_exc()
+        return jsonify({
+            'error': 'Comment analysis failed',
+            'details': str(e)
+        }), 500
+
 
 @app.route('/summarize-video', methods=['POST'])
 @token_required
 def summarize_video():
     """
-    Summarizes a video using the simple Python approach (YouTube Transcript + OpenAI).
+    Summarizes a YouTube video using:
+    - yt-dlp + Whisper (audio → text)
+    - DistilBART (text → summary)
     """
     try:
         data = request.get_json()
         if not data:
             return jsonify({'error': 'No JSON data provided'}), 400
-            
+
         youtube_url = data.get('url')
-        
         if not youtube_url:
             return jsonify({'error': 'YouTube URL is required'}), 400
-        
-        # Import the new simple summary module
-        from Summarise.simple_summary import process_video_summary
-        
-        print(f"📝 Summarizing video: {youtube_url}")
-        result = process_video_summary(youtube_url)
-        
-        if "error" in result:
-            return jsonify({'error': result["error"]}), 500
-            
+
+        print(f"🧠 Transcribing video with Whisper: {youtube_url}")
+
+        # ✅ Audio-based transcription (NO captions)
+        transcription = transcribe_youtube(youtube_url)
+
+        print("📝 Summarizing transcription with DistilBART")
+
+        # ✅ Abstractive summarization
+        summary_data = summarize_text(transcription)
+
         return jsonify({
-            "status": "ok",
-            "summary": result["summary"],
-            "final_summary": result["summary"],
-            "pdf_url": f"/static/downloads/{os.path.basename(result['pdf_path'])}"
+            'type': 'summary',
+            'success': True,
+            **summary_data
         }), 200
-        
+
     except Exception as e:
         print(f"❌ Error in summarize-video: {str(e)}")
-        return jsonify({'error': f'Video summarization failed: {str(e)}'}), 500
+        import traceback
+        traceback.print_exc()
+        return jsonify({
+            'error': 'Video summarization failed',
+            'details': str(e)
+        }), 500
+
 
 from tasks import celery
 from celery.result import AsyncResult
@@ -356,103 +347,51 @@ def get_task_status(task_id):
 @app.route('/full-analysis', methods=['POST'])
 @token_required
 def full_analysis():
+    """
+    Performs complete analysis:
+    - Comment sentiment analysis
+    - Video transcription (Whisper)
+    - Video summarization (DistilBART)
+    """
     try:
         data = request.get_json()
         if not data:
             return jsonify({'error': 'No JSON data provided'}), 400
-            
+
         youtube_url = data.get('url')
-        
         if not youtube_url:
             return jsonify({'error': 'YouTube URL is required'}), 400
-        
-        print(f"🎯 Starting full analysis for: {youtube_url}")
-        
-        # Extract video ID for later use
-        video_id = None
-        try:
-            if "v=" in youtube_url:
-                video_id = youtube_url.split("v=")[1].split("&")[0]
-            elif "youtu.be" in youtube_url:
-                video_id = youtube_url.split("/")[-1]
-        except:
-            pass
-        
-        # Comments analysis
-        comments_data = {}
-        try:
-            from Scraping.P1 import get_vid
-            from Scraping.P2 import get_comments
-            
-            if not video_id:
-                video_id = get_vid(youtube_url)
-            comments = get_comments(video_id, YOUTUBE_API_KEY)
-            
-            # Lazy load analyzer
-            current_analyzer = get_analyzer()
-            sentiment_data = current_analyzer.analyze_all_comments(comments)
-            
-            total = len(comments)
-            comments_data = {
-                'video_id': video_id,
-                'total_comments': total,
-                'positive': {
-                    'count': len(sentiment_data['positive']),
-                    'percentage': round((len(sentiment_data['positive']) / total) * 100, 2) if total > 0 else 0,
-                    'comments': sentiment_data['positive']
-                },
-                'negative': {
-                    'count': len(sentiment_data['negative']),
-                    'percentage': round((len(sentiment_data['negative']) / total) * 100, 2) if total > 0 else 0,
-                    'comments': sentiment_data['negative']
-                },
-                'neutral': {
-                    'count': len(sentiment_data['neutral']),
-                    'percentage': round((len(sentiment_data['neutral']) / total) * 100, 2) if total > 0 else 0,
-                    'comments': sentiment_data['neutral']
-                }
-            }
-        except Exception as comment_error:
-            comments_data = {'error': f'Comment analysis failed: {str(comment_error)}'}
-        
-        # Video summarization - simple Python approach
-        summary_data = {}
-        try:
-            from Summarise.simple_summary import process_video_summary
-            print("📹 Starting video summarization via Simple Python Approach...")
-            
-            summary_result = process_video_summary(youtube_url)
-            
-            if "error" in summary_result:
-                summary_data = {'error': summary_result["error"]}
-            else:
-                summary_str = summary_result["summary"]
-                summary_data = {
-                    'success': True,
-                    'transcription_length': len(summary_result.get("transcript_preview", "")),
-                    'transcription_preview': summary_result.get("transcript_preview", ""),
-                    'final_summary': summary_str,
-                    'full_summary': summary_str,
-                    'pdf_url': f"/static/downloads/{os.path.basename(summary_result['pdf_path'])}"
-                }
 
-        except Exception as e:
-            print(f"❌ Summarization error: {e}")
-            import traceback
-            traceback.print_exc()
-            summary_data = {'error': f'Summarization failed: {str(e)}'}
-        
+        print(f"🎯 Starting full analysis for: {youtube_url}")
+
+        # ✅ Comment analysis (single source of truth)
+        from Scraping.comments import analyze_comments_logic
+        comments_data = analyze_comments_logic(youtube_url, YOUTUBE_API_KEY)
+
+        # ✅ Whisper transcription (audio-based)
+        print("🧠 Transcribing video with Whisper...")
+        transcription = transcribe_youtube(youtube_url)
+
+        # ✅ DistilBART summarization
+        print("📝 Summarizing transcription...")
+        summary_data = summarize_text(transcription)
+
         return jsonify({
-            'type': 'full', 
+            'type': 'full',
+            'success': True,
             'comments_analysis': comments_data,
             'video_summary': summary_data
-        })
-        
+        }), 200
+
     except Exception as e:
         print(f"❌ Error in full-analysis: {str(e)}")
         import traceback
         traceback.print_exc()
-        return jsonify({'error': f'Full analysis failed: {str(e)}'}), 500
+        return jsonify({
+            'error': 'Full analysis failed',
+            'details': str(e)
+        }), 500
+
 
 if __name__ == '__main__':
     print("=" * 50)
@@ -461,6 +400,7 @@ if __name__ == '__main__':
     print(f"   Video Summarization: {'✅' if SUMMARIZE_AVAILABLE else '❌'}")
     print("   Authentication: ✅ Built-in")
     print("   Environment: ✅ Loaded")
-    print("   Server: http://127.0.0.1:5001")
+    print("   Server: http://127.0.0.1:5000")
     print("=" * 50)
-    app.run(debug=False, use_reloader=False, port=5001, host='127.0.0.1')
+    print("Starting server...")
+    app.run(debug=False, use_reloader=False, port=5000, host='127.0.0.1', threaded=True)

@@ -1,0 +1,39 @@
+# Scraping/whisper_transcribe.py
+import os
+import yt_dlp
+import whisper
+
+TEMP_AUDIO = "temp_audio.mp3"
+_model = None
+
+def get_model():
+    global _model
+    if _model is None:
+        _model = whisper.load_model("base")
+    return _model
+
+def transcribe_youtube(url: str) -> str:
+    if not url.startswith("http"):
+        url = f"https://www.youtube.com/watch?v={url}"
+
+    ydl_opts = {
+        "format": "bestaudio/best",
+        "outtmpl": "temp_audio.%(ext)s",
+        "quiet": True,
+        "postprocessors": [{
+            "key": "FFmpegExtractAudio",
+            "preferredcodec": "mp3",
+            "preferredquality": "192",
+        }],
+    }
+
+    with yt_dlp.YoutubeDL(ydl_opts) as ydl:
+        ydl.download([url])
+
+    model = get_model()
+    result = model.transcribe(TEMP_AUDIO, task="translate", fp16=False)
+
+    if os.path.exists(TEMP_AUDIO):
+        os.remove(TEMP_AUDIO)
+
+    return result["text"].strip()

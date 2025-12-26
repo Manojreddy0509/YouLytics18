@@ -2,8 +2,8 @@
 import os
 from celery import Celery
 from celery.signals import worker_process_init
-from Scraping.transcribe import transcribe_audio_from_video
-from Summarise.summarize import summarize_text, init_summarizer
+from Scraping.whisper_transcribe import transcribe_youtube
+from Scraping.video_summarise import summarize_text
 
 # Redis Configuration (Defaults for localhost, but likely overridden in prod)
 # IMPORTANT: For Hugging Face Spaces, you might need a managed Redis URL via env var.
@@ -20,7 +20,7 @@ def init_worker(**kwargs):
     """
     print("👷 Worker process initializing...")
     try:
-        init_summarizer()
+        # init_summarizer()  # Not needed for pipeline
         print("✅ Models initialized in worker process.")
     except Exception as e:
         print(f"❌ Failed to initialize models in worker: {e}")
@@ -35,7 +35,7 @@ def transcribe_and_summarize(self, video_url, video_id=None, cookies_path=None):
         # 1. Transcribe (Captions or Download -> Whisper)
         # Note: We don't pass cookies_path directly if it's strictly file based, 
         # but transcribe_audio_from_video handles env vars internally too.
-        transcript = transcribe_audio_from_video(video_url, video_id, cookies_path)
+        transcript = transcribe_youtube(video_url)
         
         # 2. Summarize
         summary = summarize_text(transcript)

@@ -5,7 +5,7 @@ import traceback
 # Add the current directory to sys.path so we can import Scraping
 sys.path.append(os.getcwd())
 
-from Scraping.transcribe import transcribe_audio_from_video
+from Scraping.whisper_transcribe import transcribe_youtube
 
 def main():
     if len(sys.argv) < 2:
@@ -26,8 +26,8 @@ def main():
     print(f"🆔 Video ID: {video_id}")
     
     try:
-        print("🎬 Running transcribe_audio_from_video...")
-        transcript = transcribe_audio_from_video(video_url, video_id)
+        print("🎬 Running transcribe_youtube...")
+        transcript = transcribe_youtube(video_url)
         
         if transcript:
             print("\n" + "="*50)
