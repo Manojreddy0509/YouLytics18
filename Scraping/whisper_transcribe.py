@@ -38,6 +38,9 @@ def transcribe_youtube(url: str) -> str:
             os.remove(TEMP_AUDIO)
 
         return result["text"].strip()
+    except (yt_dlp.utils.DownloadError, yt_dlp.networking.exceptions.TransportError, ConnectionError, OSError) as e:
+        print(f"❌ Transcription failed due to network/DNS error: {e}")
+        return "ERROR: Transcription unavailable due to network restrictions. Please try again later or use a different video."
     except Exception as e:
-        print(f"❌ Transcription failed: {e}")
-        return "Transcription unavailable due to network restrictions. Please try again later or use a different video."
+        print(f"❌ Unexpected transcription error: {e}")
+        return "ERROR: Transcription failed unexpectedly. Please try again later."

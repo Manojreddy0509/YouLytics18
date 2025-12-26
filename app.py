@@ -300,7 +300,7 @@ def summarize_video():
         transcription = transcribe_youtube(youtube_url)
 
         # Check if transcription failed
-        if "unavailable" in transcription.lower():
+        if transcription.startswith("ERROR:"):
             return jsonify({
                 'error': 'Video transcription failed due to network restrictions',
                 'message': transcription,
@@ -381,7 +381,7 @@ def full_analysis():
         transcription = transcribe_youtube(youtube_url)
 
         # Check if transcription failed
-        if "unavailable" in transcription.lower():
+        if transcription.startswith("ERROR:"):
             return jsonify({
                 'type': 'full',
                 'comments_analysis': comments_data,
